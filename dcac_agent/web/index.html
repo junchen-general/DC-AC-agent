@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="通过对话完成单相逆变器参数设计、自动建模与真实Simulink仿真。">
+  <title>DC/AC Agent · 电源设计工作台</title>
+  <link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+  <svg class="icon-defs" aria-hidden="true"><defs>
+    <symbol id="i-wave" viewBox="0 0 24 24"><path d="M2 12c4-14 6 14 10 0s6 14 10 0"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 5v15"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 4 12 8-12 8z"/></symbol>
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h16M4 17h16M8 4v6M16 14v6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  </defs></svg>
+  <div class="shell">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="DC/AC Agent首页"><span class="brand-icon"><svg><use href="#i-wave"/></svg></span><span>DC/AC<span class="brand-agent">Agent</span></span></a>
+      <div class="side-caption">电源设计工作台</div>
+      <button id="newSession" class="new-session"><svg><use href="#i-plus"/></svg>新建设计</button>
+      <div class="section-label">设计记录 <span id="sessionCount">0</span></div>
+      <nav id="sessions" class="sessions" aria-label="设计会话"></nav>
+      <div class="side-bottom">
+        <div class="capability"><span class="tiny-dot"></span>首版能力<span class="version">v0.1</span></div>
+        <div class="capability-list">单相全桥 · SPWM · 开环<br>自动建模与电气仿真</div>
+        <button id="settingsButton" class="settings-button"><svg><use href="#i-settings"/></svg>模型与运行设置</button>
+        <div class="local-label">LOCAL WORKSPACE <span>↗</span></div>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar"><div class="breadcrumb">电源设计 <span>/</span> <strong>单相逆变器</strong></div><div class="top-status"><span id="modeBadge" class="mode-badge">本地规则模式</span><span id="matlabStatus" class="matlab-status"><i></i>检查MATLAB</span></div></header>
+      <div class="workspace">
+        <main class="conversation-pane">
+          <section class="intro" id="intro"><div class="eyebrow"><span></span> DESIGN WITH EVIDENCE</div><h1>从一个需求开始，<br>让设计逐步成形<span>。</span></h1><p>描述你的电源要求。Agent 将整理参数、生成模型，<br class="desktop-break">并调用本机 Simulink 验证电气性能。</p>
+            <div class="topology" aria-label="直流输入经过全桥和LC滤波后得到交流输出"><div><span class="topo-symbol">⎓</span><small>直流输入</small></div><b>—</b><div><svg><use href="#i-box"/></svg><small>全桥逆变</small></div><b>—</b><div><span class="topo-symbol coil">∿</span><small>LC 滤波</small></div><b>—</b><div><svg><use href="#i-wave"/></svg><small>交流输出</small></div></div>
+            <div class="starter-label">试着这样开始</div>
+            <button class="prompt-card" data-prompt="建立500 W、输入380 V、输出220 V、50 Hz的单相逆变器，先查看设计参数。"><span class="prompt-icon"><svg><use href="#i-plus"/></svg></span><span><strong>建立一个 500 W 逆变器</strong><small>380 V DC → 220 V AC · 50 Hz</small></span><svg class="prompt-arrow"><use href="#i-arrow"/></svg></button>
+            <div class="prompt-row"><button class="prompt-small" data-prompt="检查MATLAB运行环境"><svg><use href="#i-settings"/></svg>检查运行环境</button><button class="prompt-small" data-prompt="查看当前设计参数"><svg><use href="#i-file"/></svg>查看默认参数</button></div>
+          </section>
+          <div id="messages" class="messages" aria-live="polite"></div>
+          <div id="taskBanner" class="task-banner hidden"><span class="spinner"></span><span id="taskLabel">任务执行中</span><button id="cancelTask">取消任务</button></div>
+          <div class="composer-wrap"><form id="chatForm" class="composer"><label class="sr-only" for="messageInput">设计需求</label><textarea id="messageInput" rows="2" maxlength="6000" placeholder="描述你的需求，例如：将开关频率改为25 kHz，重新仿真…"></textarea><div class="composer-bottom"><span><i class="tiny-dot"></i><span id="composerMode">本地规则 · 可直接建模与仿真</span></span><button id="sendButton" class="send-button" type="submit" title="发送需求" aria-label="发送需求"><svg><use href="#i-send"/></svg></button></div></form><div class="composer-note">Enter 发送 · Shift + Enter 换行 <span>结论以真实运行结果为依据</span></div></div>
+        </main>
+        <aside class="inspector">
+          <section class="design-section"><div class="panel-title"><div><span class="eyebrow">CURRENT DESIGN</span><h2>当前设计</h2></div><button id="editSpec" class="text-button">编辑参数 <span>↗</span></button></div><div class="template-tag"><svg><use href="#i-box"/></svg>单相全桥 / 理想开关函数 / 开环</div><div id="specGrid" class="spec-grid"></div><div id="derivedSummary" class="derived-summary"></div><div class="action-row"><button id="buildButton" class="secondary-button"><svg><use href="#i-box"/></svg>生成模型</button><button id="simulateButton" class="primary-button"><svg><use href="#i-play"/></svg>运行仿真</button></div><button id="exportButton" class="text-button">导出脚本，在已打开的 MATLAB 中执行 ↗</button></section>
+          <section class="results-section"><div class="inspector-tabs" role="tablist"><button role="tab" aria-selected="true" class="inspector-tab active" data-tab="results">仿真结果</button><button role="tab" aria-selected="false" class="inspector-tab" data-tab="trace">执行过程 <span id="traceCount">0</span></button><button role="tab" aria-selected="false" class="inspector-tab" data-tab="files">文件</button></div>
+            <div id="resultsPanel" class="tab-panel"><div class="run-select-row"><label class="sr-only" for="runSelect">历史运行结果</label><select id="runSelect"><option value="">尚无仿真记录</option></select><button id="compareButton" class="text-button">对比</button></div><div id="staleNotice" class="inline-notice hidden"></div><div id="metrics" class="metrics"><div class="metric"><span>输出电压</span><strong>—<small> Vrms</small></strong></div><div class="metric"><span>电压 THD</span><strong>—<small> %</small></strong></div><div class="metric"><span>电感电流</span><strong>—<small> Arms</small></strong></div></div><div class="chart-header"><span id="chartTitle">输出电压波形</span><div><button class="chart-toggle active" data-chart="voltage">电压</button><button class="chart-toggle" data-chart="inductor_current">电流</button></div></div><div id="chartEmpty" class="chart-empty"><svg><use href="#i-wave"/></svg><strong>等待第一次真实仿真</strong><span>运行后将在这里显示波形与指标</span></div><canvas id="waveChart" class="hidden" aria-label="真实仿真波形"></canvas><div id="resultSummary" class="result-summary">末尾4个完整基波周期 · THD统计2–40次谐波</div><div class="scope-note"><svg><use href="#i-file"/></svg><p>当前实现电气分析。磁场、温度场、热应力有限元与器件总效率尚未实现。</p></div></div>
+            <div id="tracePanel" class="tab-panel hidden"><div id="traceList" class="trace-list"><div class="empty-small">发送需求后，查看计划与真实工具调用。</div></div></div>
+            <div id="filesPanel" class="tab-panel hidden"><div id="fileList" class="file-list"><div class="empty-small">建模或仿真后，下载模型、参数与运行日志。</div></div></div>
+          </section>
+        </aside>
+      </div>
+    </div>
+  </div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <dialog id="settingsDialog"><form id="settingsForm"><div class="dialog-heading"><div><span class="eyebrow">WORKSPACE SETTINGS</span><h2>模型与运行设置</h2></div><button type="button" class="close-dialog" aria-label="关闭">×</button></div><label>MATLAB 可执行文件<input id="matlabPath" placeholder="D:/Program Files/MATLAB/R2025a/bin/matlab.exe"></label><p class="field-note">采用本机批处理调用，无需安装Python版MATLAB Engine。</p><div class="form-divider"></div><label class="checkbox-label"><input type="checkbox" id="llmEnabled">启用大模型工具调用</label><p class="field-note">关闭时使用本地规则模式。开启后，需求、设计参数及工具结果将发送到你配置的模型服务。</p><label>兼容接口基础地址<input id="llmBase" type="url" placeholder="https://…/v1"></label><label>模型名称<input id="llmModel" placeholder="填写服务商支持工具调用的模型名称"></label><label>API Key<input id="llmKey" type="password" autocomplete="off" placeholder="留空保留现有Key"></label><label class="checkbox-label muted"><input type="checkbox" id="clearKey">清除已保存的Key</label><p class="field-note">设置保存在本机 config.json（已加入Git忽略）。Key不会返回到网页或写入运行日志。</p><footer class="dialog-footer"><button class="secondary-button close-dialog" type="button">取消</button><button class="primary-button" type="submit">保存设置</button></footer></form></dialog>
+  <dialog id="specDialog"><form id="specForm"><div class="dialog-heading"><div><span class="eyebrow">DESIGN PARAMETERS</span><h2>编辑设计参数</h2></div><button type="button" class="close-dialog" aria-label="关闭">×</button></div><div id="specFields" class="form-grid"></div><label class="checkbox-label"><input id="loadStep" type="checkbox">启用负载突变（0.12 s，默认降至半载）</label><p class="field-note">修改参数会创建新修订。已有仿真结果保留原始参数快照，重新运行后生成新结果。</p><footer class="dialog-footer"><button type="button" class="secondary-button close-dialog">取消</button><button type="submit" class="primary-button">保存参数</button></footer></form></dialog>
+</body></html>

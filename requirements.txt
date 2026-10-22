@@ -1,0 +1,3 @@
+# The first version uses only Python's standard library.
+# MATLAB R2025a + Simulink must be installed for real model building/simulation.
+# MATLAB Engine is optional; the default bridge uses matlab -batch.

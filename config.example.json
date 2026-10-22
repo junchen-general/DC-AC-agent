@@ -1,0 +1,13 @@
+{
+  "host": "127.0.0.1",
+  "port": 7862,
+  "matlab_executable": "D:/Program Files/MATLAB/R2025a/bin/matlab.exe",
+  "matlab_timeout_seconds": 300,
+  "llm": {
+    "enabled": false,
+    "base_url": "https://api.openai.com/v1",
+    "model": "",
+    "api_key": "",
+    "max_iterations": 8
+  }
+}

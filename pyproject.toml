@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcac-agent"
+version = "0.1.0"
+description = "Local conversational DC/AC inverter design and Simulink workbench"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.scripts]
+dcac-agent = "dcac_agent.web_app:main"
+
+[tool.setuptools.packages.find]
+include = ["dcac_agent*"]
+
+[tool.setuptools.package-data]
+dcac_agent = ["web/*"]

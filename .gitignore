@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+config.json
+.env
+work/
+outputs/
+.pytest_cache/
+slprj/
+*.slxc
