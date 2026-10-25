@@ -2,7 +2,7 @@
 
 参考 `D:/code/plcc-agent/PLCC-agent` 的本地Web控制台、会话管理、工具调用轨迹和MATLAB控制方式，实现的单相逆变器设计工作台。
 
-当前版本：**v0.1，电气功能首版**。网页和计算流程可以不配置大模型直接使用；真正的建模、编译与仿真需要本机MATLAB/Simulink。
+当前版本：**成员A集成版（2026-10-23）**，已加入Nanobot适配与多物理场结果接收，物理求解能力仍以v0.1为基础。网页和计算流程可以不配置大模型直接使用；真正的建模、编译与仿真需要本机MATLAB/Simulink。
 
 ## 启动
 
@@ -136,3 +136,34 @@ node --check dcac_agent/web/app.js
 4. 按同一设计参数接入PDE Toolbox的磁场、温度场和热应力工具。
 
 软件用于课程设计建模，当前结果不能作为实物电源设计已完成的证据。
+
+
+## 成员A：Nanobot模式与协作接口
+
+规则模式仍只需Python标准库。Nanobot模式使用已验证的Python 3.14.6和nanobot-ai 0.3.5；其他Python版本尚未验证。
+
+```powershell
+python -m venv .venv
+./.venv/Scripts/python.exe -m pip install "nanobot-ai==0.3.5"
+./.venv/Scripts/python.exe run_web.py
+```
+
+启动脚本和BAT会优先使用本项目.venv。网页设置中勾选“启用大模型工具调用”，选择“Nanobot 0.3.5”，填写支持Chat Completions工具调用的服务地址、模型和自己的API Key。关闭大模型恢复规则模式；原有自写循环保留在“兼容接口”选项。不要将密钥发到聊天或提交Git。
+
+Nanobot只注册项目8个工具，不开放默认shell、文件操作或子代理工具。每个任务独立运行时，共享Store提供本会话最近16条消息；后台队列仍串行，最多12轮、3次MATLAB任务，支持取消。内部使用Nanobot的AgentLoop/ToolRegistry，已锁定版本，升级依赖需重新测试。密钥仅注入内存中的Nanobot配置；网页设置仍保存在被忽略的config.json。
+
+每次电气任务生成run_manifest.json；C的multiphysics_result.json按协议交付后，网页刷新显示各域指标与PNG，检测归属并标记旧修订。**C的自动求解工具尚未接入**，目前只支持读取交付结果；结果格式合格不等于物理模型已验证。
+
+完整协议、B/C待交付项、报告方法素材及演示流程见[docs/INTEGRATION.md](docs/INTEGRATION.md)。
+
+验证命令：
+
+```powershell
+./.venv/Scripts/python.exe -m unittest discover -s tests -v
+node --check dcac_agent/web/app.js
+```
+
+现已验证真实Nanobot运行时配合测试模型服务的工具循环；尚未验证用户的外部模型服务、真实Simulink及磁热力联合求解。首次使用Nanobot可能需要下载分词资源。测试使用独立临时目录，测试数据不作为课程结论。
+
+
+2026-10-25进展：用户已完成外部模型工具调用和一次真实电气仿真，输出219.22 Vrms、THD（2—40次）0.608%。详细条件与证据边界见VALIDATION.md最新记录；多物理场联合求解仍待交付。

@@ -16,7 +16,7 @@ def load_config() -> dict:
         "host": "127.0.0.1", "port": 7862,
         "matlab_executable": shutil.which("matlab") or "",
         "matlab_timeout_seconds": 300,
-        "llm": {"enabled": False, "base_url": "https://api.openai.com/v1",
+        "llm": {"enabled": False, "backend": "nanobot", "base_url": "https://api.openai.com/v1",
                 "model": "", "api_key": "", "max_iterations": 8},
     }
     path = ROOT / "config.json"

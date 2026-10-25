@@ -16,6 +16,8 @@ from .config import OUTPUTS, ROOT, WORK, load_config, public_config
 from .design import DesignSpec
 from .runtime import MatlabRuntime
 from .store import Store
+from .contracts import write_manifest, read_multiphysics
+from .nanobot_app import runtime_status
 
 
 class Application:
@@ -33,7 +35,15 @@ class Application:
             sid = sessions[0]["id"] if sessions else self.store.create()["id"]
         self.sync_manual_runs(sid)
         session = self.store.snapshot(sid)
-        return {"session": session, "sessions": self.store.listing(), "csrf": self.csrf,
+        physics = []
+        for run in session["runs"]:
+            try:
+                item = read_multiphysics(OUTPUTS / sid / run["id"], session, run)
+                if item.get("status") != "not_run":
+                    physics.append(item)
+            except (ValueError, TypeError, KeyError, AttributeError, OSError) as exc:
+                physics.append({"status": "invalid", "run_id": run["id"], "message": str(exc)})
+        return {"nanobot": runtime_status(), "multiphysics": physics, "session": session, "sessions": self.store.listing(), "csrf": self.csrf,
                 "derived": DesignSpec(**session["spec"]).derived(), "config": public_config(self.config),
                 "environment": self.runtime.status(), "job": self.agent.session_job(sid) or session.get("last_job")}
 
@@ -56,6 +66,8 @@ class Application:
                         continue
                     run.update(status="completed", metrics=data.get("metrics"), checks=data.get("checks"),
                                execution="manual_matlab", files=self.agent._artifacts(sid, run["id"], folder))
+                    write_manifest(folder, sid, run, data.get("source"))
+                    run["files"] = self.agent._artifacts(sid, run["id"], folder)
                     (folder / "run.json").write_text(json.dumps(run, ensure_ascii=False, indent=2), encoding="utf-8")
                     changed = True
                 except (OSError, ValueError, TypeError):
@@ -66,11 +78,13 @@ class Application:
     def update_settings(self, payload):
         with self.settings_lock:
             llm = dict(self.config["llm"])
-            for key in ("enabled", "base_url", "model"):
+            for key in ("enabled", "backend", "base_url", "model"):
                 if key in payload:
                     llm[key] = payload[key]
             if not isinstance(llm["enabled"], bool):
                 raise ValueError("enabled必须为布尔值。")
+            if llm.get("backend", "legacy") not in {"legacy", "nanobot"}:
+                raise ValueError("不支持的Agent运行时。")
             if not isinstance(llm["model"], str) or len(llm["model"]) > 200:
                 raise ValueError("模型名称格式无效。")
             url = urlparse(str(llm["base_url"]))

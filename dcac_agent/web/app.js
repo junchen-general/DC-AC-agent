@@ -49,12 +49,12 @@ async function refresh(sid = selectedSession) {
   if (generation !== stateGeneration) return;
   state = data; selectedSession = data.session.id;
   const llmOn = data.config.llm.enabled;
-  $("modeBadge").textContent = llmOn ? "大模型工具模式" : "本地规则模式";
+  $("modeBadge").textContent = llmOn ? (data.config.llm.backend === "nanobot" ? "Nanobot 工具模式" : "兼容接口模式") : "本地规则模式";
   $("composerMode").textContent = llmOn ? "大模型工具调用 · " + (data.config.llm.model || "待配置模型") : "本地规则 · 可直接建模与仿真";
   $("matlabStatus").classList.toggle("detected", data.environment.installed);
   $("matlabStatus").replaceChildren(node("i"), document.createTextNode(data.environment.installed ? "已检测到 MATLAB" : "未找到 MATLAB"));
   $("matlabStatus").title = data.environment.note;
-  renderSessions(); renderSpec(); renderMessages(); renderRuns(); renderFiles();
+  renderPhysics(); renderSessions(); renderSpec(); renderMessages(); renderRuns(); renderFiles();
   activeJob = data.job;
   renderTrace(activeJob?.events || []);
   if (activeJob && busyStates.has(activeJob.status)) watchJob(activeJob.id);
@@ -236,12 +236,12 @@ document.querySelectorAll(".chart-toggle").forEach(b => b.addEventListener("clic
 document.querySelectorAll(".close-dialog").forEach(b => b.addEventListener("click", () => b.closest("dialog").close()));
 $("settingsButton").addEventListener("click", () => {
   if (!state) return;
-  const c = state.config; $("matlabPath").value = c.matlab_executable; $("llmEnabled").checked = c.llm.enabled; $("llmBase").value = c.llm.base_url; $("llmModel").value = c.llm.model; $("llmKey").value = ""; $("clearKey").checked = false;
+  const c = state.config; $("agentBackend").value = c.llm.backend || "legacy"; $("nanobotStatus").textContent = state.nanobot?.installed ? `已安装 Nanobot ${state.nanobot.version}` : "当前Python未安装Nanobot，规则模式仍可使用。"; $("matlabPath").value = c.matlab_executable; $("llmEnabled").checked = c.llm.enabled; $("llmBase").value = c.llm.base_url; $("llmModel").value = c.llm.model; $("llmKey").value = ""; $("clearKey").checked = false;
   $("llmKey").placeholder = c.llm.has_api_key ? "已配置，留空保留；勾选下方可清除" : "尚未配置";
   $("settingsDialog").showModal();
 });
 $("settingsForm").addEventListener("submit", async e => {
-  e.preventDefault(); try { await api("/api/settings", {matlab_executable: $("matlabPath").value, enabled: $("llmEnabled").checked, base_url: $("llmBase").value, model: $("llmModel").value, api_key: $("llmKey").value, clear_api_key: $("clearKey").checked}); $("llmKey").value = ""; $("settingsDialog").close(); await refresh(); toast("设置已保存到本机。"); } catch(error) { toast(error.message); }
+  e.preventDefault(); try { await api("/api/settings", {matlab_executable: $("matlabPath").value, enabled: $("llmEnabled").checked, backend: $("agentBackend").value, base_url: $("llmBase").value, model: $("llmModel").value, api_key: $("llmKey").value, clear_api_key: $("clearKey").checked}); $("llmKey").value = ""; $("settingsDialog").close(); await refresh(); toast("设置已保存到本机。"); } catch(error) { toast(error.message); }
 });
 $("editSpec").addEventListener("click", () => {
   $("specFields").replaceChildren(...parameterFields.map(([key, label, scale, min, max]) => {
@@ -257,3 +257,19 @@ $("specForm").addEventListener("submit", async e => {
 });
 window.addEventListener("resize", drawChart);
 refresh().catch(error => toast("连接本机服务失败：" + error.message));
+
+function renderPhysics() {
+  const panel = $("physicsPanel"); panel.replaceChildren(node("strong", "", "磁 · 热 · 力结果交接"));
+  if (!state.multiphysics?.length) { panel.append(node("p", "", "尚无C交付的分析结果。接口已准备，求解器待接入。")); return; }
+  for (const item of state.multiphysics) {
+    panel.append(node("p", "", item.status === "invalid" ? `结果被拒绝：${item.message}` : `运行 ${item.parent_run_id} · 修订 ${item.revision} · ${item.evidence === "test" ? "测试数据，不作为课程结论" : item.evidence === "numerical" ? "数值求解（生产者声明）" : "解析计算"}${item.stale ? " · 已过期" : ""}`));
+    for (const [domain, data] of Object.entries(item.domains || {})) {
+      panel.append(node("p", "", `${domain} · ${data.status}`));
+      for (const [key, metric] of Object.entries(data.metrics || {})) panel.append(node("div", "", `${key}: ${metric.value} ${metric.unit}`));
+      for (const file of data.files || []) {
+        const link = node("a", "file-row", file.name); link.href = file.url; link.target = "_blank"; link.rel = "noopener"; panel.append(link);
+        if (file.image) { const img = node("img", "physics-image"); img.src = file.url; img.alt = `${domain} ${file.name}`; panel.append(img); }
+      }
+    }
+  }
+}

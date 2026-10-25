@@ -112,7 +112,7 @@ end
 
 function buildPWM(mdl,s)
 p = [mdl '/SPWM'];
-add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[80 125 245 245],'BackgroundColor','lightBlue');
+add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[80 125 245 245]);
 Simulink.SubSystem.deleteContents(p);
 add_block('simulink/Sources/Clock',[p '/Time'],'Position',[30 80 60 100]);
 add_block('simulink/User-Defined Functions/Fcn',[p '/Triangular_Carrier'], ...
@@ -121,17 +121,28 @@ add_block('simulink/User-Defined Functions/Fcn',[p '/Triangular_Carrier'], ...
 add_line(p,'Time/1','Triangular_Carrier/1','autorouting','on');
 m = sqrt(2)*s.output_voltage/s.input_voltage;
 add_block('simulink/User-Defined Functions/Fcn',[p '/Sine_Reference'], ...
-    'Expr',sprintf('%.17g*sin(%.17g*u)*min(u/0.04,1)',m,2*pi*s.output_frequency), ...
+    'Expr',sprintf('%.17g*sin(%.17g*u)',m,2*pi*s.output_frequency), ...
     'Position',[110 50 300 90]);
 add_line(p,'Time/1','Sine_Reference/1','autorouting','on');
+% Build the 40 ms soft start with standard blocks (Fcn does not accept min here).
+add_block('simulink/Math Operations/Gain',[p '/Ramp_Slope'], ...
+    'Gain','25','Position',[100 290 150 320]);
+add_block('simulink/Discontinuities/Saturation',[p '/Ramp_Limit'], ...
+    'LowerLimit','0','UpperLimit','1','Position',[190 290 240 320]);
+add_block('simulink/Math Operations/Product',[p '/Soft_Start_Reference'], ...
+    'Inputs','2','Position',[320 30 350 65]);
+add_line(p,'Time/1','Ramp_Slope/1','autorouting','on');
+add_line(p,'Ramp_Slope/1','Ramp_Limit/1','autorouting','on');
+add_line(p,'Sine_Reference/1','Soft_Start_Reference/1','autorouting','on');
+add_line(p,'Ramp_Limit/1','Soft_Start_Reference/2','autorouting','on');
 add_block('simulink/Math Operations/Gain',[p '/Negative_Reference'], ...
     'Gain','-1','Position',[340 110 380 140]);
-add_line(p,'Sine_Reference/1','Negative_Reference/1','autorouting','on');
+add_line(p,'Soft_Start_Reference/1','Negative_Reference/1','autorouting','on');
 for k = 1:2
     name = sprintf('Compare_%d',k);
     add_block('simulink/Logic and Bit Operations/Relational Operator',[p '/' name], ...
         'Operator','>=','Position',[430 40+100*(k-1) 480 80+100*(k-1)]);
-    if k==1, reference='Sine_Reference/1'; else, reference='Negative_Reference/1'; end
+    if k==1, reference='Soft_Start_Reference/1'; else, reference='Negative_Reference/1'; end
     add_line(p,reference,[name '/1'],'autorouting','on');
     add_line(p,'Triangular_Carrier/1',[name '/2'],'autorouting','on');
     add_block('simulink/Signal Attributes/Data Type Conversion',[p sprintf('/Double_%d',k)], ...
@@ -145,7 +156,8 @@ end
 
 function buildBridge(mdl,s)
 p = [mdl '/Full_Bridge'];
-add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[325 125 485 245],'BackgroundColor','lightOrange');
+% Use the default block color; unsupported color names prevent model creation.
+add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[325 125 485 245]);
 Simulink.SubSystem.deleteContents(p);
 for k = 1:2
     add_block('simulink/Ports & Subsystems/In1',[p sprintf('/Gate_%d',k)], ...
@@ -173,7 +185,7 @@ end
 
 function buildFilter(mdl,s)
 p = [mdl '/LC_Filter'];
-add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[565 125 725 245],'BackgroundColor','lightGreen');
+add_block('simulink/Ports & Subsystems/Subsystem',p,'Position',[565 125 725 245]);
 Simulink.SubSystem.deleteContents(p);
 add_block('simulink/Ports & Subsystems/In1',[p '/Bridge_Voltage'],'Position',[25 60 55 80]);
 add_block('simulink/Math Operations/Sum',[p '/Inductor_Voltage'],'Inputs','+--','Position',[140 50 170 105]);

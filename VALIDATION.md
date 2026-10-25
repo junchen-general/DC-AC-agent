@@ -30,3 +30,44 @@ python run_web.py
 ```
 
 在网页导出脚本后，将对话中的`run('.../run_in_matlab.m')`命令复制到正常打开的MATLAB命令窗口。成功后刷新网页，在原始运行目录读取真实结果。执行失败则保留报错继续调试，不能据此填写性能结论。
+
+
+## 成员A集成验证（2026-10-23）
+
+环境：Windows、Python 3.14.6、独立.venv、nanobot-ai 0.3.5。安装和测试需要本机回环通信；沙箱内asyncio套接字初始化曾受阻，授权后在沙箱外通过。
+
+最终执行 `./.venv/Scripts/python.exe -m unittest discover -s tests -q`：**23项通过**（原18项＋新增5项）。新增覆盖结果缺失/过期、跨会话与越界工件拒绝、非有限指标拒绝、真实Nanobot循环和等待模型期间取消。
+
+真实框架工具轨迹（模型为明确测试提供者，不是外部模型服务）：
+
+```text
+Nanobot 0.3.5 → set_parameters({updates:{switching_frequency:25000}})
+→ Store参数更新为25000 Hz并增加修订
+→ export_model_script({})
+→ 导出真实脚本文件，run.status=exported
+→ 模型收到tool消息 → 回复“测试服务：仅导出，未求解。”
+```
+
+测试同时检查默认exec工具不在白名单、工具反馈回到模型、Nanobot运行配置未将测试密钥写入JSON。取消测试在模型等待时触发取消，任务以cancelled结束。
+
+浏览器实际检查7863端口：设置显示“Nanobot 0.3.5”和“已安装 Nanobot 0.3.5”；缺失C结果时显示“接口已准备，求解器待接入”。未保存或更改用户的模型凭据。JavaScript语法和git diff --check通过。
+
+边界：尚无真实模型名称/API Key，因此外部模型服务端到端验收未完成。B/C真实联合求解仍未验证；C的自动求解工具尚未注册，只完成受校验的结果接收及显示。尚未用真实场结果验证云图展示。旧版MATLAB5201记录继续有效，本轮未修改或重测B的求解器。
+
+
+## 建模修复与实际验证（2026-10-25）
+
+用户实际运行暴露Full_Bridge的BackgroundColor无效；复验又发现LC_Filter颜色无效及SPWM的Fcn不接受软启动min表达式。已移除三个子系统的装饰性背景色，将软启动改为Gain(25)→Saturation[0,1]并与正弦相乘，保留40 ms斜坡含义。
+
+在MATLAB R2025a实际执行build成功，完成SimulationCommand=update及save_system，生成outputs/build-fix-20261025-softstart/dcac_inverter.slx。result.json记录ok=true、action=build、source=MATLAB/Simulink。参数为380 V输入、220 V/50 Hz、500 W、25 kHz、L=2 mH、C=4.7 μF。本次独立验证不写入用户会话；网页再次点击生成模型会建立对应会话的新记录。
+
+这更新了早期“尚未验证模型编译”的状态：上述参数下建模编译已通过；本轮未执行时域仿真，未验证THD或磁热力结果。旧导出目录保留原脚本，需重新导出才能获得修复。修改范围为matlab/dcac_execute.m，属于针对用户当前故障的B边界修复，供B后续同步。
+
+
+## 2026-10-25 真实电气仿真进展
+
+用户已通过网页配置外部模型服务，执行记录显示Nanobot调用get_design、inspect_environment、set_parameters、export_model_script；网页随后真实建模及仿真成功。外部模型调用依据为用户提供的界面记录，本轮未再次发送模型请求。
+
+已核对本地运行75201f64daed的result.json和完整signals.csv：380 V DC、220 V/50 Hz目标、500 W电阻负载、25 kHz、L=2 mH、C=4.7 μF、rL=0.25 Ω；MATLAB R2025a仿真成功。输出219.2221 Vrms（偏差−0.35359%），负载功率496.4703 W，2—40次电压谐波THD=0.608039%，电感电流2.298258 Arms、峰值3.690321 A，给定绕组电阻损耗1.320497 W。步长0.4 μs，分析区间0.16至0.2399996 s，原始记录600001点。
+
+本条更新此前“真实模型服务和电气仿真尚未验证”的历史状态；不代表所有工况均已验证。步长收敛、变负载、整机效率及磁热力联合求解仍待B/C交付。运行工件及真实配置保留本地，不提交GitHub。

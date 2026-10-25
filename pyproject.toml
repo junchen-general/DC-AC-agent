@@ -9,6 +9,9 @@ description = "Local conversational DC/AC inverter design and Simulink workbench
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+nanobot = ["nanobot-ai==0.3.5"]
+
 [project.scripts]
 dcac-agent = "dcac_agent.web_app:main"
 

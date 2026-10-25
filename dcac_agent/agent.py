@@ -13,6 +13,7 @@ from .config import OUTPUTS
 from .design import DesignSpec, extract_parameters
 from .runtime import MatlabRuntime
 from .store import Store, now
+from .contracts import write_manifest, read_multiphysics
 
 
 SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使用中文。
@@ -37,6 +38,7 @@ def function_tool(name: str, description: str, properties: dict | None = None, r
 
 PARAMS = {k: {"type": "boolean" if k == "load_step" else "number"} for k in DesignSpec().to_dict()}
 TOOLS = [
+    function_tool("get_multiphysics_results", "读取当前会话指定电气运行的磁热力交接结果；缺失时返回未运行，不执行求解。", {"run_id": {"type": "string"}}, ["run_id"]),
     function_tool("get_design", "读取当前设计参数、派生计算、功能边界和已完成运行。"),
     function_tool("set_parameters", "校验并更新当前设计。只传需要更改的参数；数值采用SI单位。", {"updates": {"type": "object", "properties": PARAMS, "additionalProperties": False}}, ["updates"]),
     function_tool("inspect_environment", "检测MATLAB路径、连接方式和已实现能力；不宣称许可证已验证。"),
@@ -114,7 +116,11 @@ class AgentService:
                 if not llm.get("api_key") or not llm.get("model"):
                     raise ValueError("已启用大模型，但API Key或模型名称未配置。可在设置中补充，或关闭大模型使用规则模式。")
                 self._emit(job, "mode", "大模型工具调用模式", {"model": llm["model"]})
-                answer = self._llm(job, message, llm)
+                if llm.get("backend", "legacy") == "nanobot":
+                    from .nanobot_app import run_nanobot
+                    answer = run_nanobot(self, job, message, llm)
+                else:
+                    answer = self._llm(job, message, llm)
             else:
                 self._emit(job, "mode", "本地规则模式（未调用大模型）")
                 answer = self._rules(job, message)
@@ -146,13 +152,19 @@ class AgentService:
             raise InterruptedError("任务已取消。")
         if not isinstance(args, dict):
             raise ValueError("工具参数必须为对象。")
-        allowed = {"set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
+        allowed = {"get_multiphysics_results": {"run_id"}, "set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
                    "create_model": set(), "run_simulation": set(), "compare_runs": set(), "export_model_script": set()}
         if name not in allowed or set(args) - allowed[name]:
             raise ValueError(f"不支持的工具或参数：{name}")
         sid = job["session_id"]
         self._emit(job, "tool", name, args)
-        if name == "get_design":
+        if name == "get_multiphysics_results":
+            row = self.store.snapshot(sid)
+            run = next((r for r in row["runs"] if r["id"] == args.get("run_id")), None)
+            if not run:
+                raise ValueError("当前会话不存在该运行。")
+            result = read_multiphysics(OUTPUTS / sid / run["id"], row, run)
+        elif name == "get_design":
             row = self.store.snapshot(sid)
             result = {"spec": row["spec"], "derived": DesignSpec(**row["spec"]).derived(),
                       "revision": row["revision"], "runs": [{k: r[k] for k in ("id", "status", "action", "revision")} for r in row["runs"]],
@@ -183,6 +195,7 @@ class AgentService:
                    "revision": row["revision"], "spec": spec.to_dict(), "status": "running", "created_at": now()}
             self._emit(job, "run", "生成本次独立模型与参数快照", {"run_id": run_id, "revision": row["revision"]})
             try:
+                output = {}
                 MatlabRuntime.prepare(spec.to_dict(), run["action"], outdir)
                 if name == "export_model_script":
                     output = {"ok": True, "exported": True, "message": "仅已导出脚本；尚未运行MATLAB。", "directory": str(outdir)}
@@ -203,6 +216,8 @@ class AgentService:
                 run["files"] = self._artifacts(sid, run_id, outdir)
                 raise
             finally:
+                write_manifest(outdir, sid, run, output.get("source"))
+                run["files"] = self._artifacts(sid, run_id, outdir)
                 (outdir / "run.json").write_text(json.dumps(run, ensure_ascii=False, indent=2), encoding="utf-8")
                 self.store.add_run(sid, run)
         self._emit(job, "result", name + " 完成", result)

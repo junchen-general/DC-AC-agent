@@ -1,4 +1,8 @@
 @echo off
 cd /d "%~dp0"
-python run_web.py
+if exist .venv\Scripts\python.exe (
+  .venv\Scripts\python.exe run_web.py
+) else (
+  python run_web.py
+)
 pause

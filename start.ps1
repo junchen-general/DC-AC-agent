@@ -1,2 +1,2 @@
 Set-Location -LiteralPath $PSScriptRoot
-python run_web.py
+if (Test-Path .venv/Scripts/python.exe) { & ./.venv/Scripts/python.exe run_web.py } else { python run_web.py }
