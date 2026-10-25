@@ -1,0 +1,43 @@
+{
+  "schema_version": "dcac.request/1.1",
+  "action": "simulate",
+  "spec": {
+    "input_voltage": 380,
+    "output_voltage": 220,
+    "output_power": 500,
+    "output_frequency": 50,
+    "switching_frequency": 20000,
+    "inductance": 0.002,
+    "capacitance": 4.7e-06,
+    "winding_resistance": 0.25,
+    "stop_time": 0.24,
+    "load_step": false,
+    "load_step_time": 0.12,
+    "load_final_ratio": 0.5
+  },
+  "electrical": {
+    "schema_version": "dcac.electrical.request/1.0",
+    "model_fidelity": "sps_device_closed_loop",
+    "scenario_id": "rated",
+    "steps_per_switching_period": 400,
+    "dead_time_s": 1e-06,
+    "soft_start_s": 0.04,
+    "closed_loop_dead_time_compensation": true,
+    "export_full_csv": false,
+    "export_legacy_csv": false,
+    "export_legacy_mat": false
+  },
+  "run_context": {
+    "session_id": "b-final",
+    "run_id": "sps_device_closed_loop__rated__n400",
+    "design_revision": 1,
+    "component_revision_id": "baseline-L2mH-rL025",
+    "parent_component_revision_id": "",
+    "comparison_group_id": "sps_device_closed_loop__rated",
+    "comparison_peer_run_ids": [
+      "sps_device_closed_loop__rated__n200",
+      "sps_device_closed_loop__rated__n400"
+    ]
+  },
+  "output_dir": "outputs/reproduced/sps_device_closed_loop__rated__n400"
+}

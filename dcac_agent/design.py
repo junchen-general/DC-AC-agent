@@ -44,6 +44,8 @@ class DesignSpec:
             raise ValueError("仿真时间不足以提取启动后4个完整稳态周期。")
         if self.load_step and self.load_step_time > start - 0.02:
             raise ValueError("负载突变需在稳态分析窗口前至少20 ms发生，请提前突变时间或延长仿真。")
+        if self.load_step and self.load_step_time < 0.04 + 2 / self.output_frequency:
+            raise ValueError("负载突变需在40 ms软启动结束后至少保留两个基波周期。")
         return self
 
     def updated(self, updates: dict) -> "DesignSpec":
@@ -58,14 +60,46 @@ class DesignSpec:
 
     def derived(self) -> dict:
         resistance = self.output_voltage ** 2 / self.output_power
+        omega = 2 * math.pi * self.output_frequency
+        resonant_frequency = 1 / (2 * math.pi * math.sqrt(self.inductance * self.capacitance))
+        output_current = self.output_power / self.output_voltage
+        capacitor_current = omega * self.capacitance * self.output_voltage
+        estimated_inductor_current = math.hypot(output_current, capacitor_current)
         return {
             "load_resistance": resistance,
-            "output_current": self.output_power / self.output_voltage,
+            "output_current": output_current,
             "modulation_index": math.sqrt(2) * self.output_voltage / self.input_voltage,
-            "resonant_frequency": 1 / (2 * math.pi * math.sqrt(self.inductance * self.capacitance)),
+            "resonant_frequency": resonant_frequency,
             "sample_time": 1 / (self.switching_frequency * 100),
+            "fine_sample_time": 1 / (self.switching_frequency * 200),
             "final_load_resistance": resistance / self.load_final_ratio if self.load_step else resistance,
+            "switching_to_resonance_ratio": self.switching_frequency / resonant_frequency,
+            "resonance_to_fundamental_ratio": resonant_frequency / self.output_frequency,
+            "capacitor_current_estimate": capacitor_current,
+            "inductor_current_estimate": estimated_inductor_current,
+            "winding_loss_estimate": estimated_inductor_current ** 2 * self.winding_resistance,
+            "loss_estimate_scope": "constant winding resistance only; not total inverter loss or efficiency",
         }
+
+    def engineering_review(self) -> dict:
+        """Analytical screening only; it never substitutes for a simulated result."""
+        d = self.derived()
+        checks = {
+            "modulation_margin": d["modulation_index"] <= 0.95,
+            "resonance_above_fundamental": d["resonance_to_fundamental_ratio"] >= 10,
+            "resonance_below_switching": d["switching_to_resonance_ratio"] >= 8,
+            "analysis_window_after_soft_start": self.stop_time - 4 / self.output_frequency >= 0.06,
+        }
+        notes = []
+        if not checks["resonance_above_fundamental"]:
+            notes.append("LC resonance is less than ten times the fundamental frequency.")
+        if not checks["resonance_below_switching"]:
+            notes.append("Switching frequency is less than eight times the LC resonance.")
+        notes.extend([
+            "Inductor-current and winding-loss values are sinusoidal analytical estimates, not simulation measurements.",
+            "The 0.25 ohm default winding resistance has no material, geometry, frequency, or temperature provenance yet.",
+        ])
+        return {"checks": checks, "notes": notes}
 
 
 NUM = r"([0-9]+(?:\.[0-9]+)?)"

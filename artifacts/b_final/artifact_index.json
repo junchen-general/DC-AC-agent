@@ -1,0 +1,39 @@
+{
+  "schema_version": "dcac.electrical.github_artifacts/1.0",
+  "data_origin": "real_interactive_matlab_simulation",
+  "source_environment": "MATLAB R2023b Update 7",
+  "window_policy": "one complete final 50 Hz period, full n400 sample rate, no decimation",
+  "full_run_policy": "The 0.24 s MAT files are intentionally excluded from Git. Regenerate them with the case request.json and dcac_execute.m.",
+  "runs": [
+    {
+      "scenario": "rated",
+      "source_case": "sps_device_closed_loop__rated__n400",
+      "sample_count": 160000,
+      "fixed_step_s": 1.25e-07,
+      "start_time_s": 0.22,
+      "end_time_exclusive_s": 0.24,
+      "mat": "artifacts/b_final/raw_windows/rated_magnetic_representative_n400.mat",
+      "bytes": 7434556
+    },
+    {
+      "scenario": "half_load",
+      "source_case": "sps_device_closed_loop__half_load__n400",
+      "sample_count": 160000,
+      "fixed_step_s": 1.25e-07,
+      "start_time_s": 0.22,
+      "end_time_exclusive_s": 0.24,
+      "mat": "artifacts/b_final/raw_windows/half_load_magnetic_representative_n400.mat",
+      "bytes": 7503904
+    },
+    {
+      "scenario": "rated_to_half",
+      "source_case": "sps_device_closed_loop__rated_to_half__n400",
+      "sample_count": 160000,
+      "fixed_step_s": 1.25e-07,
+      "start_time_s": 0.22,
+      "end_time_exclusive_s": 0.24,
+      "mat": "artifacts/b_final/raw_windows/rated_to_half_magnetic_representative_n400.mat",
+      "bytes": 7499931
+    }
+  ]
+}

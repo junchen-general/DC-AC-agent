@@ -18,7 +18,8 @@ from .contracts import write_manifest, read_multiphysics
 
 SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使用中文。
 当前唯一模板为理想单相全桥开关函数+LC状态方程、单极性SPWM、开环、40ms软启动。
-支持参数修改、真实Simulink自动建模、运行、结果检查与历史比较。磁热力有限元、闭环、器件损耗尚未实现。
+支持参数修改、真实Simulink自动建模、运行、结果检查与历史比较。默认Agent工具仍运行基准开环模型；
+器件级全桥、死区、初步损耗和电压闭环由独立分阶段MATLAB脚本提供，B交付了R2023b验证记录；默认Agent工具尚未直接暴露这些阶段。C的磁热力研究脚本已收录，尚未接入自动求解工具。
 不得声称已实现尚未实现的功能。用户提出不支持的拓扑/控制/分析时解释边界。
 只有工具返回成功才可声称已生成模型或仿真成功。禁止编造波形、指标、文件。
 用户让你构建/仿真时应调用相应工具，不能仅提供指导。先读取当前设计；需求有变则设置参数。
@@ -168,7 +169,7 @@ class AgentService:
             row = self.store.snapshot(sid)
             result = {"spec": row["spec"], "derived": DesignSpec(**row["spec"]).derived(),
                       "revision": row["revision"], "runs": [{k: r[k] for k in ("id", "status", "action", "revision")} for r in row["runs"]],
-                      "limitations": "开环理想开关函数模型；磁热力有限元、闭环、死区与器件损耗尚未实现。"}
+                      "limitations": "默认Agent工具运行开环理想开关函数模型；器件级/死区/初步损耗/闭环阶段有B的独立验证材料；C的磁热力脚本已收录。这些扩展阶段尚未接入自动求解工具。"}
         elif name == "set_parameters":
             result = self.store.update_spec(sid, args.get("updates", {}))
         elif name == "inspect_environment":
@@ -196,7 +197,11 @@ class AgentService:
             self._emit(job, "run", "生成本次独立模型与参数快照", {"run_id": run_id, "revision": row["revision"]})
             try:
                 output = {}
-                MatlabRuntime.prepare(spec.to_dict(), run["action"], outdir)
+                MatlabRuntime.prepare(
+                    spec.to_dict(), run["action"], outdir,
+                    context={"session_id": sid, "run_id": run_id,
+                             "design_revision": row["revision"]},
+                )
                 if name == "export_model_script":
                     output = {"ok": True, "exported": True, "message": "仅已导出脚本；尚未运行MATLAB。", "directory": str(outdir)}
                     run.update(status="exported", metrics=None, checks=None, finished_at=now())
@@ -230,7 +235,7 @@ class AgentService:
 
     def _rules(self, job, text):
         if any(word in text for word in ("三相", "并网", "闭环", "PID", "pid", "热应力", "磁场", "温度场", "有限元", "热仿真", "力仿真", "效率")):
-            return "当前版本支持单相全桥开环电气仿真。闭环、三相、并网、器件总损耗与磁热力有限元尚未实现。可以先输入‘建立500 W、输入380 V、输出220 V的逆变器并运行仿真’，获得真实模型、波形和THD结果。"
+            return "默认Agent工具支持单相全桥开环基准仿真；B的器件级/死区/初步损耗/闭环脚本及C的磁热力研究已收录，尚未接入自动求解工具。三相、并网与完整整机损耗尚未实现。"
         updates = extract_parameters(text)
         result = None
         if updates:

@@ -1,0 +1,33 @@
+{
+  "algorithm": "SHA256",
+  "files": {
+    "artifact_index.json": "02fd00a43bd4dc896e29e01426dac4e2608e1bc3acb85e6e8438e8d4e8d0126d",
+    "cases/half_load/loss_basis_v1.json": "ac3dab34b563bce4d5bd8e0b197cecaba3846704c23f02cd67db8fdedb39a03f",
+    "cases/half_load/request.json": "cb0b23977bbc95f911140cfd79bbbbea6a138e0bf954b54a68f290aff79af734",
+    "cases/half_load/result.json": "2ea46dd36ab9b9c387cf20b2f7f69eeebd6fc7d8c72341fb46354529ea28786c",
+    "cases/half_load/run_manifest.json": "e14f3a94e94bf57a294e7d9fb7b7788110f2a4e6311141f005f5bc2493934fe2",
+    "cases/half_load/waveforms.png": "c92f60202fea19ebfc80a2144cf6f8a0373176ccf4bea6a7a0a8b59e76149833",
+    "cases/rated/loss_basis_v1.json": "ac3dab34b563bce4d5bd8e0b197cecaba3846704c23f02cd67db8fdedb39a03f",
+    "cases/rated/request.json": "4cec12ad1b06b4c791f08e2ce27543d2b08f1ea84c5a3bc0898cdbefddc7a5e4",
+    "cases/rated/result.json": "6d4a9b9db2af3ce4fe275500e2b0233d116c87c032fab19a511489194d04f27a",
+    "cases/rated/run_manifest.json": "e2c94756800c4851a8b4fdaacb0fa5721026778d91368f342016433e2f321ee2",
+    "cases/rated/waveforms.png": "124e49d1bfdc9b3177da9702709a97fba90e1f4d2f58252eb4979d760f5db29a",
+    "cases/rated_to_half/loss_basis_v1.json": "ac3dab34b563bce4d5bd8e0b197cecaba3846704c23f02cd67db8fdedb39a03f",
+    "cases/rated_to_half/request.json": "d634b56d0cfa344618f36003d9d587cce2d7fe95ceebb207413bbb794fc7c983",
+    "cases/rated_to_half/result.json": "4ffa5878d978c5a0f978f1dc09616a6c5530d03d62d61a09a567c024edba6d24",
+    "cases/rated_to_half/run_manifest.json": "5ae84c48aad6f94fca77bcc86a7d6ba15f66831cdd10a96a053508a808026a8a",
+    "cases/rated_to_half/waveforms.png": "7a0597f60bac91b2bb2ef904b7c3824cb9d8e78bd3f4a297e338a513efa9c821",
+    "models/baseline_ideal_switching_open_loop.slx": "18fdc95aa56cb267c6f73d2c43331a691e9850976887d9e723a772f616aac247",
+    "models/sps_device_closed_loop.slx": "51ffe0e9ebc5f68060e9918ff35a794dc524a148a7516ab7d52cdc1481bfbb67",
+    "models/sps_device_lossy_open_loop.slx": "1359e89d2fc216ab4cf5456f22170c5bb514e23c97b2814b1b5e61c6da8bb7bf",
+    "models/sps_device_open_loop.slx": "2088f882d5c0ffd784f775b45da6fe648a32e133e0f65091b4f5d64eef2d900a",
+    "raw_windows/half_load_magnetic_representative_n400.mat": "e05fd7669185b30e21227b4d03061d7b34535670e3536903ee42f5eab30067a1",
+    "raw_windows/rated_magnetic_representative_n400.mat": "957687b3e833c72834224e8fb98415831b3575baea9b571e968518acfe7b97af",
+    "raw_windows/rated_to_half_magnetic_representative_n400.mat": "50596a895e179a188e074a608e857e610c134719ec611dfa4a60c2fd89095ef3",
+    "README.md": "dc2bc64cbd4b5d8ce246dc24e646ffea7880739d56ab402ce571ca3e92455c52",
+    "summaries/time_step_comparison_v1.csv": "2009d55d18eabb4399e0985cc64bd9f4820f8cca8948f44f28ec758b190ea4a2",
+    "summaries/time_step_runs_v1.csv": "b95ebcccd151034917dcae9f4fb023e8c7ff5e7f207242c6e9a50d6e211a246f",
+    "summaries/time_step_study_v1.json": "27d8be20fb4f700228bbf489343dca1b3bf54d1c140478bf937d34946d0b74ea"
+  },
+  "content_basis": "Git blob bytes (text line endings normalized by Git); use git show HEAD:artifacts/b_final/<file> for verification."
+}

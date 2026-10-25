@@ -10,6 +10,26 @@ DOMAINS = ("magnetic", "thermal", "structural")
 
 
 def write_manifest(folder: Path, sid: str, run: dict, source: str | None = None):
+    # B's standalone MATLAB contract uses the same filename as A's run summary.
+    # Preserve the rich handoff before writing the UI-compatible summary.
+    handoff = None
+    candidate = folder / "run_manifest.json"
+    saved_handoff = folder / "electrical_handoff.json"
+    if candidate.exists():
+        existing = json.loads(candidate.read_text(encoding="utf-8-sig"))
+        if existing.get("schema_version") == "dcac.electrical.handoff/1.0":
+            saved_handoff.write_bytes(candidate.read_bytes())
+    if saved_handoff.exists():
+        data = json.loads(saved_handoff.read_text(encoding="utf-8-sig"))
+        identity = data.get("identity", {})
+        matches = (identity.get("session_id") == sid and identity.get("run_id") == run["id"]
+                   and identity.get("design_revision") == run["revision"] and data.get("spec") == run["spec"])
+        handoff = {"status": "available" if matches and data.get("status") == "success"
+                   and data.get("data_origin") == "real_simulation" and run["status"] == "completed"
+                   and run["action"] == "simulate" and source == "MATLAB/Simulink"
+                   else "not_ready", "file": "electrical_handoff.json",
+                   "identity_matches": matches,
+                   "reason": "电气交接文件保留；损耗依据、收敛状态及部件匹配仍须B/C复核。"}
     manifest = {
         "schema_version": SCHEMA_VERSION, "session_id": sid,
         "run_id": run["id"], "revision": run["revision"], "spec": run["spec"],
@@ -22,6 +42,8 @@ def write_manifest(folder: Path, sid: str, run: dict, source: str | None = None)
         "artifacts": [p.name for p in sorted(folder.iterdir()) if p.is_file() and p.name not in {"run_manifest.json", "run.json"}],
         "handoff": {"status": "not_ready", "reason": "B需补充原始波形列映射、采样窗口和损耗依据；C需提供部件参数。"},
     }
+    if handoff is not None:
+        manifest["handoff"] = handoff
     (folder / "run_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2, allow_nan=False), encoding="utf-8")
     return manifest
 

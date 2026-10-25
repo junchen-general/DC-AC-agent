@@ -1,0 +1,98 @@
+{
+  "schema_version": "dcac.b-to-c.index/1.0",
+  "data_origin": "real_simulation",
+  "validated_environment": "MATLAB 23.2.0.2515942 (R2023b) Update 7",
+  "design": {
+    "design_revision": 1,
+    "component_revision_id": "baseline-L2mH-rL025",
+    "parent_component_revision_id": "",
+    "vin_V": 380.0,
+    "vout_target_Vrms": 220.0,
+    "frequency_Hz": 50.0,
+    "rated_power_W": 500.0,
+    "switching_frequency_Hz": 20000.0,
+    "L_H": 0.002,
+    "C_F": 4.7e-6,
+    "rL_ohm": 0.25,
+    "rL_source_status": "assumed_unverified"
+  },
+  "selected_model_fidelity": "sps_device_closed_loop",
+  "github_handoff": {
+    "index": "artifacts/b_final/artifact_index.json",
+    "models": "artifacts/b_final/models/",
+    "cases": "artifacts/b_final/cases/",
+    "raw_windows": "artifacts/b_final/raw_windows/",
+    "window_policy": "one final complete 50 Hz period at n400 full sample rate, no decimation",
+    "exporter": "tools/export_b_handoff.py"
+  },
+  "closed_loop_control": {
+    "kp_per_V": 0.0015,
+    "kr_per_V": 0.01,
+    "resonant_bandwidth_Hz": 5.0,
+    "dead_time_compensation": true,
+    "dead_time_compensation_formula": "Delta_m = 8*f_sw*t_dead/pi",
+    "base_modulation_index": 0.818755220321265,
+    "dead_time_compensation_index": 0.0509295817894065,
+    "feedforward_modulation_index": 0.869684802110672
+  },
+  "sampling": {
+    "solver": "FixedStepDiscrete",
+    "fixed_step_s": 1.25e-7,
+    "steps_per_switching_period": 400,
+    "sample_count_per_run": 1920001,
+    "decimation": 1,
+    "uniform": true
+  },
+  "required_mat_signals": [
+    "signals.time_s",
+    "signals.i_inductor_A",
+    "signals.v_bridge_V",
+    "signals.v_out_V",
+    "signals.v_inductor_terminal_V",
+    "signals.v_winding_resistive_V",
+    "signals.v_inductive_V",
+    "signals.i_capacitor_A",
+    "signals.load_conductance_S"
+  ],
+  "runs": [
+    {
+      "run_id": "sps_device_closed_loop__rated__n400",
+      "scenario": "rated",
+      "mat": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__rated__n400/electrical_raw_v1.mat",
+      "manifest": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__rated__n400/run_manifest.json",
+      "magnetic_window_index_0based": [1760000, 1920000],
+      "thd_window_index_0based": [1280000, 1920000],
+      "step_comparison_converged": false
+      ,"metrics": {"vout_rms_V": 219.6877, "thd_h2_h40_percent": 1.7269, "iL_rms_A": 2.3091, "iL_peak_A": 3.7072, "pout_W": 498.581}
+    },
+    {
+      "run_id": "sps_device_closed_loop__half_load__n400",
+      "scenario": "half_load",
+      "mat": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__half_load__n400/electrical_raw_v1.mat",
+      "manifest": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__half_load__n400/run_manifest.json",
+      "magnetic_window_index_0based": [1760000, 1920000],
+      "thd_window_index_0based": [1280000, 1920000],
+      "step_comparison_converged": false
+      ,"metrics": {"vout_rms_V": 220.0529, "thd_h2_h40_percent": 1.8398, "iL_rms_A": 1.2581, "iL_peak_A": 2.6914, "pout_W": 250.120}
+    },
+    {
+      "run_id": "sps_device_closed_loop__rated_to_half__n400",
+      "scenario": "rated_to_half",
+      "mat": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__rated_to_half__n400/electrical_raw_v1.mat",
+      "manifest": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__rated_to_half__n400/run_manifest.json",
+      "magnetic_window_index_0based": [1760000, 1920000],
+      "thd_window_index_0based": [1280000, 1920000],
+      "step_comparison_converged": false
+      ,"metrics": {"vout_rms_V": 220.0565, "thd_h2_h40_percent": 1.8521, "iL_rms_A": 1.2585, "iL_peak_A": 2.6917, "pout_W": 250.177, "transient_iL_peak_A": 2.7593, "settling_2pct_s": 0.0200}
+    }
+  ],
+  "loss_basis": "outputs/b_final/baseline_build/validation/sps_device_closed_loop__rated__n400/loss_basis_v1.json",
+  "comparison_table": "outputs/b_final/baseline_build/time_step_comparison_v1.csv",
+  "limitations": [
+    "Use the MAT signals, not result.json display waveforms.",
+    "The selected closed-loop cases did not all satisfy the strict time-step criteria.",
+    "The 0.25 ohm winding resistance lacks material, geometry and temperature provenance.",
+    "The partial loss ledger is not a whole-inverter efficiency claim.",
+    "Return a new component_revision_id plus L and resistance conditions before B revalidation."
+  ]
+}
