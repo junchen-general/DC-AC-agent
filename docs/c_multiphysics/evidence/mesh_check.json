@@ -1,0 +1,14 @@
+{
+  "case_name": "E70FE68_750W",
+  "coarse_hmax_m": 0.002,
+  "fine_hmax_m": 0.0015,
+  "coarse_peak_temperature_C": 97.49349322252507,
+  "fine_peak_temperature_C": 97.49299085467689,
+  "peak_temperature_change_percent": 0.0005152861182950409,
+  "coarse_max_displacement_m": 4.33439418019422e-05,
+  "fine_max_displacement_m": 4.3321625369854365e-05,
+  "max_displacement_change_percent": 0.05151337674270352,
+  "coarse_max_core_probe_tensile_principal_stress_Pa": 8708044.953366801,
+  "fine_max_core_probe_tensile_principal_stress_Pa": 8683416.623368915,
+  "probe_stress_change_percent": 0.28362488022981547
+}

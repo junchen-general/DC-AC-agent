@@ -1,0 +1,18 @@
+{
+  "action": "simulate",
+  "spec": {
+    "input_voltage": 380,
+    "output_voltage": 220,
+    "output_power": 500,
+    "output_frequency": 50,
+    "switching_frequency": 20000,
+    "inductance": 0.0019091783747599684,
+    "capacitance": 4.7e-06,
+    "winding_resistance": 0.2166407182392643,
+    "stop_time": 0.24,
+    "load_step": false,
+    "load_step_time": 0.12,
+    "load_final_ratio": 0.5
+  },
+  "output_dir": "matlab/multiphysics/outputs/electrical_reference_800_E70FE68_500W"
+}

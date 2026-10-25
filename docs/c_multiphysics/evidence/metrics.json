@@ -1,0 +1,56 @@
+[
+  {
+    "case_name": "E70FE68_500W",
+    "status": "specified_heat_source_linear_FE_simulation",
+    "ambient_C": 40,
+    "h_W_m2K": 10,
+    "specified_extra_winding_heat_W": 0.5,
+    "specified_core_heat_W": 0.5,
+    "R20_fixed_circuit_loss_W": 1.1558370558880495,
+    "feedback_DC_copper_loss_W": 1.3894068977207163,
+    "total_winding_heat_W": 1.8894068977207163,
+    "peak_temperature_C": 71.41947078582882,
+    "upper_bound_from_individual_source_peaks_C": 71.60930500836815,
+    "max_displacement_m": 2.3919202272694307e-05,
+    "core_probe_max_tensile_principal_stress_Pa": [
+      0,
+      4134391.6179525685,
+      4737762.815310802
+    ],
+    "global_nodal_max_tensile_principal_stress_Pa_mesh_sensitive": 62022039.794087455,
+    "thermal_nodes": 10267,
+    "structural_nodes": 10267,
+    "thermal_mesh_matching_verified": true,
+    "structural_mesh_matching_verified": true,
+    "source_case_winding": "unit_response_e70/case_02.mat",
+    "source_case_core": "unit_response_e70/case_03.mat",
+    "note": "0.5 W extra winding heat and 0.5 W core heat are specified simulation inputs; no material loss calculation or strength safety factor"
+  },
+  {
+    "case_name": "E70FE68_750W",
+    "status": "specified_heat_source_linear_FE_simulation",
+    "ambient_C": 40,
+    "h_W_m2K": 10,
+    "specified_extra_winding_heat_W": 0.5,
+    "specified_core_heat_W": 0.5,
+    "R20_fixed_circuit_loss_W": 2.5450914230607316,
+    "feedback_DC_copper_loss_W": 3.3201925363009694,
+    "total_winding_heat_W": 3.8201925363009694,
+    "peak_temperature_C": 97.49299085467689,
+    "upper_bound_from_individual_source_peaks_C": 97.68536239142867,
+    "max_displacement_m": 4.3321625369854365e-05,
+    "core_probe_max_tensile_principal_stress_Pa": [
+      0,
+      7567157.925639296,
+      8683416.623368915
+    ],
+    "global_nodal_max_tensile_principal_stress_Pa_mesh_sensitive": 112977696.79943414,
+    "thermal_nodes": 10267,
+    "structural_nodes": 10267,
+    "thermal_mesh_matching_verified": true,
+    "structural_mesh_matching_verified": true,
+    "source_case_winding": "unit_response_e70/case_02.mat",
+    "source_case_core": "unit_response_e70/case_03.mat",
+    "note": "0.5 W extra winding heat and 0.5 W core heat are specified simulation inputs; no material loss calculation or strength safety factor"
+  }
+]
