@@ -1,0 +1,61 @@
+{
+  "schema_version": "c-research-materials/0.1",
+  "status": "candidate_models_not_selected_hardware",
+  "magnetic": {
+    "geometry": "rectangularized E55/28/21 nominal section, 21 mm extrusion",
+    "core_outer_xy_m": [0.055, 0.0556],
+    "center_leg_width_m": 0.0172,
+    "window_inner_outer_x_m": [0.0086, 0.01875],
+    "window_half_height_m": 0.0185,
+    "baseline_gap_m": 0.0015,
+    "baseline_turns": 74,
+    "mu_r": 2200,
+    "constitutive_model": "linear small-signal screening; no calibrated nonlinear B-H curve",
+    "out_of_plane_end_effects": "not modeled",
+    "rounded_corners": "not modeled; local corner peaks are not saturation criteria"
+  },
+  "winding_screening": {
+    "turns": 74,
+    "bare_wire_diameter_m": 0.001,
+    "mean_turn_length_m": 0.113,
+    "copper_resistivity_20C_ohm_m": 1.724e-8,
+    "catalog_effective_core_area_m2": 0.000354,
+    "catalog_winding_window_area_m2": 0.000280,
+    "status": "assumptions for screening; insulation, winding layout, terminals, AC resistance and hot resistivity not verified"
+  },
+  "e70_alternative_screening": {
+    "catalog_core": "TDK E70/33/32 N87, one 2.5 mm gapped half plus one ungapped half",
+    "catalog_AL_nH": 435,
+    "catalog_Ae_m2": 0.000683,
+    "two_D_FE_nominal_section": "assembled outer 70.5 x 66.4 mm, out-of-plane depth 32 mm, center leg 22 mm, inner return-leg span 48 mm, half-window height 21.9 mm; rectangles and centered 2.5 mm total gap",
+    "two_D_FE_winding_blocks": "x = 12.5 to 23 mm on each side, y = -20 to 20 mm, homogeneous opposite Jz; assumed distribution",
+    "turns": 68,
+    "catalog_coil_former": "B66372B1000T001, one core set",
+    "catalog_winding_window_area_m2": 0.000456,
+    "catalog_mean_turn_length_m": 0.209,
+    "assumed_equal_copper_area_solid_wire_diameter_m": 0.0012,
+    "selected_strand_count": 64,
+    "selected_strand_bare_diameter_m": 0.00015,
+    "winding_bundle_envelope_diameter_m_for_window_screen": 0.0016,
+    "mount_model": "equivalent bonded winding pack with two lower-point in-plane supports",
+    "status": "catalog plus simplified linear 2D magnetic and unit thermal-structural FE candidate; 1.2 mm solid equivalent copper, actual strand arrangement, AC/core loss and real thermal assembly unverified",
+    "source": "https://www.tdk-electronics.tdk.com/inf/80/db/fer/e_70_33_32.pdf"
+  },
+  "thermal_structural": {
+    "geometry": "same nominal section, windows filled by assumed bonded polymer/winding packs; gap occupied by nonmagnetic polymer spacer",
+    "front_back_boundary": "adiabatic",
+    "outer_perimeter_h_W_m2K": [5, 10, 15],
+    "heat_loads": "independent 1 W winding and 1 W core loads, normalized by model volume",
+    "mechanical_model": "linear elastic plane stress; perfect bonds; no contact/friction/preload/magnetostriction",
+    "polymer": {"k_W_mK": 0.2, "E_Pa": 2000000000, "nu": 0.35, "CTE_1_K": 0.000060, "basis": "scenario assumptions, not supplier data"},
+    "ferrite": {"k_W_mK": 5, "E_Pa": 150000000000, "nu": 0.25, "CTE_1_K": 0.000008, "basis": "k/E/CTE from generic TDK ferrite ranges; nu assumed; not N87-specific guaranteed values"},
+    "winding_pack": {"k_W_mK": 2, "E_Pa": 10000000000, "nu": 0.30, "CTE_1_K": 0.000017, "basis": "homogenized screening assumptions; not bulk copper stiffness or thermal conductivity"}
+  },
+  "unavailable": {"verified_core_loss_W": null, "verified_total_copper_loss_W": null, "actual_temperature_C": null, "certified_strength_margin": null},
+  "sources": [
+    "https://www.tdk-electronics.tdk.com/inf/80/db/fer/e_55_28_21.pdf",
+    "https://www.tdk-electronics.tdk.com/inf/80/db/fer/e_70_33_32.pdf",
+    "https://www.tdk-electronics.tdk.com/download/540216/d6940b239127a8bab71b22168746021b/pdf-n87.pdf",
+    "https://www.tdk-electronics.tdk.com/download/540066/fb53a2e55d6690c04d227a78a5be58f0/pdf-generaldefinitions.pdf"
+  ]
+}

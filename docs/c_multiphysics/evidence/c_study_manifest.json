@@ -1,0 +1,968 @@
+{
+  "schema_version": "c-study-manifest/0.1",
+  "not_shared_A_contract": true,
+  "matlab_release": "R2023b Update 7",
+  "source_blob_sha": "95e8af6ae07d6abdb75505c292cc45e3bc754c62",
+  "files": [
+    {
+      "path": "analyze_e70_switching_ripple.m",
+      "bytes": 2258,
+      "sha256": "da14731210af3cd4a89a4f0192a5a2a61ab28bd014f3305c49ac310969d45f83"
+    },
+    {
+      "path": "analyze_flux_linkage.m",
+      "bytes": 3978,
+      "sha256": "0566852bfe90893934ddb173224ddc1a2cb37e4c94b4aa922438c9ca3649d120"
+    },
+    {
+      "path": "analyze_switching_ripple.m",
+      "bytes": 3414,
+      "sha256": "2873b49f90124cdfd1f4bbd2d582344e8dc4f083ee8d55799568d07655717149"
+    },
+    {
+      "path": "audit_waveform_harmonics.py",
+      "bytes": 6565,
+      "sha256": "b21d96980875b597d9741ac3550ea1e4d7082235572ae761cd601e361c4a0583"
+    },
+    {
+      "path": "catalog_gap_turn_sweep.py",
+      "bytes": 4443,
+      "sha256": "7ed9ecea9059fba3762572f68a3676a0356637aca58df14042e03da58535e04f"
+    },
+    {
+      "path": "compare_e70_catalog.py",
+      "bytes": 5482,
+      "sha256": "c315903753584db4c1344fe1390341041a00d05cc570735704acca317efa8afd"
+    },
+    {
+      "path": "compatibility/dcac_execute.m",
+      "bytes": 12742,
+      "sha256": "e475ad47a63f732dddd71f9c205248ea54270fc293d960e064ae15aed543eb0e"
+    },
+    {
+      "path": "compatibility/render_dcac_waveforms.m",
+      "bytes": 1368,
+      "sha256": "041dae285532db50e4738e2b61c1446f8cb311f8b056f4e32555845fb73d6c5e"
+    },
+    {
+      "path": "C仿真交接.md",
+      "bytes": 3276,
+      "sha256": "e42d7dc08e93f394c6c4bafca476a70e034ad3344ba8847cb78245cadef32160"
+    },
+    {
+      "path": "C课程报告.md",
+      "bytes": 7187,
+      "sha256": "dccaa8b5979bf03f3fa8a10acafd1294fcc25e3e48100ca224daefcd5efedf24"
+    },
+    {
+      "path": "e70_loss_budget.py",
+      "bytes": 3783,
+      "sha256": "7c0100dde23b37d1e0059d629e85ca6a43d0d69b8e904fd0eae9ca744ddee68b"
+    },
+    {
+      "path": "material_assumptions.json",
+      "bytes": 3841,
+      "sha256": "0f6115ec2b0d53a06a8defd64ccbf1ad32004d20a86efd71c3d0af005953622a"
+    },
+    {
+      "path": "outputs/catalog_gap_turn_sweep.json",
+      "bytes": 26910,
+      "sha256": "6af996a214284bb6cac88710c59b6b940d7a7c57c58ccc195d20453d615ec6fb"
+    },
+    {
+      "path": "outputs/e70_catalog_comparison.json",
+      "bytes": 3087,
+      "sha256": "80b987e16b64c5b38fb5fbe062ce59a5930d51e1241fab2df9674a479989deb3"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70catalog68_500W.mat",
+      "bytes": 7059115,
+      "sha256": "ffbb34166ad141541f13237cd75287b2a4504eba3f5fffe777774f8a30f28fb3"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70catalog68_500W.png",
+      "bytes": 219787,
+      "sha256": "9adcfbe3b1c04677c78c671b354de7a76ba4042b4b52de4b949d76e1a6e3a2e9"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70FE68_500W.mat",
+      "bytes": 7059024,
+      "sha256": "e297311c811780671bcd785e71f04ca4a15c4bee00cc8e0a95c785e657476f46"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70FE68_500W.png",
+      "bytes": 223845,
+      "sha256": "88f2c1e08d0f9b5e5993a102ce99e36b4092f786b1cbef8f2ed22588e5470eed"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70FE68_750W.mat",
+      "bytes": 7059709,
+      "sha256": "f2c63005e40ac372d38a0166f58e1971851c514e10304eb64cca7f77f64997b0"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/E70FE68_750W.png",
+      "bytes": 223066,
+      "sha256": "639b92f14abbdf16fd7877e67283fb9c5fe42897fa7b3c219ea84d3c4d1e0292"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/mesh_check.json",
+      "bytes": 615,
+      "sha256": "0a47fc5029b77cfc1d8a744d6d4e7fab71f13882bdc0cacb8f0e35fab77f20ad"
+    },
+    {
+      "path": "outputs/e70_combined_scenarios/metrics.json",
+      "bytes": 2332,
+      "sha256": "7933c784c102cc73fb7ac5e9bef3baeccc8c4008a1b1510cbca6538d94491080"
+    },
+    {
+      "path": "outputs/e70_loss_budget.json",
+      "bytes": 2473,
+      "sha256": "5338364b1de12758123ef343f6526be14482b0fd915a28acb7ce5c0241c15a36"
+    },
+    {
+      "path": "outputs/e70_switching_ripple.json",
+      "bytes": 1765,
+      "sha256": "2ad74bccae2cc528f5522d7830462f4517370402fa3966afba230a280c261022"
+    },
+    {
+      "path": "outputs/electrical_reference/dcac_inverter.slx",
+      "bytes": 86305,
+      "sha256": "147da33e6bb3618f853b0bc3d2c48f9e3f17fb81571d67830682b856f93bff7d"
+    },
+    {
+      "path": "outputs/electrical_reference/handoff_local.json",
+      "bytes": 321370,
+      "sha256": "76d2ae41d7e93395578b14bdcccbbee3a0186ee910389bd3a96ac176e365cb2d"
+    },
+    {
+      "path": "outputs/electrical_reference/request.json",
+      "bytes": 387,
+      "sha256": "ebb3a3b7aff4b88457ecaa1f48f749fb49ca55615e3df9aede30b1f182a9931c"
+    },
+    {
+      "path": "outputs/electrical_reference/result.json",
+      "bytes": 230211,
+      "sha256": "7592cbfecf64c5813c93a3c4f53523f6d12bfb24e39ec8bb588d750a6d9daedd"
+    },
+    {
+      "path": "outputs/electrical_reference/simulation.mat",
+      "bytes": 13091634,
+      "sha256": "e72e66fa4ccf78d103c76d10ba8947f1529894f59edbb96ba21c3076e3aa0b19"
+    },
+    {
+      "path": "outputs/electrical_reference/waveforms.png",
+      "bytes": 174563,
+      "sha256": "32f39b134e6cf809e68970617d9995bfa2dc65a2d412cc86f25dd757781cf686"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/dcac_inverter.slx",
+      "bytes": 86316,
+      "sha256": "8d3649d5563744d3de8a719bdaa80070c969d98cbeb3f804ee1d889ab8b9d5fc"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/handoff_local.json",
+      "bytes": 329911,
+      "sha256": "3dadb9b89f41314882e50669bc80e315ae6363d2803a7e158eda3d60920ba43e"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/request.json",
+      "bytes": 392,
+      "sha256": "5bba3be12951532bfc537eb4f40e946dee59bb1d4f7063aeeff8466cf4440ed8"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/result.json",
+      "bytes": 238665,
+      "sha256": "5c4bcc885f970b0f09df9151c887a4fd6f1fda1fb1ae38e83633b3b49af8ad01"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/simulation.mat",
+      "bytes": 192333030,
+      "sha256": "7689df83a6eb6eaa914a264f862d94441eaa1b3e4436831b9e18d02704541708"
+    },
+    {
+      "path": "outputs/electrical_reference_1600/waveforms.png",
+      "bytes": 167012,
+      "sha256": "e9a49645f2c3bb414a35cc99b37d1da1865b647d0819ff569fbd53b869c3f962"
+    },
+    {
+      "path": "outputs/electrical_reference_200/dcac_inverter.slx",
+      "bytes": 86311,
+      "sha256": "7808f9fce0196504dd1dbaa18c57dbd97b2e5255b6906ea131d2e0e574138698"
+    },
+    {
+      "path": "outputs/electrical_reference_200/handoff_local.json",
+      "bytes": 323341,
+      "sha256": "78f70c77a47583a1054a4356bd667bd322f9add7a94bc7a81e0d2f0cdbb5d4bd"
+    },
+    {
+      "path": "outputs/electrical_reference_200/request.json",
+      "bytes": 391,
+      "sha256": "5470ee91048b77c98bc27ecdcd8f72f6ac71618e51dca5a70c9867bd9fc03dfc"
+    },
+    {
+      "path": "outputs/electrical_reference_200/result.json",
+      "bytes": 232139,
+      "sha256": "35340170c96f3e63683e2a40683ce57e53bc647fa66851b14a5510314dd73262"
+    },
+    {
+      "path": "outputs/electrical_reference_200/simulation.mat",
+      "bytes": 25692685,
+      "sha256": "ef40d16a67339bd3f088b658e38c5cfc09957d7db147d9b63b8920f2ca2b2122"
+    },
+    {
+      "path": "outputs/electrical_reference_200/waveforms.png",
+      "bytes": 170625,
+      "sha256": "795496429fb8c2e750e019e3298686b7c19de0600c5d2d812cf5f2ebcfbf6a03"
+    },
+    {
+      "path": "outputs/electrical_reference_400/dcac_inverter.slx",
+      "bytes": 86313,
+      "sha256": "2ad2a5a05fb75ae28723568804128cd165a73cd198f196cf6044cae06a08d685"
+    },
+    {
+      "path": "outputs/electrical_reference_400/handoff_local.json",
+      "bytes": 325763,
+      "sha256": "2e3dd263b03e9a67ebd6a1696c5dfe37cae6c4b453869c9a7dbd60b9da011f50"
+    },
+    {
+      "path": "outputs/electrical_reference_400/request.json",
+      "bytes": 391,
+      "sha256": "d0454c20cc77e94ea268dac50b058231677f98f7e518e55148ecc94305831434"
+    },
+    {
+      "path": "outputs/electrical_reference_400/result.json",
+      "bytes": 234570,
+      "sha256": "675b871cf93037d0e83886a337d7da1e536e8154ad8d9b19b24cf5271c6345af"
+    },
+    {
+      "path": "outputs/electrical_reference_400/simulation.mat",
+      "bytes": 50432361,
+      "sha256": "fada9e7daed9384602bf90136967074a0e59973e8875ece8c01c0eaa91e42f28"
+    },
+    {
+      "path": "outputs/electrical_reference_400/waveforms.png",
+      "bytes": 166142,
+      "sha256": "4482a3345ddd93fc43247de962b4f76da04c3cea903236cc998d0adade4f9973"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/dcac_inverter.slx",
+      "bytes": 86346,
+      "sha256": "9c39ed989153588a38f720cd37beeed604b084a43d95006764f966ce2c7a73d6"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/handoff_local.json",
+      "bytes": 325592,
+      "sha256": "371cafa7ac6a8c2f2a90a1d7cfbf2433fc44039b8879e58d8db57f364845587f"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/request.json",
+      "bytes": 434,
+      "sha256": "b238e02b96bc07216b1a16346fe37b19c918d6ccc8e8c4ea590990c901277154"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/result.json",
+      "bytes": 234236,
+      "sha256": "7bbc055934c356d280f1e039fcc5568a8618f6251e12e56ca4db049cd292bb54"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/simulation.mat",
+      "bytes": 50428520,
+      "sha256": "57412e2397e31cf0caa2b18ad781df4c794c06117863016f38029f468805bd21"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate64/waveforms.png",
+      "bytes": 166435,
+      "sha256": "4b94518d453988e4b8839dd8e94b7268499b9487728dc9804067ca2fcfcd247f"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/dcac_inverter.slx",
+      "bytes": 86344,
+      "sha256": "e9d98378dcf0dc753ab6df451bd6bf6df2943dcf5c88b73f9d956a607c7c40d7"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/handoff_local.json",
+      "bytes": 325612,
+      "sha256": "b470440ef5c5057bfc1589a4127a380a3ea181f954633662734edf8c946de227"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/request.json",
+      "bytes": 434,
+      "sha256": "0edcb86c3a4be0ac989b9131eb60c533a1611c3707235173cee2b535135ff654"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/result.json",
+      "bytes": 234256,
+      "sha256": "cf5fcdc3b7f8a3e6531a5714d6370401f68a4f6c86d8aab9c8063112314c0663"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/simulation.mat",
+      "bytes": 50471635,
+      "sha256": "eaf6e591084e1c4ce3ddb0c097fd111199cff224f57747cebd71ab0728faa380"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74/waveforms.png",
+      "bytes": 167615,
+      "sha256": "beb5e3abc104f74b4e2babf353fc42bacf2c9eb3db8c7ea8fbcf0efce57b6084"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/dcac_inverter.slx",
+      "bytes": 86327,
+      "sha256": "bb9b1422e7576e0ddef6c9aa364fa0cf02249f73bb375fb3c650aadc96b63b97"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/handoff_local.json",
+      "bytes": 324809,
+      "sha256": "0e6242cc31d6c94122089a7019baf153503abf0032abb38f2dc295a7435f1844"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/request.json",
+      "bytes": 439,
+      "sha256": "bb7bbd670d79ddaacd1980a25a26070634af4b2d4df3399d6b3b9538cd8b9cca"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/result.json",
+      "bytes": 233417,
+      "sha256": "c5c4d5e3bb39f9a644db8a2297816c635a18c6d632c0a2be3cb3b3af565d9d33"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/simulation.mat",
+      "bytes": 50372619,
+      "sha256": "45bc8e2090aaa439f6b1379150516391a7a5a15d1ad5ad9eeb2966120e998f5a"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate74_750W/waveforms.png",
+      "bytes": 166489,
+      "sha256": "9744c9cbd0711d1509a2ff330aa220b4fa86f560380503c7bd45d52f7ec7d892"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/dcac_inverter.slx",
+      "bytes": 86343,
+      "sha256": "5f6e7076f00086ac5c3b0e75740260ca6933797860cd10658785805f5c7dc386"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/handoff_local.json",
+      "bytes": 325564,
+      "sha256": "59b69bf26edadb4990e32692f5a269993fae6924231ea54594aa83f59085f48a"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/request.json",
+      "bytes": 434,
+      "sha256": "2dfa819c0eed0d93718afe5c81a1e9e66b6a3e1125d0a869cdff716cb50b622c"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/result.json",
+      "bytes": 234208,
+      "sha256": "0afb2499cc9bd65f5874c00060ec212e41aa818a6f44cd4d4fa792307f768174"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/simulation.mat",
+      "bytes": 50483253,
+      "sha256": "49b19cfbd5f4f7d62606e898b02af78ad1ac2c370597bf3b57ad1f5b851986a2"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83/waveforms.png",
+      "bytes": 167369,
+      "sha256": "e754a57025c5f7474fa5afe77e90783c488b39934844535c112277986fc96330"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/dcac_inverter.slx",
+      "bytes": 86325,
+      "sha256": "55e47bb0e396e3f648038b9fac8e44d8fddfbc61c7421b2e16456fbca0220732"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/handoff_local.json",
+      "bytes": 324846,
+      "sha256": "a95a9809c0d02ff92aec7998af97d76e6df75d3e5d7213c826f76436807bf975"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/request.json",
+      "bytes": 439,
+      "sha256": "824b7679043c737f57c772bffa7818670e0640b46007fcd46afc028dba727eca"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/result.json",
+      "bytes": 233454,
+      "sha256": "d09d0531f036cbe983bfec3ceb42547679edd8a8a80a6b766080dfde7b83f502"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/simulation.mat",
+      "bytes": 50380545,
+      "sha256": "bfd028827e4bd45727a1eb220f4c1bbba886ac8deb7c52be2e72c3f01d6aaf39"
+    },
+    {
+      "path": "outputs/electrical_reference_400_candidate83_750W/waveforms.png",
+      "bytes": 166057,
+      "sha256": "19c47cc55b5f55e7c0283e57a9ac72a75260ae9fe395b8b5c8facadd3f604ae3"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/dcac_inverter.slx",
+      "bytes": 86344,
+      "sha256": "7c75d81abfbda2a47edd5469f2718081ed3da6732e46e2cf43545c9af72706b0"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/handoff_local.json",
+      "bytes": 325600,
+      "sha256": "ae0b2a533410c43a140a997486103859046f33efd67a6f1ad7a4bde34da452cf"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/request.json",
+      "bytes": 429,
+      "sha256": "30f91029a006383267f4d53d1d9fcf32d293acb19fd81a147d1db975d5fbcb30"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/result.json",
+      "bytes": 234216,
+      "sha256": "7d022b7266d48fab2d767bdf366d5c2d2f3982e41346679c8bd01531271755db"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/simulation.mat",
+      "bytes": 50428980,
+      "sha256": "2f0438ff36be5094a6064bfa1a0e6b425d342f0d13b35408822b93ab1c0b6c61"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_500W/waveforms.png",
+      "bytes": 165603,
+      "sha256": "7d07be1735af8c1eb4bef1a67d337ebbecd9d20fef077d4744599057f13ce168"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/dcac_inverter.slx",
+      "bytes": 86326,
+      "sha256": "a6380642bf0297536c78ab00b52373793edafefea388eb5a4c0ca53e7b8c6608"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/handoff_local.json",
+      "bytes": 324834,
+      "sha256": "c6f4d518958b9fee882728c99b2698476282b28849d00bfd346fb55f26e0e6ee"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/request.json",
+      "bytes": 429,
+      "sha256": "fbedb487d742deaf932c08327355f5867f37ce4e09102f01500e6ab4600b5d8c"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/result.json",
+      "bytes": 233451,
+      "sha256": "37b056af29e0b8a1ff0c12d70bf38c5b376b58738048f5d3ba22b8e3118d1e6a"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/simulation.mat",
+      "bytes": 50325112,
+      "sha256": "112a4e1665f24313243a14fbba8a40edc84d0ebd7b85b3a664c05d6bb24c6ed2"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70catalog68_750W/waveforms.png",
+      "bytes": 165506,
+      "sha256": "bb8050d1e86613a23a50e14c629d9d8c90aeb2a86f82fbb6cdded56b1f022b08"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/dcac_inverter.slx",
+      "bytes": 86344,
+      "sha256": "b3a21aa39c7663705e2afe822259d40bfd812c9049f5c71c7f96359aae4fd8cb"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/handoff_local.json",
+      "bytes": 325550,
+      "sha256": "7758488bbb231132fa046c551314bd817fc6d14dc6f12de7b4c50f4be0b7dc66"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/request.json",
+      "bytes": 435,
+      "sha256": "d12852826b48df9a3cbb12399a5e394f9becdcc16d1d1ae5490793c21a292f68"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/result.json",
+      "bytes": 234165,
+      "sha256": "dc961389eca81590f02c277ff705cfa65417f06dc1fd9d2aa10ff2093cd007be"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/simulation.mat",
+      "bytes": 50458728,
+      "sha256": "3901e47403cffebfdd20cfeef1897e59324c8de276faa9c9463ca7460249735f"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_500W/waveforms.png",
+      "bytes": 166818,
+      "sha256": "0b231faa98e98e086fa7e498b1d76f3e48c69b60af9757a20a3e760e1081288a"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/dcac_inverter.slx",
+      "bytes": 86326,
+      "sha256": "6f587ec2157af5e19d077b02c5e281495c282bd65ace02b5c01245ac7581ba75"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/handoff_local.json",
+      "bytes": 324793,
+      "sha256": "43ec94e3cb9a122b77d5740671c9a92e977bef0f64ad9e9d2033d1eb07e91573"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/request.json",
+      "bytes": 435,
+      "sha256": "ceb0bfa6833538d9ae6ec221e3ee23d9534c81ff82ba9bf37ddb0758e6598005"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/result.json",
+      "bytes": 233409,
+      "sha256": "86a100135fb5df23155c3c93de5587939a9a7b8b725a0ea59e0aafd4d26036fc"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/simulation.mat",
+      "bytes": 50356113,
+      "sha256": "24e5aed8ca3fa331f385128c79d5edd73b5af149828ecef5700274c4f5bb0a5e"
+    },
+    {
+      "path": "outputs/electrical_reference_400_E70FE68_750W/waveforms.png",
+      "bytes": 166471,
+      "sha256": "978d9e54857c55e999ab61c2ee6753eb5a06c3b0b32ba08738ba3868db6d8688"
+    },
+    {
+      "path": "outputs/electrical_reference_800/dcac_inverter.slx",
+      "bytes": 86310,
+      "sha256": "bf676adee58d2499555ebf270862444022ce1a1da1906c1333e4ac8e4e1ad7d5"
+    },
+    {
+      "path": "outputs/electrical_reference_800/handoff_local.json",
+      "bytes": 327546,
+      "sha256": "26b96d7d86e6daaa9911566be508ef620e3670d16a2399a794e7a69b41294d1a"
+    },
+    {
+      "path": "outputs/electrical_reference_800/request.json",
+      "bytes": 391,
+      "sha256": "5554ee7660c362f49812de35a0d8977a5f89dbcadc873c6226784bc62fbb4d83"
+    },
+    {
+      "path": "outputs/electrical_reference_800/result.json",
+      "bytes": 236344,
+      "sha256": "8a94c31f5b2b38f77fbb2f87eee49e1589eda848759862015294deae785156f9"
+    },
+    {
+      "path": "outputs/electrical_reference_800/simulation.mat",
+      "bytes": 98337576,
+      "sha256": "608a11dc8a4e6f74e119d25830d27423fc6844b4dbb4f872c1eee94d7ced4e95"
+    },
+    {
+      "path": "outputs/electrical_reference_800/waveforms.png",
+      "bytes": 165969,
+      "sha256": "2361464e04293a01b5c0ac6a825bc5f20a0148ddf191410761bf11d71e9be559"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/dcac_inverter.slx",
+      "bytes": 86344,
+      "sha256": "36a02760bb5c51ce5ca3b4b79b9bfac863b0ec867170da9f2a683635afa684f8"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/handoff_local.json",
+      "bytes": 328182,
+      "sha256": "2e142db8b68960a3c36f57d3e5e810b7d380a6329a42f237c69313df74efd68f"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/request.json",
+      "bytes": 435,
+      "sha256": "383dd9d4f3340758c03a957481c5e2851eeaacd9675d60f50de9ecb11a7849cd"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/result.json",
+      "bytes": 236529,
+      "sha256": "6b1954f2fd3b5b2d449cb8cf12a7bb4a8b5bc7b4da5d41ae73ae19d19d866d6d"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/simulation.mat",
+      "bytes": 98386195,
+      "sha256": "32e5d889034bcb271595a35ffd222245aa319a653f0c217e027ce016f110a600"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_500W/waveforms.png",
+      "bytes": 167008,
+      "sha256": "f355ce622c6e78cddde1e673d3ce4e0a49a50c98d1eb1a2f53fd3fea2715954b"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/dcac_inverter.slx",
+      "bytes": 86326,
+      "sha256": "53eccd59dd1166b8382c7d8bb201793bd34debae24351f56f5cbd14ade16c523"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/handoff_local.json",
+      "bytes": 327517,
+      "sha256": "65a26af760c9a4d5fa09a54a721eee995499c0806b90c951ec1744ac3f46e0a2"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/request.json",
+      "bytes": 435,
+      "sha256": "cfd125f4b186e0ce1b8f8ad96b817ecf139ada74b5d02cf365c3b678d1df9e14"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/result.json",
+      "bytes": 235855,
+      "sha256": "f2586d2d08eb33bbb2c3cac2dbf7c37968918b6b69c585c3f05b50871a43eb14"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/simulation.mat",
+      "bytes": 98194164,
+      "sha256": "abaf7aa82ae4401ec5fb228e1ee82f54326abd8bb44b0af2da2bf9ac3d9af9bf"
+    },
+    {
+      "path": "outputs/electrical_reference_800_E70FE68_750W/waveforms.png",
+      "bytes": 166291,
+      "sha256": "57e4af27e858c4467d84af08a57ea8fcf08749d1a673abc83c373872c7c883b5"
+    },
+    {
+      "path": "outputs/flux_linkage_check.json",
+      "bytes": 3082,
+      "sha256": "d1928d020965232b1148e4f594c322ac870e084eba7f192ad804f776ab7cdc92"
+    },
+    {
+      "path": "outputs/flux_linkage_check.png",
+      "bytes": 113454,
+      "sha256": "ab389d96a41f8f6f219d434975dcaea89a931cc3fe7a4cd9df8c01b14c1b4150"
+    },
+    {
+      "path": "outputs/magnetic/case_01.mat",
+      "bytes": 1835266,
+      "sha256": "d147535d0a2bb314e0e60a336f6f486d315ce7ab533183647fcb1c9c0938c0a2"
+    },
+    {
+      "path": "outputs/magnetic/case_02.mat",
+      "bytes": 3466617,
+      "sha256": "1f2710a408b74d4d5fe2750063f03f84365d9b3814015046505b7cff3a1676b7"
+    },
+    {
+      "path": "outputs/magnetic/case_03.mat",
+      "bytes": 8727397,
+      "sha256": "c0184a7df7d2abd0581f04f496daad33d9db6debefa8c030198891ebb96b5a8d"
+    },
+    {
+      "path": "outputs/magnetic/case_04.mat",
+      "bytes": 19821181,
+      "sha256": "d844a661a9ad57e8b2430bc407f20603683cedc1fef7c904cd599f321d3fa10c"
+    },
+    {
+      "path": "outputs/magnetic/case_05.mat",
+      "bytes": 8793989,
+      "sha256": "f8c2f49608083efec18efd1c77b9267b5944459c01e5e3ca21eb842fd0219776"
+    },
+    {
+      "path": "outputs/magnetic/case_06.mat",
+      "bytes": 8701460,
+      "sha256": "febbc574908295f3702980b258f39223e20b8b9e4f17ee6fe8ba14294d9b527b"
+    },
+    {
+      "path": "outputs/magnetic/magnetic_section.png",
+      "bytes": 154525,
+      "sha256": "5b26d19ce98d6e0185d55090ade0b438f10b652510247c2c9f7d2331fd0c112d"
+    },
+    {
+      "path": "outputs/magnetic/metrics.json",
+      "bytes": 3652,
+      "sha256": "f37f5c897bfacc137f63f3c5684fd28ff71959b46cd12b8041588856e374427b"
+    },
+    {
+      "path": "outputs/magnetic_e70/case_01.mat",
+      "bytes": 4766215,
+      "sha256": "ea78b6ede0dc9431a90528f5dc94d60aa874017fff7600e25f7419814b29cf76"
+    },
+    {
+      "path": "outputs/magnetic_e70/case_02.mat",
+      "bytes": 12543546,
+      "sha256": "ca650ac042db4fc48f07d5294bcddf6a853591f1ff501370c59912e9b6e0121b"
+    },
+    {
+      "path": "outputs/magnetic_e70/magnetic_section.png",
+      "bytes": 158467,
+      "sha256": "ac584236b19dfe42a567ff766bb7c9d371fc5458d7e2a26848d2642cbadb3ae5"
+    },
+    {
+      "path": "outputs/magnetic_e70/metrics.json",
+      "bytes": 1233,
+      "sha256": "deb7e7a447468b690dbc6d12911451c36b347d3a59928c631c4df090d6e6fb50"
+    },
+    {
+      "path": "outputs/study_summary.json",
+      "bytes": 904253,
+      "sha256": "5e5878a31644f19a4e6388d4833fb355ef5b786815b25f97b1e16405f59dcf5b"
+    },
+    {
+      "path": "outputs/switching_ripple.json",
+      "bytes": 1118,
+      "sha256": "84e34fec26dd8b9496ddbf0e62a24d1aec33dbb34a71a673da2cf9ab774bcb62"
+    },
+    {
+      "path": "outputs/switching_ripple.png",
+      "bytes": 74677,
+      "sha256": "69c96c90e80e1e17ea0343b3d3726af2706fa240811a9067a30af2c79ac3bc44"
+    },
+    {
+      "path": "outputs/thermal_copper_sensitivity.json",
+      "bytes": 12758,
+      "sha256": "cff1ec71c8392b5665fbcb69077220ebc5bee8ec3c001b21d58a02dd19e031f7"
+    },
+    {
+      "path": "outputs/unit_response/case_01.mat",
+      "bytes": 1759028,
+      "sha256": "3df60790c4846c1793891ef4f3d0718b7e044296987121f97bbddce398f182ce"
+    },
+    {
+      "path": "outputs/unit_response/case_02.mat",
+      "bytes": 3271400,
+      "sha256": "892f86e2490613e468c57f453c953470eb6a996235d41230beac9fafc0f0e7a3"
+    },
+    {
+      "path": "outputs/unit_response/case_03.mat",
+      "bytes": 3258835,
+      "sha256": "a55c42a1c35640f68d31c55ef22f662452ad8ebd99dcc7a0b134c688d95f7425"
+    },
+    {
+      "path": "outputs/unit_response/case_04.mat",
+      "bytes": 3263607,
+      "sha256": "bdc3d6a5440b82ec8e33fc4b364567cb427ee81fe3b1c8e74a1f6fcddeff9756"
+    },
+    {
+      "path": "outputs/unit_response/case_05.mat",
+      "bytes": 3275794,
+      "sha256": "2e4d811c62101d63b68ac2f92790963f39304ed0f9b9082ef46a00f276e4bf0a"
+    },
+    {
+      "path": "outputs/unit_response/case_06.mat",
+      "bytes": 3269145,
+      "sha256": "a09bfbcf5632b912929bbf06f3a70a5b0e903df9f74d44520361314e62ee2368"
+    },
+    {
+      "path": "outputs/unit_response/case_07.mat",
+      "bytes": 6337764,
+      "sha256": "4c592baf482ba1c51a18e1f3562a0376d27174a6de7afa844546cb165834e7c6"
+    },
+    {
+      "path": "outputs/unit_response/metrics.json",
+      "bytes": 8653,
+      "sha256": "8b11c19164a558eb474489f5de95ba0f804ecf25aae6cb306102674a26f42e89"
+    },
+    {
+      "path": "outputs/unit_response/thermal_structural_fields.png",
+      "bytes": 261432,
+      "sha256": "262b176ff5f3e7e18006f7d2a22872bbb9b363cd42fc7a61636e7f5681910d44"
+    },
+    {
+      "path": "outputs/unit_response/unit_response.png",
+      "bytes": 223895,
+      "sha256": "3b0c74549eb0fc3528f970610c90d36515b82abcb0c726122b4b0f6d1c55853b"
+    },
+    {
+      "path": "outputs/unit_response_e70/case_01.mat",
+      "bytes": 2386124,
+      "sha256": "b6f5a48b65d1eafe553aa208bf50d02465cb94e7fbee39df2c6a175350886501"
+    },
+    {
+      "path": "outputs/unit_response_e70/case_02.mat",
+      "bytes": 3287895,
+      "sha256": "decdead1299d5dbfd3306966a546193ed28c958fcf96776ff0a346e0b353593b"
+    },
+    {
+      "path": "outputs/unit_response_e70/case_03.mat",
+      "bytes": 3276866,
+      "sha256": "c5c7e843a34e7cb8f0d4ecbb05ee5d014f561607f20a8f2ffa023c5dfefd5789"
+    },
+    {
+      "path": "outputs/unit_response_e70/case_04.mat",
+      "bytes": 3290830,
+      "sha256": "46f6f790098044c95c4d62e248d8613f66b456badf0d4ffb8a074786355fe167"
+    },
+    {
+      "path": "outputs/unit_response_e70/core_h10_coarse.json",
+      "bytes": 1141,
+      "sha256": "7372400acc2a2795481a13d33b2dcf87b7a722926085750cb9319415643780c3"
+    },
+    {
+      "path": "outputs/unit_response_e70/core_h10_coarse.mat",
+      "bytes": 2378716,
+      "sha256": "60203e56f06eaa3849426c25b0d409df9f3964e96ee958dc1f051692e55315c9"
+    },
+    {
+      "path": "outputs/unit_response_e70/metrics.json",
+      "bytes": 4959,
+      "sha256": "5928e5a6e8e57da8049ac6b0a395b2317a23984bcd4c4ef7a9e9bb6b3de97390"
+    },
+    {
+      "path": "outputs/unit_response_e70/unit_response.png",
+      "bytes": 209090,
+      "sha256": "74db7c549b5e70c956b111a967b76a8992f422343052fb67aee6602c36379375"
+    },
+    {
+      "path": "outputs/vendor_bias_screen.json",
+      "bytes": 2465,
+      "sha256": "6a3c8db116769fa7a4e0af889b57eff5ad58f3d75894214c03786f29aed7eec1"
+    },
+    {
+      "path": "outputs/verification/free_expansion_diagnostic.mat",
+      "bytes": 64489,
+      "sha256": "bdc542a91dd92d890f3ce69cf9e2086ccb324014da059d4f00b176f7e38f5e16"
+    },
+    {
+      "path": "outputs/verification/metrics.json",
+      "bytes": 353,
+      "sha256": "81dc3973dc87966ec65f1dc49ab3053bd32140abea3d123b4e086e5d9ce7a1f6"
+    },
+    {
+      "path": "outputs/waveform_audit/full_rate_spectrum.png",
+      "bytes": 150277,
+      "sha256": "ad64d893b509c6de0c398ca92073e67d985925edac927a0387ae3aa5cc2c7fa8"
+    },
+    {
+      "path": "outputs/waveform_audit/metrics.json",
+      "bytes": 8454,
+      "sha256": "d9fe1791c42c47f095c5538fee6d46d9863efb17f6b09e87bd17de253e906239"
+    },
+    {
+      "path": "outputs/waveform_audit/sampling_audit.png",
+      "bytes": 306148,
+      "sha256": "d85e40603fddca3d0b523bf8be71c11e329e206356a0ed83385e5572ac2433fc"
+    },
+    {
+      "path": "outputs/waveform_audit/step_refinement.png",
+      "bytes": 93547,
+      "sha256": "a206153ba97e99189aaa8bdc2300acfd2f698b18b928ff3f21ff54816ee570e1"
+    },
+    {
+      "path": "package_review.py",
+      "bytes": 3634,
+      "sha256": "60f8ec97343b0fe054ca2df5fd2953fbbc9b96506056735dd7a4af124dcf1c4d"
+    },
+    {
+      "path": "plane_stress_cte_adapter.m",
+      "bytes": 632,
+      "sha256": "c5c57ce1f9849e760941f7ebd31adb4516a8f2ca6c23ab92587bcaf1f453989c"
+    },
+    {
+      "path": "refresh_electrical_figures.m",
+      "bytes": 542,
+      "sha256": "db3ba1c5817ef1de65b6d2fe69e14a422fdb8012ebf777fa5bee5042f9ce3457"
+    },
+    {
+      "path": "render_final_fields.m",
+      "bytes": 1037,
+      "sha256": "6cf5cc2ad90f57b81d6880c840ad679fdf065455d9dc116005ef34394247a0dc"
+    },
+    {
+      "path": "run_candidate_comparison.m",
+      "bytes": 753,
+      "sha256": "f0cd3a19ee50a45f106c0f17e336dfa93d74416f1feca3b361c98814001afe6f"
+    },
+    {
+      "path": "run_e70_catalog_candidate.m",
+      "bytes": 659,
+      "sha256": "9dcaddb7f2c1688e3bb5416bb62cc5af9f5df74bce201de987904e19836b4ff4"
+    },
+    {
+      "path": "run_e70_combined_scenarios.m",
+      "bytes": 6747,
+      "sha256": "6ce7d896da054ff2691723f160ee214087c309799bf7d4311daeab7f37c6f049"
+    },
+    {
+      "path": "run_e70_core_mesh_check.m",
+      "bytes": 553,
+      "sha256": "a97e46a53bdfdc481b8ffcfc937221f9ce9da16d2f914154e4e3d9d811b31c40"
+    },
+    {
+      "path": "run_e70_fe_500.m",
+      "bytes": 633,
+      "sha256": "c050185e6189fd78b06865889a2bd0a18229df64535a3b24f75084057da61e59"
+    },
+    {
+      "path": "run_e70_fe_recheck.m",
+      "bytes": 671,
+      "sha256": "aa635438f5337acb7063f011a45fc7f8d484915153c393d57348ef5a83465f43"
+    },
+    {
+      "path": "run_e70_unit_response.m",
+      "bytes": 1681,
+      "sha256": "0740d5ff05820792406e47daaea8f1296623c329e4e89985d983103d7b50ffea"
+    },
+    {
+      "path": "run_electrical_reference.m",
+      "bytes": 2439,
+      "sha256": "f1d4b0d89dde82ec14c02d1b26fa13f00120018a0a5b88091466bf2a7dde5cc3"
+    },
+    {
+      "path": "run_magnetic_e70_study.m",
+      "bytes": 1727,
+      "sha256": "9ed4d02b94d8a8225e18cb071f60052cc6ebf8e266db7f97b597a48eb189c290"
+    },
+    {
+      "path": "run_magnetic_study.m",
+      "bytes": 1884,
+      "sha256": "ee21c09301371f7473bfbb6ebf7cf1fd62c51a111da15e11ac888397e692a490"
+    },
+    {
+      "path": "run_power_stress.m",
+      "bytes": 777,
+      "sha256": "a95f9457091453af54038ecdf66cb08612c209fa7ab58335a2c1c6a55780c610"
+    },
+    {
+      "path": "run_unit_response_study.m",
+      "bytes": 1723,
+      "sha256": "18bb023fd4de4bef12f9a5ecb4c26f695c329fb43a5a9db32e62d77b5c6f1b9a"
+    },
+    {
+      "path": "run_waveform_refinement.m",
+      "bytes": 339,
+      "sha256": "daf554adafc31a1e8db11a1f05679168c9036cbc6479fa776396a59c0bfb6185"
+    },
+    {
+      "path": "solve_magnetic_e70.m",
+      "bytes": 4688,
+      "sha256": "44ab9896c5806965a03a618c86a54ced0548c6af7b779c5cb7c44dc56d5d9926"
+    },
+    {
+      "path": "solve_magnetic_section.m",
+      "bytes": 4622,
+      "sha256": "6379eb19bca307068a5a7035ee869db7b7ac7d6842c6feea18dd66f06b38609f"
+    },
+    {
+      "path": "solve_unit_e70_thermal_structural.m",
+      "bytes": 5202,
+      "sha256": "ff3d1db7538c97a3a0606055d0496572cc82a4f5fd036573de4d575baf963540"
+    },
+    {
+      "path": "solve_unit_thermal_structural.m",
+      "bytes": 5205,
+      "sha256": "18da8b36de9795bb6b2aa7a07dd3f8fb11e919814b9e55e976a4af3b200e4123"
+    },
+    {
+      "path": "source_snapshot/dcac_execute.m",
+      "bytes": 13007,
+      "sha256": "8460c52bec3b6bdc53416fd9d3f7086f3e0a6e2cb16e4d36c57080c2640290b4"
+    },
+    {
+      "path": "summarize_study.py",
+      "bytes": 9407,
+      "sha256": "c5a0c8ff6514f474f48cfe2ede13cab87c4f901d689a261630756126cc0f147c"
+    },
+    {
+      "path": "thermal_copper_sensitivity.py",
+      "bytes": 4369,
+      "sha256": "9ead5ccbb61ac109b4a24a47ea144471ed66601abad178f9ed943eb139b731a0"
+    },
+    {
+      "path": "vendor_bias_screen.py",
+      "bytes": 3370,
+      "sha256": "5f95fa8cdc058b11218153fe28db55ca9c56735795acca632ad3301a2c37fd65"
+    },
+    {
+      "path": "verify_field_methods.m",
+      "bytes": 3069,
+      "sha256": "6873141c65f78e40c913402c988afb1c4b50e20cceacc35cf6129f0564fbbc0d"
+    },
+    {
+      "path": "write_waveform_review.py",
+      "bytes": 6255,
+      "sha256": "4e958a29350265d492bc0f98d19666a06a829d36308737ea69904e26e7175477"
+    },
+    {
+      "path": "波形与谐波复核.md",
+      "bytes": 5496,
+      "sha256": "65607f15518f4a44f3645bb58540e64a6772322447302c7028df3648177d80b9"
+    },
+    {
+      "path": "研究说明.md",
+      "bytes": 28136,
+      "sha256": "2a129a2744b65060e47170a06d0d828afd8d4a082efc6288e899fbd1c04206c1"
+    }
+  ]
+}

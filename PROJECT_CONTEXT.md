@@ -1,5 +1,11 @@
 # DC/AC Agent 项目交接概要
 
+## 2026-10-25：C 分工交付补充
+
+C 的独立计算代码已加入 `matlab/multiphysics/`，报告、29 张结果图和数值证据位于 [docs/c_multiphysics](docs/c_multiphysics/README.md)。在 MATLAB R2023b Update 7 上完成了理想电气模型的本地复现、E55/E70 线性磁场、热—力场、网格检查和波形步长复核。E70 的 500/750 W 组合场使用同一二维 FE 电感 1.909 mH；附加绕组热与磁芯热各 0.5 W 是课程算例输入。
+
+下文关于“尚无真实仿真结果”和“磁热力尚未实现”的文字记录的是原 v0.1 环境及当时状态，不再代表 C 独立模块的现状。C 尚未接入网页或 Nanobot，也没有替换 B 的电气核心；共享接口和端到端联调仍由 A/B/C 协调。当前结果以 [C课程报告](docs/c_multiphysics/C课程报告.md) 和 [波形与谐波复核](docs/c_multiphysics/波形与谐波复核.md) 为准。
+
 更新时间：2026-10-23。项目根目录：`D:\code\DC-AC-agent`。
 
 本文件供新的AI对话接手。请结合实际代码、`README.md`与`VALIDATION.md`核对状态，区分需求目标、代码实现、测试替身与真实求解结果。
