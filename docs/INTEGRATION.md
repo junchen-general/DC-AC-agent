@@ -62,3 +62,7 @@ B 已提供原始通道映射、采样窗口、运行身份和损耗依据，详
 独立MATLAB运行写dcac.electrical.handoff/1.0的run_manifest.json；经网页接收时保留为electrical_handoff.json，再生成A的1.0网页摘要。摘要handoff.available要求真实MATLAB仿真完成且session/run/revision/spec匹配，含义仅为数据交接可用，不等于收敛或C已完成。接口回归测试覆盖重复刷新、错配修订、测试替身和仅建模场景。
 
 B历史20 kHz工件与用户25 kHz运行不可混用。C已有独立模块，仍需匹配部件版本、参数和父运行后接入自动求解。
+
+
+## 四阶段模型协议更新
+spec新增model_fidelity枚举；缺省baseline_ideal_switching_open_loop，以兼容旧会话。阶段切换通过set_parameters并增加revision；run.spec保留当次阶段。request.electrical的阶段、采样与补偿配置由stage_options生成。A摘要的fidelity现在为四阶段标识，不再固定为ideal_switching_function_open_loop；读取历史摘要时需接受旧字符串。手动结果electrical_v1.model_fidelity与run.spec不匹配时不导入。C接入时同样应核对电气阶段及原始波形，不只比较功率和电压。

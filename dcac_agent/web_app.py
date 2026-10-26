@@ -13,9 +13,9 @@ from urllib.parse import parse_qs, unquote, urlparse
 
 from .agent import AgentService
 from .config import OUTPUTS, ROOT, WORK, load_config, public_config
-from .design import DesignSpec
+from .design import DesignSpec, MODEL_STAGES, BASELINE
 from .runtime import MatlabRuntime
-from .store import Store
+from .store import Store, now
 from .contracts import write_manifest, read_multiphysics
 from .nanobot_app import runtime_status
 
@@ -43,7 +43,7 @@ class Application:
                     physics.append(item)
             except (ValueError, TypeError, KeyError, AttributeError, OSError) as exc:
                 physics.append({"status": "invalid", "run_id": run["id"], "message": str(exc)})
-        return {"nanobot": runtime_status(), "multiphysics": physics, "session": session, "sessions": self.store.listing(), "csrf": self.csrf,
+        return {"model_stages": MODEL_STAGES, "nanobot": runtime_status(), "multiphysics": physics, "session": session, "sessions": self.store.listing(), "csrf": self.csrf,
                 "derived": DesignSpec(**session["spec"]).derived(), "config": public_config(self.config),
                 "environment": self.runtime.status(), "job": self.agent.session_job(sid) or session.get("last_job")}
 
@@ -62,10 +62,22 @@ class Application:
                     data = json.loads(path.read_text(encoding="utf-8-sig"))
                     if not data.get("ok") or data.get("source") != "MATLAB/Simulink" or data.get("spec") != run["spec"]:
                         continue
+                    if data.get("action", run["action"]) != run["action"]:
+                        continue
+                    # New exports carry identity; legacy exports had only a spec.
+                    if "run_context" in data:
+                        context = data["run_context"]
+                        if not isinstance(context, dict) or any(context.get(key) != value for key, value in
+                            (("session_id", sid), ("run_id", run["id"]), ("design_revision", run["revision"]))):
+                            continue
+                    if data.get("electrical_v1", {}).get("model_fidelity", BASELINE) != run["spec"].get("model_fidelity", BASELINE):
+                        continue
                     if run["action"] == "simulate" and not data.get("metrics"):
                         continue
                     run.update(status="completed", metrics=data.get("metrics"), checks=data.get("checks"),
-                               execution="manual_matlab", files=self.agent._artifacts(sid, run["id"], folder))
+                               execution="manual_matlab", finished_at=now(),
+                               files=self.agent._artifacts(sid, run["id"], folder))
+                    run.pop("error", None)
                     write_manifest(folder, sid, run, data.get("source"))
                     run["files"] = self.agent._artifacts(sid, run["id"], folder)
                     (folder / "run.json").write_text(json.dumps(run, ensure_ascii=False, indent=2), encoding="utf-8")

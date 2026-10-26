@@ -4,9 +4,26 @@ import math
 import re
 from dataclasses import asdict, dataclass, fields, replace
 
+BASELINE = "baseline_ideal_switching_open_loop"
+MODEL_STAGES = {
+    BASELINE: "基础开环模型",
+    "sps_device_open_loop": "器件级开环模型",
+    "sps_device_lossy_open_loop": "含损耗开环模型",
+    "sps_device_closed_loop": "电压闭环模型",
+}
+
+
+def stage_options(spec: dict) -> dict:
+    stage = spec.get("model_fidelity", BASELINE)
+    if not isinstance(stage, str) or stage not in MODEL_STAGES:
+        raise ValueError("不支持的模型阶段。")
+    return {"model_fidelity": stage, "steps_per_switching_period": 100 if stage == BASELINE else 400,
+            "dead_time_s": 1e-6, "closed_loop_dead_time_compensation": stage == "sps_device_closed_loop"}
+
 
 @dataclass(frozen=True)
 class DesignSpec:
+    model_fidelity: str = BASELINE
     input_voltage: float = 380.0
     output_voltage: float = 220.0
     output_power: float = 500.0
@@ -21,13 +38,14 @@ class DesignSpec:
     load_final_ratio: float = 0.5
 
     def validate(self) -> "DesignSpec":
+        stage_options(self.to_dict())
         bounds = {
             "input_voltage": (10, 1000), "output_voltage": (1, 700),
             "output_power": (5, 10000), "output_frequency": (40, 100),
             "switching_frequency": (5000, 50000), "inductance": (0.0001, 0.05),
             "capacitance": (1e-7, 0.0001), "winding_resistance": (0, 10),
             "stop_time": (0.16, 0.5), "load_step_time": (0.04, 0.35),
-            "load_final_ratio": (0.1, 2.0),
+            "load_final_ratio": (0.1, 1.0),
         }
         for name, (low, high) in bounds.items():
             value = getattr(self, name)
@@ -37,6 +55,12 @@ class DesignSpec:
             raise ValueError("load_step 必须为布尔值。")
         if math.sqrt(2) * self.output_voltage / self.input_voltage > 0.95:
             raise ValueError("所需调制度超过0.95；请提高直流输入或降低交流输出。当前模板不含升压级。")
+        if self.model_fidelity != BASELINE and self.switching_frequency < 10000:
+            raise ValueError("器件阶段采用400步/开关周期和1 μs死区；开关频率需至少10 kHz以保证死区内至少4步。")
+        if self.model_fidelity == "sps_device_closed_loop" and (
+            math.sqrt(2) * self.output_voltage / self.input_voltage + 8 * self.switching_frequency * 1e-6 / math.pi > 0.95
+        ):
+            raise ValueError("闭环基础调制度与死区补偿之和超过0.95；请提高直流输入、降低交流输出或开关频率。")
         if self.switching_frequency < 50 * self.output_frequency:
             raise ValueError("开关频率相对输出频率过低。")
         start = self.stop_time - 4 / self.output_frequency
@@ -70,8 +94,8 @@ class DesignSpec:
             "output_current": output_current,
             "modulation_index": math.sqrt(2) * self.output_voltage / self.input_voltage,
             "resonant_frequency": resonant_frequency,
-            "sample_time": 1 / (self.switching_frequency * 100),
-            "fine_sample_time": 1 / (self.switching_frequency * 200),
+            "sample_time": 1 / (self.switching_frequency * stage_options(self.to_dict())["steps_per_switching_period"]),
+            "fine_sample_time": 1 / (self.switching_frequency * 2 * stage_options(self.to_dict())["steps_per_switching_period"]),
             "final_load_resistance": resistance / self.load_final_ratio if self.load_step else resistance,
             "switching_to_resonance_ratio": self.switching_frequency / resonant_frequency,
             "resonance_to_fundamental_ratio": resonant_frequency / self.output_frequency,
@@ -108,6 +132,16 @@ NUM = r"([0-9]+(?:\.[0-9]+)?)"
 def extract_parameters(text: str) -> dict:
     """Small, explicit rule parser. This mode is labelled as rules, never LLM."""
     changes = {}
+    for stage, label in MODEL_STAGES.items():
+        if stage in text or label in text:
+            changes["model_fidelity"] = stage
+    if "model_fidelity" not in changes:
+        for phrase, stage in (("电压闭环", "sps_device_closed_loop"), ("闭环模型", "sps_device_closed_loop"),
+                              ("含损耗开环", "sps_device_lossy_open_loop"), ("器件级开环", "sps_device_open_loop"),
+                              ("基础开环", BASELINE)):
+            if phrase in text:
+                changes["model_fidelity"] = stage
+                break
     patterns = {
         "input_voltage": [rf"(?:输入(?:电压)?|直流(?:输入|母线)?|vin)\s*(?:为|是|改为|设为|=|：|:)?\s*{NUM}\s*v", rf"{NUM}\s*v\s*(?:直流输入|输入)"],
         "output_voltage": [rf"(?:输出(?:电压)?|交流(?:输出)?|vout)\s*(?:为|是|改为|设为|=|：|:)?\s*{NUM}\s*v", rf"{NUM}\s*v\s*(?:交流输出|输出)"],

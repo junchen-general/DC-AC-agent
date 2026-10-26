@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
+from .design import BASELINE, stage_options
 
 SCHEMA_VERSION = "1.0"
 DOMAINS = ("magnetic", "thermal", "structural")
@@ -23,7 +24,8 @@ def write_manifest(folder: Path, sid: str, run: dict, source: str | None = None)
         data = json.loads(saved_handoff.read_text(encoding="utf-8-sig"))
         identity = data.get("identity", {})
         matches = (identity.get("session_id") == sid and identity.get("run_id") == run["id"]
-                   and identity.get("design_revision") == run["revision"] and data.get("spec") == run["spec"])
+                   and identity.get("design_revision") == run["revision"] and data.get("spec") == run["spec"]
+                   and data.get("model", {}).get("stage", BASELINE) == run["spec"].get("model_fidelity", BASELINE))
         handoff = {"status": "available" if matches and data.get("status") == "success"
                    and data.get("data_origin") == "real_simulation" and run["status"] == "completed"
                    and run["action"] == "simulate" and source == "MATLAB/Simulink"
@@ -36,7 +38,8 @@ def write_manifest(folder: Path, sid: str, run: dict, source: str | None = None)
         "domain": "electrical", "status": run["status"], "action": run["action"],
         "evidence": "test" if source == "TEST_DOUBLE_ONLY" else
                     "numerical" if source == "MATLAB/Simulink" and run["status"] == "completed" else "unverified",
-        "source": source, "fidelity": "ideal_switching_function_open_loop",
+        "source": source, "fidelity": run["spec"].get("model_fidelity", BASELINE),
+        "electrical": stage_options(run["spec"]),
         "operating_point": "load_step" if run["spec"].get("load_step") else "rated_resistive",
         "metrics": run.get("metrics"), "error": run.get("error"),
         "artifacts": [p.name for p in sorted(folder.iterdir()) if p.is_file() and p.name not in {"run_manifest.json", "run.json"}],

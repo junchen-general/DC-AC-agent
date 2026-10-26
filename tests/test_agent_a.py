@@ -99,7 +99,7 @@ class NanobotTests(unittest.TestCase):
                 self.seen.append(messages)
                 self.calls += 1
                 if self.calls == 1:
-                    return LLMResponse(content=None, tool_calls=[ToolCallRequest("t1", "set_parameters", {"updates": {"switching_frequency": 25000}})])
+                    return LLMResponse(content=None, tool_calls=[ToolCallRequest("t1", "set_parameters", {"updates": {"switching_frequency": 25000, "model_fidelity": "sps_device_closed_loop"}})])
                 if self.calls == 2:
                     return LLMResponse(content=None, tool_calls=[ToolCallRequest("t2", "export_model_script", {})])
                 return LLMResponse(content="测试服务：仅导出，未求解。")
@@ -126,6 +126,7 @@ class NanobotTests(unittest.TestCase):
             self.assertNotIn("exec", mode["data"]["tools"])
             row = self.store.snapshot(self.session["id"])
             self.assertEqual(row["spec"]["switching_frequency"], 25000)
+            self.assertEqual(row["spec"]["model_fidelity"], "sps_device_closed_loop")
             self.assertEqual(row["runs"][0]["status"], "exported")
             self.assertTrue(any(e["kind"] == "tool" and e["title"] == "export_model_script" for e in job["events"]))
             for file in (self.root / "work").rglob("*.json"):

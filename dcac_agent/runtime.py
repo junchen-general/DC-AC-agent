@@ -10,6 +10,7 @@ import uuid
 from pathlib import Path
 
 from .config import ROOT, WORK
+from .design import stage_options
 
 
 class MatlabRuntime:
@@ -51,6 +52,7 @@ class MatlabRuntime:
             "closed_loop_dead_time_compensation": False,
             "soft_start_s": 0.04,
         }
+        electrical_request.update(stage_options(spec))
         if electrical:
             electrical_request.update(electrical)
         inferred = {

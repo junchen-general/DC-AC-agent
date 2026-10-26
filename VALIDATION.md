@@ -90,3 +90,16 @@ Nanobot 0.3.5 → set_parameters({updates:{switching_frequency:25000}})
 - 本地证据位于outputs/b_merge_20261026/；不把大体积复验数据上传仓库。
 - B历史R2023b验证结果另存docs/B_VALIDATION_RESULTS.md；12组步长比较3组通过、9组未达标，保留限制。原包数值不是本次重新求解结果。
 - 合并后31项Python回归测试全部通过（实际安装Nanobot 0.3.5，模型提供者使用测试替身）；精简包JSON解析、SLX压缩包完整性及MAT索引大小检查通过。
+
+
+## 2026-10-26 集成检查后的软件回归
+- 31项Python测试通过，包含新扩展的手动结果导入归属/动作拒绝与成功恢复检查。
+- `node tests/test_frontend.cjs`通过：结果标签切换、父运行筛选、刷新自动选择最新结果、保留主动选择的历史结果。
+- `node --check dcac_agent/web/app.js`及Git差异空白检查通过。
+- 本轮未改MATLAB求解器，不重复物理矩阵；前端状态测试使用最小DOM替身，不代表真实浏览器视觉验收。未调用外部模型API。
+
+
+## 2026-10-26 四阶段真实HTTP联调
+通过隔离Application与HTTP接口执行中文闭环建模指令，再调用simulate，完成state/result回读及Store重新加载。MATLAB R2025a，380 V→220 V/50 Hz、500 W、20 kHz、400步/开关周期、1 μs死区、PR闭环+死区补偿，结果219.6877057 Vrms、498.5814878 W、THD(2—40次)1.7269309%、电感2.3090513 Arms/峰值3.7072179 A。单次电压及THD阈值通过，不代表收敛验证。
+会话01822576dab9、运行ead0561a28ef；本地outputs中保留工件，摘要位于work/stage-http-validation-20261026/validation_summary.json。浏览器实测模型选择器包含四阶段，切换后保存为新修订，旧闭环结果标签及过期提示正确；截图同目录browser-stage-check.png。未调用用户的外部模型API。Nanobot使用真实运行时+测试提供者验证闭环参数选择与导出。
+最终35项Python测试全部通过；前端状态回归、JavaScript语法和Git差异检查通过。

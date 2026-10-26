@@ -2,6 +2,8 @@
 const $ = (id) => document.getElementById(id);
 let state = null, activeJob = null, pollTimer = null, result = null, chartKey = "voltage", currentRun = null;
 let stateGeneration = 0, selectedSession = null, resultGeneration = 0;
+const baselineStage = "baseline_ideal_switching_open_loop";
+const stageName = spec => state?.model_stages?.[spec?.model_fidelity || baselineStage] || "基础开环模型";
 let traceSignature = null;
 let messageSignature = null;
 const busyStates = new Set(["queued", "running", "cancelling"]);
@@ -11,6 +13,8 @@ const parameterFields = [
   ["switching_frequency", "开关频率 / kHz", 1000, 5, 50], ["inductance", "滤波电感 / mH", .001, .1, 50],
   ["capacitance", "滤波电容 / μF", .000001, .1, 100], ["winding_resistance", "绕组电阻 / Ω", 1, 0, 10],
   ["stop_time", "仿真时长 / s", 1, .16, .5],
+  ["load_step_time", "负载突变时刻 / s", 1, .04, .35],
+  ["load_final_ratio", "突变后负载 / 额定值", 1, .1, 1],
 ];
 
 async function api(path, body) {
@@ -47,6 +51,12 @@ async function refresh(sid = selectedSession) {
   const generation = ++stateGeneration;
   const data = await api("/api/state" + (sid ? `?session_id=${encodeURIComponent(sid)}` : ""));
   if (generation !== stateGeneration) return;
+  const previousLatest = state?.session.id === data.session.id
+    ? state.session.runs.filter(r => r.status === "completed" && r.metrics).at(-1)?.id : null;
+  const latest = data.session.runs.filter(r => r.status === "completed" && r.metrics).at(-1);
+  if (latest && latest.id !== previousLatest && (!currentRun || currentRun.id === previousLatest)) {
+    currentRun = latest; result = null; resultGeneration++;
+  }
   state = data; selectedSession = data.session.id;
   const llmOn = data.config.llm.enabled;
   $("modeBadge").textContent = llmOn ? (data.config.llm.backend === "nanobot" ? "Nanobot 工具模式" : "兼容接口模式") : "本地规则模式";
@@ -54,7 +64,7 @@ async function refresh(sid = selectedSession) {
   $("matlabStatus").classList.toggle("detected", data.environment.installed);
   $("matlabStatus").replaceChildren(node("i"), document.createTextNode(data.environment.installed ? "已检测到 MATLAB" : "未找到 MATLAB"));
   $("matlabStatus").title = data.environment.note;
-  renderPhysics(); renderSessions(); renderSpec(); renderMessages(); renderRuns(); renderFiles();
+  renderSessions(); renderSpec(); renderMessages(); renderRuns(); renderFiles();
   activeJob = data.job;
   renderTrace(activeJob?.events || []);
   if (activeJob && busyStates.has(activeJob.status)) watchJob(activeJob.id);
@@ -76,6 +86,7 @@ function renderSessions() {
 }
 function renderSpec() {
   const s = state.session.spec;
+  $("modelStageTag").textContent = stageName(s);
   const cells = [["直流输入", s.input_voltage, "V"], ["交流输出", s.output_voltage, "V"], ["额定功率", s.output_power, "W"],
     ["开关频率", s.switching_frequency / 1000, "kHz"], ["滤波电感", s.inductance * 1000, "mH"], ["滤波电容", s.capacitance * 1e6, "μF"]];
   $("specGrid").replaceChildren(...cells.map(([label, value, unit]) => {
@@ -127,7 +138,7 @@ function renderRuns() {
   if (!runs.length) {
     $("runSelect").append(new Option("尚无成功的仿真记录", "")); currentRun = null; result = null; renderResult(); return;
   }
-  for (const r of [...runs].reverse()) $("runSelect").append(new Option(`修订 ${r.revision} · ${localTime(r.created_at)} · ${r.id.slice(0, 6)}`, r.id));
+  for (const r of [...runs].reverse()) $("runSelect").append(new Option(`${stageName(r.spec)} · 修订 ${r.revision} · ${localTime(r.created_at)} · ${r.id.slice(0, 6)}`, r.id));
   if (!currentRun || !runs.some(r => r.id === currentRun.id)) currentRun = runs[runs.length - 1];
   $("runSelect").value = currentRun.id;
   if (!result || result.run_id !== currentRun.id) loadRun(currentRun.id).catch(e => toast(e.message));
@@ -142,6 +153,7 @@ async function loadRun(rid) {
   result = {...output, run_id: rid}; renderResult();
 }
 function renderResult() {
+  renderPhysics();
   const m = result?.metrics;
   const values = m ? [number(m.output_rms), number(m.thd_percent, 3), number(m.inductor_rms, 3)] : ["—", "—", "—"];
   const labels = ["输出电压", "电压 THD", "电感电流"], units = ["Vrms", "%", "Arms"];
@@ -152,7 +164,7 @@ function renderResult() {
   const stale = !!currentRun && currentRun.revision !== state.session.revision;
   $("staleNotice").classList.toggle("hidden", !stale);
   $("staleNotice").textContent = stale ? `当前参数已是修订${state.session.revision}；下方结果属于修订${currentRun.revision}，请重新仿真验证修改。` : "";
-  $("resultSummary").textContent = m ? `真实 Simulink 结果 · 输出功率 ${number(m.output_power)} W\n末尾4周期 · THD统计2–40次谐波 · 电压误差 ${m.voltage_error_percent >= 0 ? "+" : ""}${number(m.voltage_error_percent)}%` : "末尾4个完整基波周期 · THD统计2–40次谐波";
+  $("resultSummary").textContent = m ? `${stageName(currentRun?.spec || result?.spec)} · 真实 Simulink 结果 · 输出功率 ${number(m.output_power)} W\n末尾4周期 · THD统计2–40次谐波 · 电压误差 ${m.voltage_error_percent >= 0 ? "+" : ""}${number(m.voltage_error_percent)}%\n单次仿真；本次尚未验证步长收敛` : "末尾4个完整基波周期 · THD统计2–40次谐波";
   requestAnimationFrame(drawChart);
 }
 function renderFiles() {
@@ -160,7 +172,7 @@ function renderFiles() {
   const runs = [...state.session.runs].reverse().filter(r => r.files?.length);
   if (!runs.length) { $("fileList").append(node("div", "empty-small", "建模或仿真后，下载模型、参数与运行日志。")); return; }
   for (const r of runs) {
-    $("fileList").append(node("div", "file-group", `修订 ${r.revision} · ${r.status === "completed" ? "完成" : r.status === "exported" ? "脚本已导出，未运行" : r.status === "cancelled" ? "已取消" : "失败"} · ${localTime(r.created_at)}`));
+    $("fileList").append(node("div", "file-group", `${stageName(r.spec)} · 修订 ${r.revision} · ${r.status === "completed" ? "完成" : r.status === "exported" ? "脚本已导出，未运行" : r.status === "cancelled" ? "已取消" : "失败"} · ${localTime(r.created_at)}`));
     for (const file of r.files) {
       const a = node("a", "file-row"); a.href = file.url; a.target = "_blank"; a.rel = "noopener";
       const body = node("div"); body.append(node("strong", "", file.name), node("small", "", file.bytes < 1024 ? `${file.bytes} B` : `${number(file.bytes / 1024, 1)} KB`));
@@ -219,6 +231,7 @@ function activateTab(tab) {
     const active = button.dataset.tab === tab; button.classList.toggle("active", active); button.setAttribute("aria-selected", String(active));
   }
   for (const name of ["results", "trace", "files"]) $(`${name}Panel`).classList.toggle("hidden", name !== tab);
+  $("physicsPanel").classList.toggle("hidden", tab !== "results");
   if (tab === "results") requestAnimationFrame(drawChart);
 }
 $("chatForm").addEventListener("submit", e => { e.preventDefault(); const text = $("messageInput").value.trim(); if (text) submit(text); });
@@ -244,6 +257,8 @@ $("settingsForm").addEventListener("submit", async e => {
   e.preventDefault(); try { await api("/api/settings", {matlab_executable: $("matlabPath").value, enabled: $("llmEnabled").checked, backend: $("agentBackend").value, base_url: $("llmBase").value, model: $("llmModel").value, api_key: $("llmKey").value, clear_api_key: $("clearKey").checked}); $("llmKey").value = ""; $("settingsDialog").close(); await refresh(); toast("设置已保存到本机。"); } catch(error) { toast(error.message); }
 });
 $("editSpec").addEventListener("click", () => {
+  $("modelStage").replaceChildren(...Object.entries(state.model_stages || {[baselineStage]: "基础开环模型"}).map(([key, label]) => new Option(label, key)));
+  $("modelStage").value = state.session.spec.model_fidelity || baselineStage;
   $("specFields").replaceChildren(...parameterFields.map(([key, label, scale, min, max]) => {
     const field = node("label", "", label); const input = node("input"); input.type = "number"; input.id = "param-" + key; input.step = "any"; input.min = min; input.max = max; input.required = true; input.value = Number((state.session.spec[key] / scale).toPrecision(10)); field.append(input); return field;
   }));
@@ -253,6 +268,7 @@ $("specForm").addEventListener("submit", async e => {
   e.preventDefault(); const updates = {};
   for (const [key, label, scale] of parameterFields) updates[key] = Number($("param-" + key).value) * scale;
   updates.load_step = $("loadStep").checked;
+  updates.model_fidelity = $("modelStage").value;
   $("specDialog").close(); await submit("更新设计参数（参数面板）", "parameters", updates);
 });
 window.addEventListener("resize", drawChart);
@@ -260,8 +276,9 @@ refresh().catch(error => toast("连接本机服务失败：" + error.message));
 
 function renderPhysics() {
   const panel = $("physicsPanel"); panel.replaceChildren(node("strong", "", "磁 · 热 · 力结果交接"));
-  if (!state.multiphysics?.length) { panel.append(node("p", "", "尚无C交付的分析结果。接口已准备，求解器待接入。")); return; }
-  for (const item of state.multiphysics) {
+  const items = (state.multiphysics || []).filter(item => (item.parent_run_id || item.run_id) === currentRun?.id);
+  if (!items.length) { panel.append(node("p", "", "此电气运行尚无关联的磁热力结果。C 的独立研究已收录，自动求解待接入。")); return; }
+  for (const item of items) {
     panel.append(node("p", "", item.status === "invalid" ? `结果被拒绝：${item.message}` : `运行 ${item.parent_run_id} · 修订 ${item.revision} · ${item.evidence === "test" ? "测试数据，不作为课程结论" : item.evidence === "numerical" ? "数值求解（生产者声明）" : "解析计算"}${item.stale ? " · 已过期" : ""}`));
     for (const [domain, data] of Object.entries(item.domains || {})) {
       panel.append(node("p", "", `${domain} · ${data.status}`));

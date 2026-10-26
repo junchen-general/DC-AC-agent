@@ -10,16 +10,18 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 from .config import OUTPUTS
-from .design import DesignSpec, extract_parameters
+from .design import DesignSpec, extract_parameters, MODEL_STAGES, BASELINE, stage_options
 from .runtime import MatlabRuntime
 from .store import Store, now
 from .contracts import write_manifest, read_multiphysics
 
 
 SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使用中文。
-当前唯一模板为理想单相全桥开关函数+LC状态方程、单极性SPWM、开环、40ms软启动。
-支持参数修改、真实Simulink自动建模、运行、结果检查与历史比较。默认Agent工具仍运行基准开环模型；
-器件级全桥、死区、初步损耗和电压闭环由独立分阶段MATLAB脚本提供，B交付了R2023b验证记录；默认Agent工具尚未直接暴露这些阶段。C的磁热力研究脚本已收录，尚未接入自动求解工具。
+支持四阶段模型：基础开环、器件级开环、含损耗开环、电压闭环。
+使用set_parameters的model_fidelity枚举切换阶段，其他参数保持不变。切换产生新修订。
+基础阶段每开关周期100步；器件阶段400步、1微秒死区；闭环为PR控制并开启死区补偿。
+器件阶段需要Simscape Electrical Specialized Power Systems。运行成功不代表步长收敛，不能宣称已验证总效率。
+C的磁热力脚本已收录，尚未接入自动求解工具。
 不得声称已实现尚未实现的功能。用户提出不支持的拓扑/控制/分析时解释边界。
 只有工具返回成功才可声称已生成模型或仿真成功。禁止编造波形、指标、文件。
 用户让你构建/仿真时应调用相应工具，不能仅提供指导。先读取当前设计；需求有变则设置参数。
@@ -38,6 +40,7 @@ def function_tool(name: str, description: str, properties: dict | None = None, r
 
 
 PARAMS = {k: {"type": "boolean" if k == "load_step" else "number"} for k in DesignSpec().to_dict()}
+PARAMS["model_fidelity"] = {"type": "string", "enum": list(MODEL_STAGES), "description": "选择模型阶段；其他参数不变"}
 TOOLS = [
     function_tool("get_multiphysics_results", "读取当前会话指定电气运行的磁热力交接结果；缺失时返回未运行，不执行求解。", {"run_id": {"type": "string"}}, ["run_id"]),
     function_tool("get_design", "读取当前设计参数、派生计算、功能边界和已完成运行。"),
@@ -168,8 +171,10 @@ class AgentService:
         elif name == "get_design":
             row = self.store.snapshot(sid)
             result = {"spec": row["spec"], "derived": DesignSpec(**row["spec"]).derived(),
+                      "engineering_review": DesignSpec(**row["spec"]).engineering_review(),
                       "revision": row["revision"], "runs": [{k: r[k] for k in ("id", "status", "action", "revision")} for r in row["runs"]],
-                      "limitations": "默认Agent工具运行开环理想开关函数模型；器件级/死区/初步损耗/闭环阶段有B的独立验证材料；C的磁热力脚本已收录。这些扩展阶段尚未接入自动求解工具。"}
+                      "model_stages": MODEL_STAGES, "electrical": stage_options(row["spec"]),
+                      "limitations": "四阶段可建模与仿真；器件阶段需SPS。单次通过不代表数值收敛，不输出整机效率；C自动求解尚未接入。"}
         elif name == "set_parameters":
             result = self.store.update_spec(sid, args.get("updates", {}))
         elif name == "inspect_environment":
@@ -199,6 +204,7 @@ class AgentService:
                 output = {}
                 MatlabRuntime.prepare(
                     spec.to_dict(), run["action"], outdir,
+                    electrical=stage_options(spec.to_dict()),
                     context={"session_id": sid, "run_id": run_id,
                              "design_revision": row["revision"]},
                 )
@@ -210,6 +216,7 @@ class AgentService:
                         lambda kind, title, data=None: self._emit(job, kind, title, data))
                     run.update(status="completed", metrics=output.get("metrics"), checks=output.get("checks"), finished_at=now())
                 run["files"] = self._artifacts(sid, run_id, outdir)
+                output["model_fidelity"] = spec.model_fidelity
                 output["run_id"], output["revision"], output["files"] = run_id, run["revision"], run["files"]
                 output.pop("model_path", None)
                 if not output.get("exported"):
@@ -234,15 +241,17 @@ class AgentService:
                 for p in sorted(directory.iterdir()) if p.is_file() and p.name != "run.json"]
 
     def _rules(self, job, text):
-        if any(word in text for word in ("三相", "并网", "闭环", "PID", "pid", "热应力", "磁场", "温度场", "有限元", "热仿真", "力仿真", "效率")):
-            return "默认Agent工具支持单相全桥开环基准仿真；B的器件级/死区/初步损耗/闭环脚本及C的磁热力研究已收录，尚未接入自动求解工具。三相、并网与完整整机损耗尚未实现。"
+        if any(word in text for word in ("三相", "并网", "PID", "pid", "热应力", "磁场", "温度场", "有限元", "热仿真", "力仿真", "效率")):
+            return "支持四阶段单相模型和PR电压闭环；三相、并网、PID与C自动求解尚未接入，不输出完整整机效率。"
         updates = extract_parameters(text)
         result = None
         if updates:
             result = self._tool(job, "set_parameters", {"updates": updates})
         if "脚本" in text and any(word in text for word in ("导出", "生成", "下载")):
             name = "export_model_script"
-        elif any(word in text for word in ("先查看", "只查看", "不要运行", "不运行")):
+        elif (any(word in text for word in ("生成模型", "创建模型", "生成当前设计的模型")) and not any(word in text for word in ("运行", "仿真"))) or ("生成" in text and "模型" in text and any(word in text for word in ("不运行", "不要运行", "不仿真"))):
+            name = "create_model"
+        elif any(word in text for word in ("先查看", "只查看", "不要运行", "不运行", "不要仿真")):
             name = "get_design"
         elif any(word in text.lower() for word in ("对比", "比较", "compare")):
             name = "compare_runs"
@@ -269,13 +278,13 @@ class AgentService:
     def _describe(result, name):
         if name == "get_design":
             s, d = result["spec"], result["derived"]
-            return (f"当前设计：{s['input_voltage']:g} V直流 → {s['output_voltage']:g} V交流有效值，"
+            return (f"模型阶段：{MODEL_STAGES[s.get('model_fidelity', BASELINE)]}。\n当前设计：{s['input_voltage']:g} V直流 → {s['output_voltage']:g} V交流有效值，"
                     f"{s['output_power']:g} W，{s['output_frequency']:g} Hz。\n"
                     f"开关频率{s['switching_frequency']/1000:g} kHz，L={s['inductance']*1000:g} mH，C={s['capacitance']*1e6:g} μF。\n"
                     f"计算值：负载{d['load_resistance']:.2f} Ω，调制度{d['modulation_index']:.3f}，LC谐振频率{d['resonant_frequency']:.0f} Hz。\n"
                     "这些是设计计算值。点击运行仿真可获得真实Simulink结果。")
         if name == "create_model":
-            return "已通过MATLAB生成并编译检查可编辑的Simulink模型。可在文件区下载.slx文件。模型为开环理想全桥开关函数＋LC状态方程，尚未执行时域仿真。"
+            return f"已通过MATLAB生成并编译检查{MODEL_STAGES[result.get('model_fidelity', BASELINE)]}。可下载.slx文件；尚未执行时域仿真。"
         if name == "export_model_script":
             return ("已导出完整建模与仿真脚本，目前尚未运行MATLAB，也尚未生成.slx或仿真结果。\n"
                     "在正常打开的MATLAB命令窗口执行：\nrun('" + result["directory"].replace("\\", "/") + "/run_in_matlab.m')\n"
@@ -283,16 +292,16 @@ class AgentService:
         if name == "run_simulation":
             m = result["metrics"]
             passed = all(result["checks"].values())
-            return (f"真实Simulink仿真已完成。\n输出电压 {m['output_rms']:.2f} Vrms（目标偏差{m['voltage_error_percent']:+.2f}%），"
+            return (f"{MODEL_STAGES[result.get('model_fidelity', BASELINE)]}真实Simulink仿真已完成。\n输出电压 {m['output_rms']:.2f} Vrms（目标偏差{m['voltage_error_percent']:+.2f}%），"
                     f"输出功率{m['output_power']:.2f} W，电压THD（2–40次）{m['thd_percent']:.3f}%。\n"
                     f"电感电流有效值{m['inductor_rms']:.3f} A，峰值{m['inductor_peak']:.3f} A。\n"
                     + ("通过当前电压偏差±5%、THD<5%的检查。" if passed else "部分指标超出当前检查限值，可调整参数后复验。")
-                    + "\n分析窗口为末尾4个完整基波周期。当前没有计算总效率和磁热力有限元结果。")
+                    + "\n分析窗口为末尾4个完整基波周期。单次指标通过不代表步长收敛；尚无总效率和当前运行的磁热力结果。")
         if name == "compare_runs":
             if not result.get("ok"):
                 return result["message"]
             d = result["delta"]
-            return (f"最近两次真实仿真对比：\n输出电压变化{d['output_rms']:+.3f} V；"
+            return (f"最近两次真实仿真对比：{MODEL_STAGES[result['before']['spec'].get('model_fidelity', BASELINE)]} → {MODEL_STAGES[result['after']['spec'].get('model_fidelity', BASELINE)]}（工况与模型差异请结合参数快照解释）。\n输出电压变化{d['output_rms']:+.3f} V；"
                     f"THD变化{d['thd_percent']:+.3f}个百分点；电感电流有效值变化{d['inductor_rms']:+.3f} A；"
                     f"给定绕组电阻损耗变化{d['winding_loss']:+.3f} W。\n参数快照与原始结果保存在各自运行目录中。")
         if name == "inspect_environment":

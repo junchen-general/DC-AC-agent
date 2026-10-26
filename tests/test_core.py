@@ -194,10 +194,23 @@ class ServiceTests(unittest.TestCase):
                 app.sync_manual_runs(self.sid)
                 self.assertEqual(run["status"], "exported")
                 data["spec"] = run["spec"]
+                data["run_context"] = {"session_id": self.sid, "run_id": "wrong-run", "design_revision": run["revision"]}
+                (directory / "result.json").write_text(json.dumps(data), encoding="utf-8")
+                app.sync_manual_runs(self.sid)
+                self.assertEqual(run["status"], "exported")
+                data["run_context"]["run_id"] = run["id"]
+                data["action"] = "build"
+                (directory / "result.json").write_text(json.dumps(data), encoding="utf-8")
+                app.sync_manual_runs(self.sid)
+                self.assertEqual(run["status"], "exported")
+                data["action"] = "simulate"
+                run["error"] = "previous failed attempt"
                 (directory / "result.json").write_text(json.dumps(data), encoding="utf-8")
                 app.sync_manual_runs(self.sid)
                 self.assertEqual(run["status"], "completed")
                 self.assertEqual(run["execution"], "manual_matlab")
+                self.assertNotIn("error", run)
+                self.assertIn("finished_at", run)
         finally:
             app.agent.pool.shutdown(wait=True)
 
