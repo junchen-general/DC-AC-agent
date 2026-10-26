@@ -1,0 +1,167 @@
+{
+  "status": "completed",
+  "mode": "real_browser_rules_real_matlab",
+  "external_llm": "deferred_by_user",
+  "steps": {
+    "parameters": {
+      "status": "passed",
+      "job_id": "0650e3ae125f",
+      "job_status": "completed"
+    },
+    "baseline_electrical": {
+      "status": "passed",
+      "job_id": "6b9fc3319104",
+      "job_status": "completed"
+    },
+    "baseline_fields": {
+      "status": "passed",
+      "job_id": "4f3431d12d76",
+      "job_status": "completed"
+    },
+    "apply_candidate": {
+      "status": "passed",
+      "job_id": "ce722037e34b",
+      "job_status": "completed"
+    },
+    "stale_rejected": {
+      "status": "passed",
+      "job_id": "c1cdf7913919",
+      "job_status": "failed"
+    },
+    "candidate_electrical": {
+      "status": "passed",
+      "job_id": "0ab7fa3607d3",
+      "job_status": "completed"
+    },
+    "candidate_fields": {
+      "status": "passed",
+      "job_id": "b53fd42f1503",
+      "job_status": "completed"
+    },
+    "history_refresh": {
+      "status": "passed",
+      "history_run": "8e24b90ed43e",
+      "refresh_default": "a20b1a8f3475",
+      "initial_session_after_reload": "79e103559a52",
+      "scenario_session": "d53e6ef3e11e"
+    },
+    "compare": {
+      "status": "passed",
+      "job_id": "76f9ecdeefaf",
+      "job_status": "completed"
+    },
+    "download": {
+      "status": "passed",
+      "sha256": "6e2ab6d3341610144bd6da9df56c4098f463d504660030fa85641e52129372f9"
+    },
+    "missing_raw_rejected": {
+      "status": "passed",
+      "job_id": "ca8dfa0565df",
+      "job_status": "failed"
+    },
+    "cancel": {
+      "status": "passed",
+      "job_id": "44ef941e84a7",
+      "job_status": "cancelled"
+    },
+    "safe_markdown": {
+      "status": "passed",
+      "job_id": "d37d97f85704",
+      "job_status": "completed"
+    },
+    "mobile": {
+      "status": "passed",
+      "width": 390
+    }
+  },
+  "runs": {
+    "baseline": {
+      "run_id": "8e24b90ed43e",
+      "revision": 1,
+      "spec": {
+        "model_fidelity": "sps_device_closed_loop",
+        "input_voltage": 380,
+        "output_voltage": 220,
+        "output_power": 500,
+        "output_frequency": 50,
+        "switching_frequency": 20000,
+        "inductance": 0.002,
+        "capacitance": 4.7e-06,
+        "winding_resistance": 0.25,
+        "stop_time": 0.24,
+        "load_step": false,
+        "load_step_time": 0.12,
+        "load_final_ratio": 0.5
+      },
+      "metrics": {
+        "output_rms": 219.6876118085614,
+        "current_rms": 2.269500121989589,
+        "inductor_rms": 2.3090502683122405,
+        "inductor_peak": 3.707219264973669,
+        "output_power": 498.5810617991314,
+        "winding_loss": 1.3329282853982076,
+        "thd_percent": 1.7268125607679279,
+        "voltage_error_percent": -0.14199463247208666,
+        "analysis_cycles": 4,
+        "harmonic_max": 40,
+        "sample_time": 1.25000000000125e-07,
+        "analysis_start": 0.16,
+        "analysis_end": 0.24,
+        "analysis_end_exclusive": 0.24
+      },
+      "source_sha256": {
+        "result.json": "4325039a105c596260593b20de4cd600a3f5c9bed8bd9559837038583ddd5b7c",
+        "electrical_raw_v1.mat": "0806844fea845e97744a65d306bff7c3b82f4f4d7a326ab2664a2105aecb55cf"
+      }
+    },
+    "candidate": {
+      "run_id": "a20b1a8f3475",
+      "revision": 2,
+      "spec": {
+        "model_fidelity": "sps_device_closed_loop",
+        "input_voltage": 380,
+        "output_voltage": 220,
+        "output_power": 500,
+        "output_frequency": 50,
+        "switching_frequency": 20000,
+        "inductance": 0.001909071842964387,
+        "capacitance": 4.7e-06,
+        "winding_resistance": 0.2166407182392643,
+        "stop_time": 0.24,
+        "load_step": false,
+        "load_step_time": 0.12,
+        "load_final_ratio": 0.5
+      },
+      "metrics": {
+        "output_rms": 219.68626526497968,
+        "current_rms": 2.2694862114185654,
+        "inductor_rms": 2.310334032918087,
+        "inductor_peak": 3.7388629116731913,
+        "output_power": 498.5749498569127,
+        "winding_loss": 1.1563508876754338,
+        "thd_percent": 1.6891882047060087,
+        "voltage_error_percent": -0.1426066977365137,
+        "analysis_cycles": 4,
+        "harmonic_max": 40,
+        "sample_time": 1.25000000000125e-07,
+        "analysis_start": 0.16,
+        "analysis_end": 0.24,
+        "analysis_end_exclusive": 0.24
+      },
+      "source_sha256": {
+        "result.json": "216e925a3e386c2133feb1f363db67a5d2451ebec023bc34341bd5b5970aefca",
+        "electrical_raw_v1.mat": "da49597883fc6073dea392aa989e3d207edd6e1bef8bf819ad03fcfd3ab6af44"
+      }
+    }
+  },
+  "session_id": "d53e6ef3e11e",
+  "browser_version": "155.0.8059.85",
+  "recovered_errors": [
+    "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#fieldsButton\")\n    - locator resolved to <button id=\"fieldsButton\" class=\"secondary-button\">运行磁热力分析</button>\n  - attempting click action\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n    - waiting 20ms\n    2 × waiting for element to be visible, enabled and stable\n      - element is not visible\n    - retrying click action\n      - waiting 100ms\n    58 × waiting for element to be visible, enabled and stable\n       - element is not visible\n     - retrying click action\n       - waiting 500ms\n",
+    "Page.wait_for_function: EvalError: Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self'\".\n\n    at eval (<anonymous>)\n    at predicate (eval at evaluate (:370:30), <anonymous>:4:60)\n    at next (eval at evaluate (:370:30), <anonymous>:29:33)",
+    "Controlled resume regression: screenshot verification interrupted",
+    "Page.wait_for_function: Timeout 30000ms exceeded."
+  ],
+  "cancel_session_id": "79e103559a52",
+  "page_errors": []
+}

@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "status": "completed",
+  "evidence": "numerical_unit_response_recombination",
+  "method": "Linear FE unit responses reused; copper-temperature feedback recomputed per case",
+  "inductor_rms_A": 2.3108053147617,
+  "ambient_C": 40,
+  "convection_W_m2K": 10,
+  "rows": [
+    {
+      "extra_winding_heat_W": 0,
+      "core_heat_W": 0,
+      "peak_temperature_C": 57.9550574162595,
+      "dc_copper_heat_W": 1.32937827942631,
+      "iterations": 8,
+      "max_displacement_um": 13.345727743317351,
+      "core_probe_tensile_stress_MPa": 2.6959806224325105
+    },
+    {
+      "extra_winding_heat_W": 0,
+      "core_heat_W": 0.5,
+      "peak_temperature_C": 64.243866247700751,
+      "dc_copper_heat_W": 1.357969174025385,
+      "iterations": 8,
+      "max_displacement_um": 18.56514888951595,
+      "core_probe_tensile_stress_MPa": 3.6291461023574789
+    },
+    {
+      "extra_winding_heat_W": 0,
+      "core_heat_W": 1,
+      "peak_temperature_C": 70.536121198487677,
+      "dc_copper_heat_W": 1.3865757357629518,
+      "iterations": 8,
+      "max_displacement_um": 23.785120841948636,
+      "core_probe_tensile_stress_MPa": 4.562343355270726
+    },
+    {
+      "extra_winding_heat_W": 0.5,
+      "core_heat_W": 0,
+      "peak_temperature_C": 65.150037304590981,
+      "dc_copper_heat_W": 1.36208891146224,
+      "iterations": 8,
+      "max_displacement_um": 18.693649528371704,
+      "core_probe_tensile_stress_MPa": 3.7763183739658222
+    },
+    {
+      "extra_winding_heat_W": 0.5,
+      "core_heat_W": 0.5,
+      "peak_temperature_C": 71.4388461360319,
+      "dc_copper_heat_W": 1.39067980606129,
+      "iterations": 8,
+      "max_displacement_um": 23.912992249522617,
+      "core_probe_tensile_stress_MPa": 4.70948385388801
+    },
+    {
+      "extra_winding_heat_W": 0.5,
+      "core_heat_W": 1,
+      "peak_temperature_C": 77.729549605004991,
+      "dc_copper_heat_W": 1.4192793147733844,
+      "iterations": 9,
+      "max_displacement_um": 29.132770838144559,
+      "core_probe_tensile_stress_MPa": 5.642666803253265
+    },
+    {
+      "extra_winding_heat_W": 1,
+      "core_heat_W": 0,
+      "peak_temperature_C": 72.345017192922455,
+      "dc_copper_heat_W": 1.3947995434981695,
+      "iterations": 8,
+      "max_displacement_um": 24.041571313426044,
+      "core_probe_tensile_stress_MPa": 4.8566561254991329
+    },
+    {
+      "extra_winding_heat_W": 1,
+      "core_heat_W": 0.5,
+      "peak_temperature_C": 78.633826031692081,
+      "dc_copper_heat_W": 1.4233904386398308,
+      "iterations": 9,
+      "max_displacement_um": 29.26086428180945,
+      "core_probe_tensile_stress_MPa": 5.7898216065200252
+    },
+    {
+      "extra_winding_heat_W": 1,
+      "core_heat_W": 1,
+      "peak_temperature_C": 84.922978005739992,
+      "dc_copper_heat_W": 1.4519828933556131,
+      "iterations": 9,
+      "max_displacement_um": 34.480483173017191,
+      "core_probe_tensile_stress_MPa": 6.72299025036974
+    }
+  ]
+}

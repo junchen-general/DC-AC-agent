@@ -1,0 +1,451 @@
+{
+  "status": "completed",
+  "source_run_id": "212f0bc8dcae",
+  "source_session_id": "c954210e452f",
+  "source_sha256": {
+    "result.json": "7616576e12fc51bd9496d22ad5bc5eb0471e723e00e2570be6a84c57a4e1ee79",
+    "electrical_raw_v1.mat": "817b20914e806bcc20db12ef2fbf3b0ee7c728525a0f3b3b9e96044e2b23388e"
+  },
+  "solver_source_sha256": "c6442f8706ea6383f57809dbe5bf2cc9943cee1091276220f305f4aea1ce25da",
+  "solver_files_sha256": {
+    "dcac_multiphysics.m": "adaf63d46245cc31d7412b0f8f40e8ad2b131f4d828e3a30fe275ff5b172ec7e",
+    "dcac_field_mesh.m": "f00b91b772089060f1659e503e0c05fba64f3774a90983b3e990de9819fdef9a",
+    "solve_magnetic_e70.m": "5059e284bd61d25764e305289c6e3ae1e6ad14a863255241917c8b141dd9ca10",
+    "solve_unit_e70_thermal_structural.m": "6c024cd10d1049c2b25c9e2d38da55f77bb78c35c385eeb81c164c9086fbb051",
+    "plane_stress_cte_adapter.m": "43703e70e19f8711d875873d59dc0b8073e662ea3b9fba2eadfb2d1bfd83232e",
+    "verify_plane_stress_backend.m": "9564b7100695ec9a492e04a345593f08ff3de20eead294fb1693c50f8f1f2a42"
+  },
+  "criteria_percent": {
+    "L_H": 2,
+    "B_T": 2,
+    "temperature_rise_K": 2,
+    "displacement_m": 2,
+    "probe_stress_Pa": 5
+  },
+  "meshes": [
+    {
+      "label": "coarse",
+      "hmax_m": 0.003,
+      "metrics": {
+        "L_H": 0.0019090264393885699,
+        "B_T": 0.14867082315909091,
+        "temperature_rise_K": 31.43586558295459,
+        "displacement_m": 2.3980344297564848e-05,
+        "probe_stress_Pa": 4883313.584195034
+      },
+      "input": {
+        "inductor_rms_A": 2.3108053147617,
+        "inductor_peak_A": 3.739402853590745,
+        "sample_time_s": 6.250000000179723e-08,
+        "window_start_s": 0.15999999999999998,
+        "window_end_exclusive_s": 0.24,
+        "sample_count": 1280000.0,
+        "options": {
+          "ambient_c": 40,
+          "convection_w_m2k": 10,
+          "extra_winding_heat_w": 0.5,
+          "core_heat_w": 0.5
+        },
+        "candidate_R20_ohm": 0.2166407182392643,
+        "circuit_L_H": 0.001909071842964387,
+        "circuit_R_ohm": 0.2166407182392643,
+        "candidate_L_H": 0.0019090264393885699,
+        "L_difference_percent": -0.0023783062949811473,
+        "R_difference_percent": 0
+      },
+      "verification": {
+        "plane_stress_backend": {
+          "status": "passed",
+          "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+          "poisson": [
+            0.25,
+            0.3,
+            0.35
+          ],
+          "cte_factors": [
+            0.6666666666666666,
+            0.5714285714285715,
+            0.46153846153846156
+          ],
+          "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+            [
+              5.715407770526743e-19,
+              4.76837158203125e-06,
+              2.9802322387695312e-08
+            ],
+            [
+              6.518346434579602e-19,
+              4.5299530029296875e-06,
+              0
+            ],
+            [
+              9.602746390514365e-19,
+              1.093745231628418e-05,
+              0
+            ]
+          ]
+        },
+        "magnetic_energy_error": 7.356313502081921e-14,
+        "heat_balance_error": 2.2352855297835816e-06,
+        "thermal_feedback_iterations": 8,
+        "mesh": {
+          "configuration": {
+            "magnetic_hmax_m": 0.003,
+            "thermal_hmax_m": 0.003
+          },
+          "magnetic": {
+            "nodes": 16497,
+            "triangles": 8142,
+            "minimum_quality": 0.7984500875299957,
+            "median_quality": 0.9987408452467885,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "thermal": {
+            "nodes": 4045,
+            "triangles": 1976,
+            "minimum_quality": 0.6953739099941157,
+            "median_quality": 0.9699255324871853,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "structural": {
+            "nodes": 4045,
+            "triangles": 1976,
+            "minimum_quality": 0.6953739099941157,
+            "median_quality": 0.9699255324871853,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "magnetic_seconds": 1.7827442,
+          "thermal_structural_seconds": 3.6008564
+        },
+        "elapsed_seconds": 26.9036603,
+        "mesh_convergence": "not_checked_for_this_run",
+        "electrical_step_convergence": "not_checked"
+      },
+      "corner_max_stress_Pa": 57136886.30729771
+    },
+    {
+      "label": "medium",
+      "hmax_m": 0.002,
+      "metrics": {
+        "L_H": 0.0019090718429643852,
+        "B_T": 0.1486692022885396,
+        "temperature_rise_K": 31.435515000924113,
+        "displacement_m": 2.3943107070455906e-05,
+        "probe_stress_Pa": 4753132.292023269
+      },
+      "input": {
+        "inductor_rms_A": 2.3108053147617,
+        "inductor_peak_A": 3.739402853590745,
+        "sample_time_s": 6.250000000179723e-08,
+        "window_start_s": 0.15999999999999998,
+        "window_end_exclusive_s": 0.24,
+        "sample_count": 1280000.0,
+        "options": {
+          "ambient_c": 40,
+          "convection_w_m2k": 10,
+          "extra_winding_heat_w": 0.5,
+          "core_heat_w": 0.5
+        },
+        "candidate_R20_ohm": 0.2166407182392643,
+        "circuit_L_H": 0.001909071842964387,
+        "circuit_R_ohm": 0.2166407182392643,
+        "candidate_L_H": 0.0019090718429643852,
+        "L_difference_percent": -8.881784197001252e-14,
+        "R_difference_percent": 0
+      },
+      "verification": {
+        "plane_stress_backend": {
+          "status": "passed",
+          "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+          "poisson": [
+            0.25,
+            0.3,
+            0.35
+          ],
+          "cte_factors": [
+            0.6666666666666666,
+            0.5714285714285715,
+            0.46153846153846156
+          ],
+          "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+            [
+              5.715407770526743e-19,
+              4.76837158203125e-06,
+              2.9802322387695312e-08
+            ],
+            [
+              6.518346434579602e-19,
+              4.5299530029296875e-06,
+              0
+            ],
+            [
+              9.602746390514365e-19,
+              1.093745231628418e-05,
+              0
+            ]
+          ]
+        },
+        "magnetic_energy_error": 7.304151701562771e-14,
+        "heat_balance_error": 2.228503041656893e-06,
+        "thermal_feedback_iterations": 8,
+        "mesh": {
+          "configuration": {
+            "magnetic_hmax_m": 0.002,
+            "thermal_hmax_m": 0.002
+          },
+          "magnetic": {
+            "nodes": 31837,
+            "triangles": 15758,
+            "minimum_quality": 0.8099333273446124,
+            "median_quality": 0.9999394185881814,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "thermal": {
+            "nodes": 6897,
+            "triangles": 3380,
+            "minimum_quality": 0.804798539593109,
+            "median_quality": 0.9829232068103936,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "structural": {
+            "nodes": 6897,
+            "triangles": 3380,
+            "minimum_quality": 0.804798539593109,
+            "median_quality": 0.9829232068103936,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "magnetic_seconds": 1.9591375,
+          "thermal_structural_seconds": 4.167612
+        },
+        "elapsed_seconds": 25.093992,
+        "mesh_convergence": "not_checked_for_this_run",
+        "electrical_step_convergence": "not_checked"
+      },
+      "corner_max_stress_Pa": 59561701.19651312
+    },
+    {
+      "label": "fine",
+      "hmax_m": 0.001,
+      "metrics": {
+        "L_H": 0.0019102184994515539,
+        "B_T": 0.14874805137044428,
+        "temperature_rise_K": 31.4388461360319,
+        "displacement_m": 2.3912992249522616e-05,
+        "probe_stress_Pa": 4709483.85388801
+      },
+      "input": {
+        "inductor_rms_A": 2.3108053147617,
+        "inductor_peak_A": 3.739402853590745,
+        "sample_time_s": 6.250000000179723e-08,
+        "window_start_s": 0.15999999999999998,
+        "window_end_exclusive_s": 0.24,
+        "sample_count": 1280000.0,
+        "options": {
+          "ambient_c": 40,
+          "convection_w_m2k": 10,
+          "extra_winding_heat_w": 0.5,
+          "core_heat_w": 0.5
+        },
+        "candidate_R20_ohm": 0.2166407182392643,
+        "circuit_L_H": 0.001909071842964387,
+        "circuit_R_ohm": 0.2166407182392643,
+        "candidate_L_H": 0.0019102184994515539,
+        "L_difference_percent": 0.06006355870749047,
+        "R_difference_percent": 0
+      },
+      "verification": {
+        "plane_stress_backend": {
+          "status": "passed",
+          "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+          "poisson": [
+            0.25,
+            0.3,
+            0.35
+          ],
+          "cte_factors": [
+            0.6666666666666666,
+            0.5714285714285715,
+            0.46153846153846156
+          ],
+          "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+            [
+              5.715407770526743e-19,
+              4.76837158203125e-06,
+              2.9802322387695312e-08
+            ],
+            [
+              6.518346434579602e-19,
+              4.5299530029296875e-06,
+              0
+            ],
+            [
+              9.602746390514365e-19,
+              1.093745231628418e-05,
+              0
+            ]
+          ]
+        },
+        "magnetic_energy_error": 1.2909677262749996e-12,
+        "heat_balance_error": 2.23182258574095e-06,
+        "thermal_feedback_iterations": 8,
+        "mesh": {
+          "configuration": {
+            "magnetic_hmax_m": 0.001,
+            "thermal_hmax_m": 0.001
+          },
+          "magnetic": {
+            "nodes": 119125,
+            "triangles": 59242,
+            "minimum_quality": 0.7702085972268851,
+            "median_quality": 0.9999970898169784,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "thermal": {
+            "nodes": 21899,
+            "triangles": 10812,
+            "minimum_quality": 0.7971456969915756,
+            "median_quality": 0.9995675517580463,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "structural": {
+            "nodes": 21899,
+            "triangles": 10812,
+            "minimum_quality": 0.7971456969915756,
+            "median_quality": 0.9995675517580463,
+            "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+          },
+          "magnetic_seconds": 4.4263447,
+          "thermal_structural_seconds": 7.5746287
+        },
+        "elapsed_seconds": 32.7426404,
+        "mesh_convergence": "not_checked_for_this_run",
+        "electrical_step_convergence": "not_checked"
+      },
+      "corner_max_stress_Pa": 69067636.30771182
+    }
+  ],
+  "comparisons": [
+    {
+      "pair": [
+        "coarse",
+        "medium"
+      ],
+      "errors_percent": {
+        "L_H": 0.0023783062948952204,
+        "B_T": 0.0010902530761950483,
+        "temperature_rise_K": 0.0011152418863435262,
+        "displacement_m": 0.15552378811724882,
+        "probe_stress_Pa": 2.738852701201586
+      },
+      "passed": true
+    },
+    {
+      "pair": [
+        "medium",
+        "fine"
+      ],
+      "errors_percent": {
+        "L_H": 0.06002750405243839,
+        "B_T": 0.05300848056711853,
+        "temperature_rise_K": 0.010595602311141445,
+        "displacement_m": 0.12593497551061034,
+        "probe_stress_Pa": 0.9268199974658567
+      },
+      "passed": true
+    }
+  ],
+  "mesh_passed": true,
+  "sensitivity_source_sha256": "638a55dd85d8c06eaeafce3eac821285d5d0a8aa4b8133db0e3ee974f15c281f",
+  "sensitivity": {
+    "ok": true,
+    "status": "completed",
+    "evidence": "numerical_unit_response_recombination",
+    "method": "Linear FE unit responses reused; copper-temperature feedback recomputed per case",
+    "inductor_rms_A": 2.3108053147617,
+    "ambient_C": 40,
+    "convection_W_m2K": 10,
+    "rows": [
+      {
+        "extra_winding_heat_W": 0,
+        "core_heat_W": 0,
+        "peak_temperature_C": 57.9550574162595,
+        "dc_copper_heat_W": 1.32937827942631,
+        "iterations": 8,
+        "max_displacement_um": 13.345727743317351,
+        "core_probe_tensile_stress_MPa": 2.6959806224325105
+      },
+      {
+        "extra_winding_heat_W": 0,
+        "core_heat_W": 0.5,
+        "peak_temperature_C": 64.24386624770075,
+        "dc_copper_heat_W": 1.357969174025385,
+        "iterations": 8,
+        "max_displacement_um": 18.56514888951595,
+        "core_probe_tensile_stress_MPa": 3.629146102357479
+      },
+      {
+        "extra_winding_heat_W": 0,
+        "core_heat_W": 1,
+        "peak_temperature_C": 70.53612119848768,
+        "dc_copper_heat_W": 1.3865757357629518,
+        "iterations": 8,
+        "max_displacement_um": 23.785120841948636,
+        "core_probe_tensile_stress_MPa": 4.562343355270726
+      },
+      {
+        "extra_winding_heat_W": 0.5,
+        "core_heat_W": 0,
+        "peak_temperature_C": 65.15003730459098,
+        "dc_copper_heat_W": 1.36208891146224,
+        "iterations": 8,
+        "max_displacement_um": 18.693649528371704,
+        "core_probe_tensile_stress_MPa": 3.776318373965822
+      },
+      {
+        "extra_winding_heat_W": 0.5,
+        "core_heat_W": 0.5,
+        "peak_temperature_C": 71.4388461360319,
+        "dc_copper_heat_W": 1.39067980606129,
+        "iterations": 8,
+        "max_displacement_um": 23.912992249522617,
+        "core_probe_tensile_stress_MPa": 4.70948385388801
+      },
+      {
+        "extra_winding_heat_W": 0.5,
+        "core_heat_W": 1,
+        "peak_temperature_C": 77.72954960500499,
+        "dc_copper_heat_W": 1.4192793147733844,
+        "iterations": 9,
+        "max_displacement_um": 29.13277083814456,
+        "core_probe_tensile_stress_MPa": 5.642666803253265
+      },
+      {
+        "extra_winding_heat_W": 1,
+        "core_heat_W": 0,
+        "peak_temperature_C": 72.34501719292246,
+        "dc_copper_heat_W": 1.3947995434981695,
+        "iterations": 8,
+        "max_displacement_um": 24.041571313426044,
+        "core_probe_tensile_stress_MPa": 4.856656125499133
+      },
+      {
+        "extra_winding_heat_W": 1,
+        "core_heat_W": 0.5,
+        "peak_temperature_C": 78.63382603169208,
+        "dc_copper_heat_W": 1.4233904386398308,
+        "iterations": 9,
+        "max_displacement_um": 29.26086428180945,
+        "core_probe_tensile_stress_MPa": 5.789821606520025
+      },
+      {
+        "extra_winding_heat_W": 1,
+        "core_heat_W": 1,
+        "peak_temperature_C": 84.92297800573999,
+        "dc_copper_heat_W": 1.4519828933556131,
+        "iterations": 9,
+        "max_displacement_um": 34.48048317301719,
+        "core_probe_tensile_stress_MPa": 6.72299025036974
+      }
+    ]
+  }
+}

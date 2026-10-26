@@ -30,6 +30,41 @@ function node(tag, className, text) {
   if (text !== undefined) el.textContent = text;
   return el;
 }
+function appendRichText(parent, text) {
+  // Construct DOM nodes only: model text is never interpreted as HTML.
+  let code = null;
+  for (const line of String(text).split(/\r?\n/)) {
+    if (/^\s*```/.test(line)) {
+      if (code) { code = null; } else { code = node('pre', 'chat-code', ''); parent.append(code); }
+      continue;
+    }
+    if (code) { code.textContent += line + '\n'; continue; }
+    const row = node(/^#{1,6}\s/.test(line) ? 'h4' : 'div', 'chat-line');
+    const clean = line.replace(/^#{1,6}\s+/, '').replace(/^\s*[-*]\s+/, '• ');
+    const pattern = /\*\*([^*]+)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^\s)]+)\)/g;
+    let position = 0, match;
+    while ((match = pattern.exec(clean))) {
+      row.append(document.createTextNode(clean.slice(position, match.index)));
+      if (match[1]) row.append(node('strong', '', match[1]));
+      else if (match[2]) row.append(node('code', '', match[2]));
+      else if (/^https?:\/\//i.test(match[4])) {
+        const link = node('a', '', match[3]); link.href = match[4];
+        link.target = '_blank'; link.rel = 'noopener noreferrer'; row.append(link);
+      } else row.append(document.createTextNode(match[0]));
+      position = pattern.lastIndex;
+    }
+    row.append(document.createTextNode(clean.slice(position) || (clean ? '' : '\u00a0')));
+    parent.append(row);
+  }
+}
+function precisionSummary(data) {
+  const s = data?.solver || {}, m = data?.metrics || {};
+  const steps = Number.isFinite(s.steps_per_switching_period) ? `${s.steps_per_switching_period} 步/开关周期` : '步数未记录';
+  const dt = Number.isFinite(s.fixed_step_s) ? ` · Δt=${number(s.fixed_step_s * 1e6, 6)} μs` : '';
+  const window = Number.isFinite(m.analysis_start) && Number.isFinite(m.analysis_end_exclusive)
+    ? `统计窗口 [${number(m.analysis_start, 6)}, ${number(m.analysis_end_exclusive, 6)}) s` : '统计窗口未记录';
+  return `${steps}${dt}\n${window} · THD 统计 2–40 次，排除载波频段\n单次仿真；本次尚未验证步长收敛`;
+}
 function icon(name) {
   const el = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
@@ -110,7 +145,8 @@ function renderMessages() {
     const body = node("div", "message-body");
     const role = node("div", "message-role", m.role === "user" ? "你的需求" : "DC/AC Agent");
     role.append(node("time", "", localTime(m.created_at)));
-    body.append(role, node("div", "message-content", m.content)); row.append(avatar, body); return row;
+    const content = node('div', 'message-content'); appendRichText(content, m.content);
+    body.append(role, content); row.append(avatar, body); return row;
   }));
   if (wasBottom || changed) $("messages").scrollTo({top: $("messages").scrollHeight, behavior: "instant"});
 }
@@ -164,7 +200,18 @@ function renderResult() {
   const stale = !!currentRun && currentRun.revision !== state.session.revision;
   $("staleNotice").classList.toggle("hidden", !stale);
   $("staleNotice").textContent = stale ? `当前参数已是修订${state.session.revision}；下方结果属于修订${currentRun.revision}，请重新仿真验证修改。` : "";
-  $("resultSummary").textContent = m ? `${stageName(currentRun?.spec || result?.spec)} · 真实 Simulink 结果 · 输出功率 ${number(m.output_power)} W\n末尾4周期 · THD统计2–40次谐波 · 电压误差 ${m.voltage_error_percent >= 0 ? "+" : ""}${number(m.voltage_error_percent)}%\n单次仿真；本次尚未验证步长收敛` : "末尾4个完整基波周期 · THD统计2–40次谐波";
+  let details = m ? `${stageName(currentRun?.spec || result?.spec)} · 修订 ${currentRun?.revision ?? '—'} · 输出功率 ${number(m.output_power)} W\n${precisionSummary(result)}` : "末尾4个完整基波周期 · THD统计2–40次谐波";
+  const electrical = result?.electrical_v1;
+  if (electrical?.metrics?.switching_band_rms_V?.length === 2) {
+    const bands = electrical.metrics.switching_band_rms_V;
+    details += `\n载波邻域电压：fsw 附近 ${number(bands[0], 4)} Vrms；2fsw 附近 ${number(bands[1], 4)} Vrms`;
+  }
+  if (Number.isFinite(electrical?.dynamic?.one_cycle_rms_max_after_step_V)) {
+    const d = electrical.dynamic;
+    details += `\n降载后周期 RMS：${number(d.one_cycle_rms_min_after_step_V, 3)}–${number(d.one_cycle_rms_max_after_step_V, 3)} V`;
+    if (Number.isFinite(d.settling_time_2pct_s)) details += `；2% 恢复 ${number(d.settling_time_2pct_s*1000, 3)} ms（一周期 RMS 判据）`;
+  }
+  $("resultSummary").textContent = details;
   requestAnimationFrame(drawChart);
 }
 function renderFiles() {
@@ -281,7 +328,7 @@ function renderPhysics() {
   const items = (state.multiphysics || []).filter(item => (item.parent_run_id || item.run_id) === currentRun?.id);
   if (!items.length) { panel.append(node("p", "", "此电气运行尚无磁热力结果。点击“运行磁热力分析”执行E70候选求解。")); return; }
   const domainNames = {magnetic: "磁场", thermal: "温度场", structural: "热应力与位移"};
-  const metricNames = {candidate_inductance:"候选电感", bulk_peak_flux_density:"中心柱峰值磁密", peak_temperature:"最高温度", candidate_dc_copper_heat:"候选直流铜热", specified_core_heat:"指定磁芯热", specified_extra_winding_heat:"指定额外绕组热", max_displacement:"最大位移", core_probe_tensile_stress:"磁芯探针拉应力"};
+  const metricNames = {candidate_inductance:"候选电感", bulk_peak_flux_density:"中心柱截面平均峰值磁密", peak_temperature:"最高温度", candidate_dc_copper_heat:"候选直流铜热", specified_core_heat:"指定磁芯热", specified_extra_winding_heat:"指定额外绕组热", max_displacement:"最大位移", core_probe_tensile_stress:"磁芯探针拉应力", corner_sensitive_max_tensile_stress:"角点敏感最大拉应力（不作强度判据）"};
   for (const item of items) {
     if (["running", "failed", "cancelled", "invalid"].includes(item.status)) {
       panel.append(node("p", "", `${{running:"求解中",failed:"求解失败",cancelled:"已取消",invalid:"结果无效"}[item.status]}：${item.message || "请查看执行过程"}`));
@@ -290,7 +337,7 @@ function renderPhysics() {
     if (item.input_summary) {
       const x = item.input_summary, o = x.options;
       panel.append(node("p", "", `E70候选 · 单向耦合 · L差异 ${number(x.L_difference_percent)}% · R20差异 ${number(x.R_difference_percent)}%`));
-      panel.append(node("p", "", `环境 ${o.ambient_c}°C；h=${o.convection_w_m2k} W/(m²·K)；指定额外绕组热 ${o.extra_winding_heat_w} W、磁芯热 ${o.core_heat_w} W。未回填电路L/R；本次未验证网格/电气步长收敛。`));
+      panel.append(node("p", "", `环境 ${o.ambient_c}°C；h=${o.convection_w_m2k} W/(m²·K)；指定额外绕组热 ${o.extra_winding_heat_w} W、磁芯热 ${o.core_heat_w} W。场求解不自动修改电路；L/R是否一致以上述差异为准。本次单独运行未开展网格/电气步长对比。`));
     }
     panel.append(node("p", "", item.status === "invalid" ? `结果被拒绝：${item.message}` : `运行 ${item.parent_run_id} · 修订 ${item.revision} · ${item.evidence === "test" ? "测试数据，不作为课程结论" : item.evidence === "numerical" ? "数值求解（生产者声明）" : "解析计算"}${item.stale ? " · 已过期" : ""}`));
     for (const [domain, data] of Object.entries(item.domains || {})) {

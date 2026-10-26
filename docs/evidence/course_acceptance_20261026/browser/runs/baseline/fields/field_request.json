@@ -1,0 +1,31 @@
+{
+  "session_id": "d53e6ef3e11e",
+  "parent_run_id": "8e24b90ed43e",
+  "revision": 1,
+  "spec": {
+    "model_fidelity": "sps_device_closed_loop",
+    "input_voltage": 380,
+    "output_voltage": 220,
+    "output_power": 500,
+    "output_frequency": 50,
+    "switching_frequency": 20000,
+    "inductance": 0.002,
+    "capacitance": 4.7e-06,
+    "winding_resistance": 0.25,
+    "stop_time": 0.24,
+    "load_step": false,
+    "load_step_time": 0.12,
+    "load_final_ratio": 0.5
+  },
+  "parent_dir": "${REPOSITORY}/outputs/d53e6ef3e11e/8e24b90ed43e",
+  "options": {
+    "ambient_c": 40.0,
+    "convection_w_m2k": 10.0,
+    "extra_winding_heat_w": 0.5,
+    "core_heat_w": 0.5
+  },
+  "source_sha256": {
+    "result.json": "4325039a105c596260593b20de4cd600a3f5c9bed8bd9559837038583ddd5b7c",
+    "electrical_raw_v1.mat": "0806844fea845e97744a65d306bff7c3b82f4f4d7a326ab2664a2105aecb55cf"
+  }
+}
