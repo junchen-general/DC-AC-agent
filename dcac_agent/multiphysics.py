@@ -73,7 +73,7 @@ def execute_multiphysics(runtime, folder, session, run, cancel, emit, options=No
     write_json(status_path, status)
     try:
         src = ROOT / 'matlab' / 'multiphysics'
-        for name in ['dcac_multiphysics.m', 'solve_magnetic_e70.m', 'solve_unit_e70_thermal_structural.m',
+        for name in ['dcac_multiphysics.m', 'dcac_field_mesh.m', 'solve_magnetic_e70.m', 'solve_unit_e70_thermal_structural.m',
                      'plane_stress_cte_adapter.m', 'verify_plane_stress_backend.m', 'material_assumptions.json']:
             shutil.copyfile(src / name, out / name)
         request = dict(session_id=session['id'], parent_run_id=run['id'], revision=run['revision'],

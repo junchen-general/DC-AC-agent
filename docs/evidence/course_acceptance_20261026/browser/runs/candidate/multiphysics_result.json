@@ -1,0 +1,183 @@
+{
+  "ok": true,
+  "status": "completed",
+  "schema_version": "1.0",
+  "session_id": "d53e6ef3e11e",
+  "parent_run_id": "a20b1a8f3475",
+  "revision": 2,
+  "evidence": "numerical",
+  "component_version": "E70-N87-68turn-gap2p5mm-v1",
+  "material_version": "c-research-materials/0.1",
+  "boundary_version": "E70-minimal-support-adiabatic-front-back-v1",
+  "solver": {
+    "name": "MATLAB PDE Toolbox",
+    "version": "23.2.0.2515942 (R2023b) Update 7",
+    "coupling": "one_way_prescribed_current_conditional_candidate"
+  },
+  "verification": {
+    "plane_stress_backend": {
+      "status": "passed",
+      "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+      "poisson": [
+        0.25,
+        0.3,
+        0.35
+      ],
+      "cte_factors": [
+        0.6666666666666666,
+        0.5714285714285715,
+        0.46153846153846156
+      ],
+      "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+        [
+          5.715407770526743e-19,
+          4.76837158203125e-06,
+          2.9802322387695312e-08
+        ],
+        [
+          6.518346434579602e-19,
+          4.5299530029296875e-06,
+          0
+        ],
+        [
+          9.602746390514365e-19,
+          1.093745231628418e-05,
+          0
+        ]
+      ]
+    },
+    "magnetic_energy_error": 7.21525823172672e-14,
+    "heat_balance_error": 2.228503041656893e-06,
+    "thermal_feedback_iterations": 8,
+    "mesh": {
+      "configuration": {
+        "magnetic_hmax_m": 0.002,
+        "thermal_hmax_m": 0.002
+      },
+      "magnetic": {
+        "nodes": 31837,
+        "triangles": 15758,
+        "minimum_quality": 0.8099333273446124,
+        "median_quality": 0.9999394185881814,
+        "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+      },
+      "thermal": {
+        "nodes": 6897,
+        "triangles": 3380,
+        "minimum_quality": 0.804798539593109,
+        "median_quality": 0.9829232068103936,
+        "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+      },
+      "structural": {
+        "nodes": 6897,
+        "triangles": 3380,
+        "minimum_quality": 0.804798539593109,
+        "median_quality": 0.9829232068103936,
+        "quality_definition": "4*sqrt(3)*area/sum(corner_edge_length^2)"
+      },
+      "magnetic_seconds": 2.0012939,
+      "thermal_structural_seconds": 4.0590644
+    },
+    "elapsed_seconds": 23.8461999,
+    "mesh_convergence": "not_checked_for_this_run",
+    "electrical_step_convergence": "not_checked"
+  },
+  "input_summary": {
+    "inductor_rms_A": 2.310334032918087,
+    "inductor_peak_A": 3.7388629116731913,
+    "sample_time_s": 1.25000000000125e-07,
+    "window_start_s": 0.15999999999999998,
+    "window_end_exclusive_s": 0.24,
+    "sample_count": 640000,
+    "options": {
+      "ambient_c": 40,
+      "convection_w_m2k": 10,
+      "extra_winding_heat_w": 0.5,
+      "core_heat_w": 0.5
+    },
+    "candidate_R20_ohm": 0.2166407182392643,
+    "circuit_L_H": 0.001909071842964387,
+    "circuit_R_ohm": 0.2166407182392643,
+    "candidate_L_H": 0.0019090718429643867,
+    "L_difference_percent": -1.1102230246251565e-14,
+    "R_difference_percent": 0
+  },
+  "limitations": [
+    "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+    "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+    "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+    "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+    "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+    "This run has no mesh or electrical time-step convergence certification."
+  ],
+  "domains": {
+    "magnetic": {
+      "status": "completed",
+      "metrics": {
+        "candidate_inductance": {
+          "value": 0.0019090718429643867,
+          "unit": "H"
+        },
+        "bulk_peak_flux_density": {
+          "value": 0.1486477355631539,
+          "unit": "T"
+        }
+      },
+      "artifacts": [
+        "fields/f8769dffdc73/magnetic.png",
+        "fields/f8769dffdc73/fields.mat"
+      ]
+    },
+    "thermal": {
+      "status": "completed",
+      "metrics": {
+        "peak_temperature": {
+          "value": 71.42735561913737,
+          "unit": "degC"
+        },
+        "candidate_dc_copper_heat": {
+          "value": 1.390060395737719,
+          "unit": "W"
+        },
+        "specified_core_heat": {
+          "value": 0.5,
+          "unit": "W"
+        },
+        "specified_extra_winding_heat": {
+          "value": 0.5,
+          "unit": "W"
+        }
+      },
+      "artifacts": [
+        "fields/f8769dffdc73/thermal.png"
+      ]
+    },
+    "structural": {
+      "status": "completed",
+      "metrics": {
+        "max_displacement": {
+          "value": 2.3937031399183947e-05,
+          "unit": "m"
+        },
+        "core_probe_tensile_stress": {
+          "value": 4751893.744075378,
+          "unit": "Pa"
+        },
+        "corner_sensitive_max_tensile_stress": {
+          "value": 59546397.43211608,
+          "unit": "Pa"
+        }
+      },
+      "artifacts": [
+        "fields/f8769dffdc73/structural.png",
+        "fields/f8769dffdc73/displacement.png"
+      ]
+    }
+  },
+  "attempt_id": "f8769dffdc73",
+  "source_sha256": {
+    "result.json": "216e925a3e386c2133feb1f363db67a5d2451ebec023bc34341bd5b5970aefca",
+    "electrical_raw_v1.mat": "da49597883fc6073dea392aa989e3d207edd6e1bef8bf819ad03fcfd3ab6af44"
+  },
+  "completed_at": "2026-10-26T11:24:36.830933+00:00"
+}

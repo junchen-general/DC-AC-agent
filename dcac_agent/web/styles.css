@@ -8,3 +8,7 @@
 #modelStage {display:block;width:100%;padding:10px;margin-top:8px;border:1px solid #dce5d4;border-radius:8px;background:#fff;color:inherit;}
 
 #fieldsButton{width:100%;margin-top:14px;}
+.message-content .chat-line{min-height:1.45em;overflow-wrap:anywhere;}
+.message-content h4{font-size:inherit;margin:10px 0 4px;}
+.message-content code{font-family:Consolas,monospace;background:#f0f4ef;padding:1px 4px;border-radius:3px;}
+.message-content .chat-code{max-width:100%;overflow:auto;white-space:pre;background:#f0f4ef;padding:12px;border-radius:6px;font-size:12px;}

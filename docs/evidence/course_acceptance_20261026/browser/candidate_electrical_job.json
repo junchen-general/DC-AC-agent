@@ -1,0 +1,419 @@
+{
+  "id": "0ab7fa3607d3",
+  "session_id": "d53e6ef3e11e",
+  "status": "completed",
+  "created_at": "2026-10-26T11:18:15.699947+00:00",
+  "parent_run_id": null,
+  "events": [
+    {
+      "kind": "plan",
+      "title": "读取当前设计并检查功能范围",
+      "data": null,
+      "at": "2026-10-26T11:18:15.702959+00:00"
+    },
+    {
+      "kind": "tool",
+      "title": "run_simulation",
+      "data": {},
+      "at": "2026-10-26T11:18:15.702959+00:00"
+    },
+    {
+      "kind": "run",
+      "title": "生成本次独立模型与参数快照",
+      "data": {
+        "run_id": "a20b1a8f3475",
+        "revision": 2
+      },
+      "at": "2026-10-26T11:18:15.703960+00:00"
+    },
+    {
+      "kind": "matlab",
+      "title": "启动MATLAB批处理进程",
+      "data": {
+        "action": "simulate"
+      },
+      "at": "2026-10-26T11:18:15.771393+00:00"
+    },
+    {
+      "kind": "result",
+      "title": "run_simulation 完成",
+      "data": {
+        "ok": true,
+        "schema_version": "dcac.result/1.1",
+        "action": "simulate",
+        "source": "MATLAB/Simulink",
+        "data_origin": "real_simulation",
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "model_level": "sps_device_closed_loop",
+        "model_file": "dcac_inverter.slx",
+        "spec": {
+          "model_fidelity": "sps_device_closed_loop",
+          "input_voltage": 380,
+          "output_voltage": 220,
+          "output_power": 500,
+          "output_frequency": 50,
+          "switching_frequency": 20000,
+          "inductance": 0.001909071842964387,
+          "capacitance": 4.7e-06,
+          "winding_resistance": 0.2166407182392643,
+          "stop_time": 0.24,
+          "load_step": false,
+          "load_step_time": 0.12,
+          "load_final_ratio": 0.5
+        },
+        "run_context": {
+          "session_id": "d53e6ef3e11e",
+          "run_id": "a20b1a8f3475",
+          "design_revision": 2,
+          "component_revision_id": "",
+          "parent_component_revision_id": "",
+          "comparison_group_id": "",
+          "comparison_peer_run_ids": []
+        },
+        "scenario": "rated",
+        "solver": {
+          "type": "fixed_step_discrete",
+          "name": "FixedStepDiscrete",
+          "fixed_step_s": 1.25e-07,
+          "steps_per_switching_period": 400
+        },
+        "electrical_v1": {
+          "schema_version": "dcac.electrical.request/1.0",
+          "model_fidelity": "sps_device_closed_loop",
+          "scenario_id": "rated",
+          "dead_time_s": 1e-06,
+          "dead_time_resolution_points": 8,
+          "dead_time_requested_s": 1e-06,
+          "dead_time_effective_s": 1e-06,
+          "dead_time_discrete_steps": 8,
+          "dead_time_quantization_error_s": 0,
+          "closed_loop_dead_time_compensation": true,
+          "base_modulation_index": 0.8187552203212656,
+          "dead_time_compensation_index": 0.050929581789406514,
+          "feedforward_modulation_index": 0.8696848021106721,
+          "compiled": true,
+          "simulated": true,
+          "metrics": {
+            "thd_h2_h40_percent": 1.6891882047060087,
+            "thd_definition": "2nd through 40th integer multiples of the fundamental; carrier band excluded",
+            "switching_bands_hz": [
+              [
+                10000,
+                30000
+              ],
+              [
+                30000,
+                50000
+              ]
+            ],
+            "switching_band_rms_V": [
+              0.01169550208713925,
+              0.22411782591217427
+            ],
+            "switching_band_note": "Both fsw and 2*fsw neighborhoods are reported because the differential unipolar bridge can concentrate ripple near 2*fsw.",
+            "wideband_residual_rms_V": 0.8803517753385495,
+            "inductor_min_A": -3.7388497432630117,
+            "inductor_max_A": 3.7388629116731913,
+            "inductor_nonfundamental_residual_pp_A": 1.4526597143211575,
+            "inductor_residual_definition": "peak-to-peak after least-squares removal of DC and 50 Hz only; includes harmonics and switching ripple",
+            "capacitor_rms_A": 0.4322905219836729,
+            "inductor_terminal_rms_V": 162.91008426175858,
+            "inductor_terminal_peak_V": 387.24989430346284,
+            "inductive_voltage_rms_V": 162.90929898440558,
+            "inductive_voltage_peak_V": 387.1776344569616,
+            "dc_input_power_W": 500.9849570744628,
+            "load_output_power_W": 498.5749498569127
+          },
+          "dynamic": {},
+          "losses": {
+            "winding_dc_ohmic": {
+              "value_W": 1.1563508876754338,
+              "status": "assumed_unverified",
+              "method": "mean(iL^2)*constant winding_resistance",
+              "resistance_ohm": 0.2166407182392643,
+              "temperature_C": [],
+              "window_id": "thd_steady",
+              "basis_ref": "spec.winding_resistance",
+              "source": {
+                "kind": "unspecified",
+                "status": "assumed_unverified"
+              },
+              "included_in_whole_inverter_efficiency": false
+            },
+            "semiconductor_conduction": {
+              "value_W": 0.8113217882362519,
+              "status": "preliminary_datasheet_scaled",
+              "window_id": "thd_steady",
+              "basis_ref": {
+                "file": "loss_basis_v1.json",
+                "parameter_source_status": "manufacturer_datasheet_defaults"
+              }
+            },
+            "switching_overlap": {
+              "value_W": 0.4676722098203593,
+              "status": "preliminary_overlap_model",
+              "window_id": "thd_steady",
+              "basis_ref": {
+                "file": "loss_basis_v1.json",
+                "parameter_source_status": "manufacturer_datasheet_defaults"
+              }
+            },
+            "dead_time_diode": {
+              "value_W": 0.1640955122176699,
+              "status": "preliminary_dead_time_model",
+              "window_id": "thd_steady",
+              "basis_ref": {
+                "file": "loss_basis_v1.json",
+                "parameter_source_status": "manufacturer_datasheet_defaults"
+              }
+            },
+            "reverse_recovery_reference_not_included": {
+              "value_W": 36.48,
+              "status": "datasheet_test_point_not_scaled_to_operating_current",
+              "window_id": "thd_steady",
+              "basis_ref": {
+                "file": "loss_basis_v1.json",
+                "parameter_source_status": "manufacturer_datasheet_defaults"
+              }
+            },
+            "total_modeled_electrical_loss": {
+              "value_W": 2.5994403979497145,
+              "window_id": "thd_steady",
+              "status": "partial_not_efficiency"
+            },
+            "completeness": "partial; excludes core, capacitor ESR, gate drive, controls, auxiliaries and thermal iteration",
+            "whole_inverter_efficiency_claimed": false
+          },
+          "sampling": {
+            "solver": "FixedStepDiscrete",
+            "solver_type": "fixed_step_discrete",
+            "fixed_step_s": 1.25e-07,
+            "logging_sample_time_s": 1.25000000000125e-07,
+            "sample_count": 1920001.0,
+            "decimation": 1,
+            "is_uniform": true,
+            "max_relative_step_deviation": 1.3877787807800578e-10,
+            "requested_step_relative_error": 1.0001341524705151e-12,
+            "dt_min_s": 1.2499999998971667e-07,
+            "dt_max_s": 1.2500000001747225e-07,
+            "t_start_s": 0,
+            "t_end_s": 0.24
+          },
+          "windows": [
+            {
+              "id": "full_run",
+              "purpose": "all recorded samples",
+              "start_time_s": 0,
+              "last_sample_time_s": 0.24,
+              "end_time_exclusive_s": 0.24000012499999998,
+              "end_exclusive": true,
+              "start_index_0based": 0,
+              "end_index_exclusive_0based": 1920001.0,
+              "sample_count": 1920001.0,
+              "fundamental_cycles": 12.000006250012001,
+              "load_state": "full",
+              "selected_for_c": false,
+              "selection_reason": "Retained for transient traceability."
+            },
+            {
+              "id": "thd_steady",
+              "purpose": "legacy THD and steady metrics",
+              "start_time_s": 0.16,
+              "last_sample_time_s": 0.239999875,
+              "end_time_exclusive_s": 0.24,
+              "end_exclusive": true,
+              "start_index_0based": 1280000.0,
+              "end_index_exclusive_0based": 1920000.0,
+              "sample_count": 640000,
+              "fundamental_cycles": 4.000000000004,
+              "load_state": "rated",
+              "selected_for_c": true,
+              "selection_reason": "Final four complete cycles with full switching ripple."
+            },
+            {
+              "id": "magnetic_representative",
+              "purpose": "one final fundamental cycle for magnetic analysis",
+              "start_time_s": 0.22,
+              "last_sample_time_s": 0.239999875,
+              "end_time_exclusive_s": 0.24,
+              "end_exclusive": true,
+              "start_index_0based": 1760000.0,
+              "end_index_exclusive_0based": 1920000.0,
+              "sample_count": 160000,
+              "fundamental_cycles": 1.000000000001,
+              "load_state": "rated",
+              "selected_for_c": true,
+              "selection_reason": "Full-resolution current and induced voltage; no decimation."
+            }
+          ],
+          "full_resolution_files": [
+            "electrical_raw_v1.mat",
+            "electrical_full_v1.csv"
+          ],
+          "data_origin": "real_simulation"
+        },
+        "metrics": {
+          "output_rms": 219.68626526497968,
+          "current_rms": 2.2694862114185654,
+          "inductor_rms": 2.310334032918087,
+          "inductor_peak": 3.7388629116731913,
+          "output_power": 498.5749498569127,
+          "winding_loss": 1.1563508876754338,
+          "thd_percent": 1.6891882047060087,
+          "voltage_error_percent": -0.1426066977365137,
+          "analysis_cycles": 4,
+          "harmonic_max": 40,
+          "sample_time": 1.25000000000125e-07,
+          "analysis_start": 0.16,
+          "analysis_end": 0.24,
+          "analysis_end_exclusive": 0.24
+        },
+        "checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "analysis_notes": [
+          "Actual Simulink result. Web JSON waveforms are display-only decimation; C must use the full MAT/CSV.",
+          "Model fidelity: sps_device_closed_loop; scenario: rated.",
+          "Legacy THD is harmonics 2 through 40 over the final four whole cycles; it excludes the carrier band.",
+          "Winding I^2R is a constant-R DC-ohmic estimate. It is not total inverter loss or whole-inverter efficiency.",
+          "Device loss parameters and limitations are recorded in loss_basis_v1.json."
+        ],
+        "model_fidelity": "sps_device_closed_loop",
+        "run_id": "a20b1a8f3475",
+        "revision": 2,
+        "files": [
+          {
+            "name": "dcac_build_baseline_model.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_build_baseline_model.m",
+            "bytes": 10170
+          },
+          {
+            "name": "dcac_build_sps_model.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_build_sps_model.m",
+            "bytes": 17313
+          },
+          {
+            "name": "dcac_build_stages.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_build_stages.m",
+            "bytes": 1648
+          },
+          {
+            "name": "dcac_compare_step_runs.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_compare_step_runs.m",
+            "bytes": 2421
+          },
+          {
+            "name": "dcac_execute.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_execute.m",
+            "bytes": 5354
+          },
+          {
+            "name": "dcac_inverter.slx",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_inverter.slx",
+            "bytes": 136793
+          },
+          {
+            "name": "dcac_loss_basis.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_loss_basis.m",
+            "bytes": 3131
+          },
+          {
+            "name": "dcac_normalize_request.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_normalize_request.m",
+            "bytes": 10288
+          },
+          {
+            "name": "dcac_postprocess.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_postprocess.m",
+            "bytes": 16170
+          },
+          {
+            "name": "dcac_validate.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_validate.m",
+            "bytes": 11057
+          },
+          {
+            "name": "dcac_write_json.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_write_json.m",
+            "bytes": 303
+          },
+          {
+            "name": "dcac_write_manifest.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/dcac_write_manifest.m",
+            "bytes": 12371
+          },
+          {
+            "name": "electrical_full_v1.csv",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/electrical_full_v1.csv",
+            "bytes": 442169896
+          },
+          {
+            "name": "electrical_raw_v1.mat",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/electrical_raw_v1.mat",
+            "bytes": 157260448
+          },
+          {
+            "name": "loss_basis_v1.json",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/loss_basis_v1.json",
+            "bytes": 3699
+          },
+          {
+            "name": "LOSS_MODEL_BASIS.md",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/LOSS_MODEL_BASIS.md",
+            "bytes": 946
+          },
+          {
+            "name": "matlab.log",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/matlab.log",
+            "bytes": 109
+          },
+          {
+            "name": "process.log",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/process.log",
+            "bytes": 108
+          },
+          {
+            "name": "request.json",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/request.json",
+            "bytes": 1170
+          },
+          {
+            "name": "result.json",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/result.json",
+            "bytes": 240480
+          },
+          {
+            "name": "run_in_matlab.m",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/run_in_matlab.m",
+            "bytes": 546
+          },
+          {
+            "name": "run_manifest.json",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/run_manifest.json",
+            "bytes": 16051
+          },
+          {
+            "name": "signals.csv",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/signals.csv",
+            "bytes": 159430777
+          },
+          {
+            "name": "simulation.mat",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/simulation.mat",
+            "bytes": 63685199
+          },
+          {
+            "name": "waveforms.png",
+            "url": "/artifacts/d53e6ef3e11e/a20b1a8f3475/waveforms.png",
+            "bytes": 114372
+          }
+        ]
+      },
+      "at": "2026-10-26T11:21:06.061387+00:00"
+    }
+  ],
+  "answer": "电压闭环模型真实Simulink仿真已完成。\n输出电压 219.69 Vrms（目标偏差-0.14%），输出功率498.57 W，电压THD（2–40次）1.689%。\n电感电流有效值2.310 A，峰值3.739 A。\n通过当前电压偏差±5%、THD<5%的检查。\n分析窗口为末尾4个完整基波周期。单次指标通过不代表步长收敛；尚无总效率和当前运行的磁热力结果。",
+  "error": "",
+  "finished_at": "2026-10-26T11:21:06.061387+00:00"
+}

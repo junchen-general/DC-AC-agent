@@ -1,8 +1,8 @@
 function dcac_multiphysics(requestPath)
 % One-way E70 candidate field analysis from an identified electrical run.
-out=fileparts(requestPath); phase='read_request';
+out=fileparts(requestPath); phase='read_request'; totalClock=tic;
 try
-    q=jsondecode(fileread(requestPath)); o=q.options;
+    q=jsondecode(fileread(requestPath)); o=q.options; mesh=dcac_field_mesh(q);
     phase='validate_electrical';
     parent=jsondecode(fileread(fullfile(q.parent_dir,'result.json')));
     assert(parent.ok && strcmp(parent.source,'MATLAB/Simulink') && strcmp(parent.action,'simulate'),'A real electrical simulation is required.');
@@ -18,13 +18,15 @@ try
     assert(sum(select)==round(4/q.spec.output_frequency/dt),'Incomplete final four-cycle window.');
     irms=sqrt(mean(il(select).^2));ipeak=max(abs(il(select))); assert(ipeak>0,'Zero excitation.');
     phase='verify_structural_backend'; bench=verify_plane_stress_backend();
-    phase='magnetic';
-    [mag,magModel,magSolution]=solve_magnetic_e70(.0025,68,.002,.08,ipeak,2200);
+    phase='magnetic'; magClock=tic;
+    [mag,magModel,magSolution]=solve_magnetic_e70(.0025,68,mesh.magnetic_hmax_m,.08,ipeak,2200);
+    magneticSeconds=toc(magClock);
     assert(mag.energy_identity_relative_error<.01,'Magnetic energy identity failed.');
     mag.input_status='parent_run_final_four_cycle_current_peak';
-    phase='thermal_structural';
-    [mw,tw,rw,sw,dw]=solve_unit_e70_thermal_structural('winding',o.convection_w_m2k,.002,'minimal');
-    [mc,tc,rc,sc,dc]=solve_unit_e70_thermal_structural('core',o.convection_w_m2k,.002,'minimal');
+    phase='thermal_structural'; thermalClock=tic;
+    [mw,tw,rw,sw,dw]=solve_unit_e70_thermal_structural('winding',o.convection_w_m2k,mesh.thermal_hmax_m,'minimal');
+    [mc,tc,rc,sc,dc]=solve_unit_e70_thermal_structural('core',o.convection_w_m2k,mesh.thermal_hmax_m,'minimal');
+    thermalStructuralSeconds=toc(thermalClock);
     assert(isequal(tw.Mesh.Nodes,tc.Mesh.Nodes) && isequal(tw.Mesh.Elements,tc.Mesh.Elements),'Thermal mesh mismatch.');
     assert(isequal(sw.Mesh.Nodes,sc.Mesh.Nodes) && isequal(sw.Mesh.Elements,sc.Mesh.Elements),'Structural mesh mismatch.');
     assert(max([mw.heat_balance_relative_error,mc.heat_balance_relative_error])<.02,'Heat balance failed.');
@@ -51,7 +53,11 @@ try
     plotField(tw,o.ambient_c+rise,'Temperature (deg C; specified heat sources)',fullfile(out,'thermal.png'));
     plotField(sw,s1/1e6,'Tensile principal stress (MPa; corner peaks mesh-sensitive)',fullfile(out,'structural.png'));
     plotField(sw,umag*1e6,'Displacement (micrometers)',fullfile(out,'displacement.png'));
-    save(fullfile(out,'fields.mat'),'mag','magModel','magSolution','mw','mc','tw','sw','rise','ux','uy','s1','probe','bench','q','-v7.3');
+    meshEvidence=struct('configuration',mesh,'magnetic',meshStats(magModel.Mesh), ...
+        'thermal',meshStats(tw.Mesh),'structural',meshStats(sw.Mesh), ...
+        'magnetic_seconds',magneticSeconds,'thermal_structural_seconds',thermalStructuralSeconds);
+    save(fullfile(out,'fields.mat'),'mag','magModel','magSolution','mw','mc','tw','sw','rise','ux','uy','s1','probe','bench','q', ...
+        'rw','rc','dw','dc','irms','ipeak','meshEvidence','-v7.3');
     result=struct('ok',true,'status','completed','schema_version','1.0','session_id',q.session_id, ...
         'parent_run_id',q.parent_run_id,'revision',q.revision,'evidence','numerical', ...
         'component_version','E70-N87-68turn-gap2p5mm-v1','material_version','c-research-materials/0.1', ...
@@ -59,7 +65,8 @@ try
         'solver',struct('name','MATLAB PDE Toolbox','version',version,'coupling','one_way_prescribed_current_conditional_candidate'), ...
         'verification',struct('plane_stress_backend',bench,'magnetic_energy_error',mag.energy_identity_relative_error, ...
             'heat_balance_error',max([mw.heat_balance_relative_error,mc.heat_balance_relative_error]), ...
-            'thermal_feedback_iterations',iteration,'mesh_convergence','not_checked_for_this_run','electrical_step_convergence','not_checked'), ...
+            'thermal_feedback_iterations',iteration,'mesh',meshEvidence,'elapsed_seconds',toc(totalClock), ...
+            'mesh_convergence','not_checked_for_this_run','electrical_step_convergence','not_checked'), ...
         'input_summary',struct('inductor_rms_A',irms,'inductor_peak_A',ipeak,'sample_time_s',dt,'window_start_s',t(end)-4/q.spec.output_frequency, ...
             'window_end_exclusive_s',t(end),'sample_count',sum(select),'options',o,'candidate_R20_ohm',r20, ...
             'circuit_L_H',q.spec.inductance,'circuit_R_ohm',q.spec.winding_resistance, ...
@@ -77,12 +84,21 @@ try
         'candidate_dc_copper_heat',metric(pdc,'W'),'specified_core_heat',metric(pc,'W'), ...
         'specified_extra_winding_heat',metric(o.extra_winding_heat_w,'W')),'artifacts',{{'thermal.png'}});
     result.domains.structural=struct('status','completed','metrics',struct('max_displacement',metric(max(umag),'m'), ...
-        'core_probe_tensile_stress',metric(max(probe),'Pa')),'artifacts',{{'structural.png','displacement.png'}});
+        'core_probe_tensile_stress',metric(max(probe),'Pa'), ...
+        'corner_sensitive_max_tensile_stress',metric(max(s1),'Pa')),'artifacts',{{'structural.png','displacement.png'}});
     writeJson(fullfile(out,'result.json'),result);fprintf('DCAC_FIELDS_SUCCESS\n');
 catch err
     writeJson(fullfile(out,'result.json'),struct('ok',false,'phase',phase,'error',err.message,'report',getReport(err,'extended','hyperlinks','off')));
     fprintf(2,'%s\n',err.message);
 end
+end
+function info=meshStats(mesh)
+p=mesh.Nodes; e=mesh.Elements(1:3,:);
+a=p(:,e(2,:))-p(:,e(1,:)); b=p(:,e(3,:))-p(:,e(1,:));
+area=abs(a(1,:).*b(2,:)-a(2,:).*b(1,:))/2;
+quality=4*sqrt(3)*area./(sum(a.^2,1)+sum(b.^2,1)+sum((a-b).^2,1));
+info=struct('nodes',size(p,2),'triangles',size(e,2),'minimum_quality',min(quality), ...
+    'median_quality',median(quality),'quality_definition','4*sqrt(3)*area/sum(corner_edge_length^2)');
 end
 function m=metric(value,unit)
 assert(isscalar(value)&&isfinite(value),'Nonfinite metric');m=struct('value',value,'unit',unit);

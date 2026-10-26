@@ -1,0 +1,35 @@
+{
+  "session_id": "c954210e452f",
+  "parent_run_id": "212f0bc8dcae",
+  "revision": 2,
+  "spec": {
+    "model_fidelity": "sps_device_closed_loop",
+    "input_voltage": 380.0,
+    "output_voltage": 220.0,
+    "output_power": 500.0,
+    "output_frequency": 50.0,
+    "switching_frequency": 20000.0,
+    "inductance": 0.001909071842964387,
+    "capacitance": 4.7e-06,
+    "winding_resistance": 0.2166407182392643,
+    "stop_time": 0.24,
+    "load_step": false,
+    "load_step_time": 0.12,
+    "load_final_ratio": 0.5
+  },
+  "parent_dir": "${REPOSITORY}/outputs/lr_alignment_20261026/runs/c954210e452f/212f0bc8dcae",
+  "options": {
+    "ambient_c": 40,
+    "convection_w_m2k": 10,
+    "extra_winding_heat_w": 0.5,
+    "core_heat_w": 0.5
+  },
+  "source_sha256": {
+    "result.json": "7616576e12fc51bd9496d22ad5bc5eb0471e723e00e2570be6a84c57a4e1ee79",
+    "electrical_raw_v1.mat": "817b20914e806bcc20db12ef2fbf3b0ee7c728525a0f3b3b9e96044e2b23388e"
+  },
+  "mesh": {
+    "magnetic_hmax_m": 0.003,
+    "thermal_hmax_m": 0.003
+  }
+}

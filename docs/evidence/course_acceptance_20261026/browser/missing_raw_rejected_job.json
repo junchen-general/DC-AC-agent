@@ -1,0 +1,32 @@
+{
+  "id": "ca8dfa0565df",
+  "session_id": "d53e6ef3e11e",
+  "status": "failed",
+  "created_at": "2026-10-26T11:26:19.717604+00:00",
+  "parent_run_id": "a20b1a8f3475",
+  "events": [
+    {
+      "kind": "plan",
+      "title": "读取当前设计并检查功能范围",
+      "data": null,
+      "at": "2026-10-26T11:26:19.721115+00:00"
+    },
+    {
+      "kind": "tool",
+      "title": "run_multiphysics",
+      "data": {
+        "run_id": "a20b1a8f3475"
+      },
+      "at": "2026-10-26T11:26:19.721115+00:00"
+    },
+    {
+      "kind": "error",
+      "title": "任务未完成：缺少完整采样electrical_raw_v1.mat；请重新运行电气仿真，不可使用网页抽样波形。",
+      "data": null,
+      "at": "2026-10-26T11:26:19.754574+00:00"
+    }
+  ],
+  "answer": "任务未完成：缺少完整采样electrical_raw_v1.mat；请重新运行电气仿真，不可使用网页抽样波形。",
+  "error": "缺少完整采样electrical_raw_v1.mat；请重新运行电气仿真，不可使用网页抽样波形。",
+  "finished_at": "2026-10-26T11:26:19.754574+00:00"
+}
