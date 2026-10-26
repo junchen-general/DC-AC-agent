@@ -15,6 +15,7 @@ from .runtime import MatlabRuntime
 from .store import Store, now
 from .contracts import write_manifest, read_multiphysics
 from .multiphysics import execute_multiphysics, DEFAULT_OPTIONS, field_options
+from .candidate_revision import apply_candidate_revision
 
 
 SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使用中文。
@@ -23,6 +24,7 @@ SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使
 基础阶段每开关周期100步；器件阶段400步、1微秒死区；闭环为PR控制并开启死区补偿。
 器件阶段需要Simscape Electrical Specialized Power Systems。运行成功不代表步长收敛，不能宣称已验证总效率。
 run_multiphysics读取当前修订的真实全采样电气数据并执行E70候选磁热力求解；没有电气结果时自动先仿真。可选run_id仅用于当前修订。结果为单向耦合候选，必须说明L/R差异和指定热源假设，不宣称饱和、强度或整机效率已验证。
+用户要求采用候选电感或回填L/R时，用apply_candidate_parameters读取成功C结果的准确L和20°C电阻，创建新修订，然后重新运行电气和磁热力。不要抄写图中四舍五入数值，不自动反复迭代。
 不得声称已实现尚未实现的功能。用户提出不支持的拓扑/控制/分析时解释边界。
 只有工具返回成功才可声称已生成模型或仿真成功。禁止编造波形、指标、文件。
 用户让你构建/仿真时应调用相应工具，不能仅提供指导。先读取当前设计；需求有变则设置参数。
@@ -43,6 +45,7 @@ def function_tool(name: str, description: str, properties: dict | None = None, r
 PARAMS = {k: {"type": "boolean" if k == "load_step" else "number"} for k in DesignSpec().to_dict()}
 PARAMS["model_fidelity"] = {"type": "string", "enum": list(MODEL_STAGES), "description": "选择模型阶段；其他参数不变"}
 TOOLS = [
+    function_tool("apply_candidate_parameters", "将当前修订成功C结果中的精确L和20°C绕组电阻回填为新修订，保留原结果；之后需重新仿真。", {"run_id": {"type": "string"}}, ["run_id"]),
     function_tool("run_multiphysics", "读取完整电气电流，运行E70候选磁场、稳态热场和平面应力；无当前电气结果时先仿真。默认40°C、h=10、额外绕组与磁芯热各0.5W（指定假设）。不自动回填L/R。",
                   {"run_id": {"type": "string"}, "options": {"type": "object", "properties": {k: {"type": "number"} for k in DEFAULT_OPTIONS}, "additionalProperties": False}}),
     function_tool("get_multiphysics_results", "读取当前会话指定电气运行的磁热力交接结果；缺失时返回未运行，不执行求解。", {"run_id": {"type": "string"}}, ["run_id"]),
@@ -159,13 +162,15 @@ class AgentService:
             raise InterruptedError("任务已取消。")
         if not isinstance(args, dict):
             raise ValueError("工具参数必须为对象。")
-        allowed = {"run_multiphysics": {"run_id", "options"}, "get_multiphysics_results": {"run_id"}, "set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
+        allowed = {"apply_candidate_parameters": {"run_id"}, "run_multiphysics": {"run_id", "options"}, "get_multiphysics_results": {"run_id"}, "set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
                    "create_model": set(), "run_simulation": set(), "compare_runs": set(), "export_model_script": set()}
         if name not in allowed or set(args) - allowed[name]:
             raise ValueError(f"不支持的工具或参数：{name}")
         sid = job["session_id"]
         self._emit(job, "tool", name, args)
-        if name == "run_multiphysics":
+        if name == "apply_candidate_parameters":
+            result = apply_candidate_revision(self.store, OUTPUTS, sid, args.get("run_id"))
+        elif name == "run_multiphysics":
             options = field_options(args.get("options"))
             row = self.store.snapshot(sid)
             if args.get("run_id"):
@@ -202,6 +207,7 @@ class AgentService:
                       "engineering_review": DesignSpec(**row["spec"]).engineering_review(),
                       "revision": row["revision"], "runs": [{k: r[k] for k in ("id", "status", "action", "revision")} for r in row["runs"]],
                       "model_stages": MODEL_STAGES, "electrical": stage_options(row["spec"]),
+                      "candidate_updates": row.get("candidate_updates", []),
                       "limitations": "四阶段可建模与仿真；器件阶段需SPS。单次通过不代表数值收敛，不输出整机效率；支持当前电气数据驱动的E70候选磁热力求解（指定热源、单向耦合）。"}
         elif name == "set_parameters":
             result = self.store.update_spec(sid, args.get("updates", {}))
@@ -269,6 +275,15 @@ class AgentService:
                 for p in sorted(directory.rglob("*")) if p.is_file() and p.name != "run.json"]
 
     def _rules(self, job, text):
+        if any(phrase in text for phrase in ('回填候选参数', '应用候选电感')):
+            if any(word in text for word in ('不要', '不执行', '解释', '介绍', '什么意思', '如何', '怎么')):
+                return '候选回填会读取当前C结果中的L和20°C电阻，建立新修订；本次未更新参数。'
+            row = self.store.snapshot(job['session_id'])
+            run = next((r for r in reversed(row['runs']) if r['status']=='completed'
+                        and r['action']=='simulate' and r['revision']==row['revision']), None)
+            if run is None:
+                return '请先完成当前设计的电气与磁热力求解，再回填候选参数。'
+            return self._describe(self._tool(job, 'apply_candidate_parameters', {'run_id':run['id']}), 'apply_candidate_parameters')
         if any(word in text for word in ("磁热力", "磁场", "温度场", "热应力", "多物理场")):
             if any(word in text for word in ("不运行", "不要运行", "不要仿真", "只查看", "仅查看", "介绍", "解释", "导出")) or not any(word in text for word in ("运行", "求解", "分析", "计算", "仿真")):
                 return "磁热力采用E70候选与当前电气全采样数据，默认环境40°C、h=10，指定额外绕组/磁芯热各0.5 W；本次未执行求解。"
@@ -308,6 +323,11 @@ class AgentService:
 
     @staticmethod
     def _describe(result, name):
+        if name == 'apply_candidate_parameters':
+            s=result['spec']
+            return (f"已建立设计修订{result['revision']}：L={s['inductance']*1000:.9g} mH，"
+                    f"R20={s['winding_resistance']:.9g} Ω。计算保留源结果的完整精度。\n"
+                    "电路电阻参考温度为20°C；原结果保留。请重新运行电气仿真，再运行磁热力分析。")
         if name == "run_multiphysics":
             d = result["domains"]
             info = result["input_summary"]
@@ -316,7 +336,7 @@ class AgentService:
                     f"最高温度{d['thermal']['metrics']['peak_temperature']['value']:.2f} °C；"
                     f"最大位移{1e6*d['structural']['metrics']['max_displacement']['value']:.2f} μm。\n"
                     f"候选L与电气L差异{info['L_difference_percent']:+.2f}%；候选R20与电气R差异{info['R_difference_percent']:+.2f}%。\n"
-                    "云图、材料与边界依据已关联到该电气运行。采用指定热源和线性场模型，未将候选L/R回填电路；不代表饱和、强度或网格收敛验证完成。")
+                    "云图、材料与边界依据已关联到该电气运行。本次场求解不自动更新电路参数；可通过候选回填另建修订。采用指定热源和线性场模型，不代表饱和、强度或网格收敛验证完成。")
         if name == "get_design":
             s, d = result["spec"], result["derived"]
             return (f"模型阶段：{MODEL_STAGES[s.get('model_fidelity', BASELINE)]}。\n当前设计：{s['input_voltage']:g} V直流 → {s['output_voltage']:g} V交流有效值，"

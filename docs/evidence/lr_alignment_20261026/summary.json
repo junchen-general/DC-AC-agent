@@ -1,0 +1,1673 @@
+{
+  "schema_version": "dcac.lr-iteration/1.0",
+  "created_at": "2026-10-26T09:33:48.453382+00:00",
+  "solver_source_sha256": "18726c15c23aa9486fe9c125903f43388e462ed538e7552dc00f53ec3b86321f",
+  "resistance_basis": "cold_R20",
+  "resistance_reference_temperature_c": 20,
+  "status": "completed",
+  "scenarios": {
+    "rated": {
+      "session_id": "c954210e452f",
+      "parameter_update": {
+        "source_run_id": "f30194b6683b",
+        "source_attempt_id": "add8ae4a9006",
+        "source_revision": 1,
+        "target_revision": 2,
+        "component_version": "E70-N87-68turn-gap2p5mm-v1",
+        "field_result_sha256": "6a4c825366fc7717913042bfe020869b73c05d2b0402975041432b894553b2c9",
+        "source_sha256": {
+          "result.json": "20b34b58878402e29bcbb595e7a09776191a8a1fd7e17b536a52f0e5cf4c06b1",
+          "electrical_raw_v1.mat": "c7da9f07109b8d7207e72a81bab1643e79ceaa8d79cd76b8b0d50b06db7102b0"
+        },
+        "old_parameters": {
+          "inductance": 0.002,
+          "winding_resistance": 0.25
+        },
+        "new_parameters": {
+          "inductance": 0.001909071842964387,
+          "winding_resistance": 0.2166407182392643
+        },
+        "resistance_reference_temperature_c": 20,
+        "resistance_basis": "cold_R20",
+        "coupling": "explicit_single_parameter_update",
+        "created_at": "2026-10-26T09:40:42.725486+00:00"
+      },
+      "alignment_verified": true,
+      "recomputed_L_difference_percent": -8.881784197001252e-14,
+      "baseline": {
+        "status": "completed",
+        "run": {
+          "id": "f30194b6683b",
+          "action": "simulate",
+          "revision": 1,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.002,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.25,
+            "stop_time": 0.24,
+            "load_step": false,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "rated",
+          "steps": 800,
+          "created_at": "2026-10-26T09:36:58.290267+00:00",
+          "metrics": {
+            "output_rms": 219.68018933945433,
+            "current_rms": 2.269423443587541,
+            "inductor_rms": 2.3088988314933028,
+            "inductor_peak": 3.6847778984322836,
+            "output_power": 498.5473717787074,
+            "winding_loss": 1.3327534535177845,
+            "thd_percent": 1.700703512961712,
+            "voltage_error_percent": -0.14536848206621045,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 6.250000000179723e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T09:39:36.822538+00:00",
+          "source_sha256": {
+            "result.json": "20b34b58878402e29bcbb595e7a09776191a8a1fd7e17b536a52f0e5cf4c06b1",
+            "electrical_raw_v1.mat": "c7da9f07109b8d7207e72a81bab1643e79ceaa8d79cd76b8b0d50b06db7102b0"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0033787612480615276,
+              "inductor_rms": 0.0065588330191044784,
+              "inductor_peak": 0.6090290150441156,
+              "thd_percentage_points": 0.026109047806215813
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "7e43c478cf39",
+            "fine_run_id": "f30194b6683b",
+            "coarse_steps": 400,
+            "fine_steps": 800,
+            "coarse_metrics": {
+              "output_rms": 219.6876118085614,
+              "current_rms": 2.269500121989589,
+              "inductor_rms": 2.3090502683122405,
+              "inductor_peak": 3.707219264973669,
+              "output_power": 498.5810617991314,
+              "winding_loss": 1.3329282853982076,
+              "thd_percent": 1.7268125607679279,
+              "voltage_error_percent": -0.14199463247208666,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.25000000000125e-07,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "f0e531017aef3276c38be1f59daf8f52d698a2eaedc31c6ad0d5bc88df32a339",
+              "electrical_raw_v1.mat": "1736158a8e3e8fe916c7fcebd4b543c6fb8c05c49538a00726efe63bc4c1e30c"
+            },
+            "fine_metrics": {
+              "output_rms": 219.68018933945433,
+              "current_rms": 2.269423443587541,
+              "inductor_rms": 2.3088988314933028,
+              "inductor_peak": 3.6847778984322836,
+              "output_power": 498.5473717787074,
+              "winding_loss": 1.3327534535177845,
+              "thd_percent": 1.700703512961712,
+              "voltage_error_percent": -0.14536848206621045,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 6.250000000179723e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "20b34b58878402e29bcbb595e7a09776191a8a1fd7e17b536a52f0e5cf4c06b1",
+              "electrical_raw_v1.mat": "c7da9f07109b8d7207e72a81bab1643e79ceaa8d79cd76b8b0d50b06db7102b0"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 2.3088988314933028,
+          "inductor_peak_A": 3.6847778984322836,
+          "sample_time_s": 6.250000000179723e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 1280000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.002,
+          "circuit_R_ohm": 0.25,
+          "candidate_L_H": 0.001909071842964387,
+          "L_difference_percent": -4.546407851780653,
+          "R_difference_percent": -13.343712704294274
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.28138923774257e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 8,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.001909071842964387,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.14649745219195473,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 71.40252066584742,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 1.3882211735015946,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 2.3918538697833164e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 4748123.938808644,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "20b34b58878402e29bcbb595e7a09776191a8a1fd7e17b536a52f0e5cf4c06b1",
+          "electrical_raw_v1.mat": "c7da9f07109b8d7207e72a81bab1643e79ceaa8d79cd76b8b0d50b06db7102b0"
+        },
+        "attempt_id": "add8ae4a9006",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {},
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 6.25e-08,
+          "logging_sample_time_s": 6.250000000179723e-08,
+          "sample_count": 3840001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 3.330669073779694e-10,
+          "requested_step_relative_error": 2.875570976809943e-11,
+          "dt_min_s": 6.249999998098055e-08,
+          "dt_max_s": 6.250000000873612e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "4da67f9dac0d08fcf58b1c4639d7f5e148b72752bb70bddb223511682242d855",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "e8ac083b4e14f6499361c43b0fc7d42fdba06fc67289b47114b6e04f74f36836",
+          "matlab.log": "471edf3eb2540a928ed1faea3ceb8e8c06f912117370b3e2a01d88920daf39d9",
+          "process.log": "b1d299c563de3f9cf04be8549c38e0bd5ab3199d441cb85826373d4f9cbe7afd",
+          "request.json": "2b917a2ef0f97ce39921a0b4d76fb5ffdac6a00e71d19170b568f3fdb1ae5c77",
+          "structural.png": "66a54a799db3021b36bce4bb170da8f8f889fd2266660066e12a6809ab789f21",
+          "thermal.png": "ed08bffe7855845b596fb7dbd12a4c3a7c7ca518924327ccce43d1ff1ab621d3"
+        }
+      },
+      "candidate": {
+        "status": "completed",
+        "run": {
+          "id": "212f0bc8dcae",
+          "action": "simulate",
+          "revision": 2,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.001909071842964387,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.2166407182392643,
+            "stop_time": 0.24,
+            "load_step": false,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "rated",
+          "steps": 800,
+          "created_at": "2026-10-26T09:42:27.214823+00:00",
+          "metrics": {
+            "output_rms": 219.68494846037947,
+            "current_rms": 2.269472608059473,
+            "inductor_rms": 2.3108053147617,
+            "inductor_peak": 3.739402853590745,
+            "output_power": 498.56897293378813,
+            "winding_loss": 1.1568227006288787,
+            "thd_percent": 1.6513876970384986,
+            "voltage_error_percent": -0.14320524528205203,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 6.250000000179723e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T09:44:51.732996+00:00",
+          "source_sha256": {
+            "result.json": "7616576e12fc51bd9496d22ad5bc5eb0471e723e00e2570be6a84c57a4e1ee79",
+            "electrical_raw_v1.mat": "817b20914e806bcc20db12ef2fbf3b0ee7c728525a0f3b3b9e96044e2b23388e"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0005994059262759988,
+              "inductor_rms": 0.02039470138840335,
+              "inductor_peak": 0.014439255108207988,
+              "thd_percentage_points": 0.037800507667510086
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "8c9418eb4e8d",
+            "fine_run_id": "212f0bc8dcae",
+            "coarse_steps": 400,
+            "fine_steps": 800,
+            "coarse_metrics": {
+              "output_rms": 219.68626526497968,
+              "current_rms": 2.2694862114185654,
+              "inductor_rms": 2.310334032918087,
+              "inductor_peak": 3.7388629116731913,
+              "output_power": 498.5749498569127,
+              "winding_loss": 1.1563508876754338,
+              "thd_percent": 1.6891882047060087,
+              "voltage_error_percent": -0.1426066977365137,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.25000000000125e-07,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "d5cc294c3ed10a33d1b4415026da33c73688f288dbeddd643fe61bc2b0c4014c",
+              "electrical_raw_v1.mat": "7da32e10c0c935d4132d73a3f71d68cca4b430dabc11c0073794c24f0a07d09d"
+            },
+            "fine_metrics": {
+              "output_rms": 219.68494846037947,
+              "current_rms": 2.269472608059473,
+              "inductor_rms": 2.3108053147617,
+              "inductor_peak": 3.739402853590745,
+              "output_power": 498.56897293378813,
+              "winding_loss": 1.1568227006288787,
+              "thd_percent": 1.6513876970384986,
+              "voltage_error_percent": -0.14320524528205203,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 6.250000000179723e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "7616576e12fc51bd9496d22ad5bc5eb0471e723e00e2570be6a84c57a4e1ee79",
+              "electrical_raw_v1.mat": "817b20914e806bcc20db12ef2fbf3b0ee7c728525a0f3b3b9e96044e2b23388e"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 2.3108053147617,
+          "inductor_peak_A": 3.739402853590745,
+          "sample_time_s": 6.250000000179723e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 1280000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.001909071842964387,
+          "circuit_R_ohm": 0.2166407182392643,
+          "candidate_L_H": 0.0019090718429643852,
+          "L_difference_percent": -8.881784197001252e-14,
+          "R_difference_percent": 0
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.304151701562771e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 8,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.0019090718429643852,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.1486692022885396,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 71.43551500092411,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 1.3906646616785485,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 2.3943107070455906e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 4753132.292023269,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "7616576e12fc51bd9496d22ad5bc5eb0471e723e00e2570be6a84c57a4e1ee79",
+          "electrical_raw_v1.mat": "817b20914e806bcc20db12ef2fbf3b0ee7c728525a0f3b3b9e96044e2b23388e"
+        },
+        "attempt_id": "1bae6ddfd916",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {},
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 6.25e-08,
+          "logging_sample_time_s": 6.250000000179723e-08,
+          "sample_count": 3840001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 3.330669073779694e-10,
+          "requested_step_relative_error": 2.875570976809943e-11,
+          "dt_min_s": 6.249999998098055e-08,
+          "dt_max_s": 6.250000000873612e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "0e9a5cad610557f798aea7632ab33c8bb22b38ebaf03f85fa5c7a63040d3b0a8",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "8bc3c6b1e6c6f85ed6e0d8e84fc9efcf493898160de83773c41e3a102da6c82b",
+          "matlab.log": "86053fdcef04031f53e16d2d31a27cd1d76a4b5d107ae355c551f235ec7c0df0",
+          "process.log": "10d41c84c364784d2cb7890d168a5ea9f844ffa1bdb9fe55ef95c091c5b41e33",
+          "request.json": "d143dc4c043993bb3a4c3e8397f2a55120808fd7c3427ee4674a4fbe51eba2c3",
+          "structural.png": "d9d469e56bd4c829c91eda8df9b8acf9aa9b25cea3c14c5de4ccb2e3ca27ad87",
+          "thermal.png": "11e276961fb85a9a0e966eeb94f4b021cded601407b019065f72bf6e0f9aa572"
+        }
+      }
+    },
+    "half_load": {
+      "session_id": "8087f9aecab7",
+      "parameter_update": {
+        "source_run_id": "567cd0921649",
+        "source_attempt_id": "2f3c3b99e798",
+        "source_revision": 1,
+        "target_revision": 2,
+        "component_version": "E70-N87-68turn-gap2p5mm-v1",
+        "field_result_sha256": "5c51ed755eb73bef2ab230c25f9716efc58adff871d23574c4530a57fb3cffa7",
+        "source_sha256": {
+          "result.json": "9d2a0c80e2eb869c3ab3309a3f17250f40529336273cec82efba07fab6b416ae",
+          "electrical_raw_v1.mat": "7a8f2d8f8d653764c8529abe57d9e1fa02b88311fc73242932abeb4c1bc34dae"
+        },
+        "old_parameters": {
+          "inductance": 0.002,
+          "winding_resistance": 0.25
+        },
+        "new_parameters": {
+          "inductance": 0.0019090718429643832,
+          "winding_resistance": 0.2166407182392643
+        },
+        "resistance_reference_temperature_c": 20,
+        "resistance_basis": "cold_R20",
+        "coupling": "explicit_single_parameter_update",
+        "created_at": "2026-10-26T09:59:35.243136+00:00"
+      },
+      "recomputed_L_difference_percent": 2.220446049250313e-13,
+      "alignment_verified": true,
+      "baseline": {
+        "status": "completed",
+        "run": {
+          "id": "567cd0921649",
+          "action": "simulate",
+          "revision": 1,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.002,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.25,
+            "stop_time": 0.24,
+            "load_step": false,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "half_load",
+          "steps": 3200,
+          "created_at": "2026-10-26T09:52:08.077462+00:00",
+          "metrics": {
+            "output_rms": 220.01684158226752,
+            "current_rms": 1.1364506280078541,
+            "inductor_rms": 1.2445618380591985,
+            "inductor_peak": 2.534141299458856,
+            "output_power": 250.03827778847258,
+            "winding_loss": 0.3872335421883226,
+            "thd_percent": 1.6193453159681732,
+            "voltage_error_percent": 0.0076552646670613456,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 1.562500000218403e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T09:57:40.656325+00:00",
+          "source_sha256": {
+            "result.json": "9d2a0c80e2eb869c3ab3309a3f17250f40529336273cec82efba07fab6b416ae",
+            "electrical_raw_v1.mat": "7a8f2d8f8d653764c8529abe57d9e1fa02b88311fc73242932abeb4c1bc34dae"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0009864170978855682,
+              "inductor_rms": 0.06893516628135704,
+              "inductor_peak": 0.6278450475498113,
+              "thd_percentage_points": 0.01014253462973036
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "6a55c729a827",
+            "fine_run_id": "567cd0921649",
+            "coarse_steps": 1600,
+            "fine_steps": 3200,
+            "coarse_metrics": {
+              "output_rms": 220.01467129852392,
+              "current_rms": 1.1364394178637842,
+              "inductor_rms": 1.243703897286658,
+              "inductor_peak": 2.5500517801054228,
+              "output_power": 250.0333449719863,
+              "winding_loss": 0.3866998460315056,
+              "thd_percent": 1.6294878505979036,
+              "voltage_error_percent": 0.006668772056328542,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 3.125000000436806e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "1e18af1a6b7f384e340b25e5962b325520cd9485ba46a2d3af7c32ab492eea40",
+              "electrical_raw_v1.mat": "4c7c52face3110133b497da788de331a096ca10dd7a18d2119e67e79e16fd880"
+            },
+            "fine_metrics": {
+              "output_rms": 220.01684158226752,
+              "current_rms": 1.1364506280078541,
+              "inductor_rms": 1.2445618380591985,
+              "inductor_peak": 2.534141299458856,
+              "output_power": 250.03827778847258,
+              "winding_loss": 0.3872335421883226,
+              "thd_percent": 1.6193453159681732,
+              "voltage_error_percent": 0.0076552646670613456,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.562500000218403e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "9d2a0c80e2eb869c3ab3309a3f17250f40529336273cec82efba07fab6b416ae",
+              "electrical_raw_v1.mat": "7a8f2d8f8d653764c8529abe57d9e1fa02b88311fc73242932abeb4c1bc34dae"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 1.2445618380591985,
+          "inductor_peak_A": 2.534141299458856,
+          "sample_time_s": 1.562500000218403e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 5120000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.002,
+          "circuit_R_ohm": 0.25,
+          "candidate_L_H": 0.0019090718429643832,
+          "L_difference_percent": -4.546407851780843,
+          "R_difference_percent": -13.343712704294274
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.329529376489832e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 6,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.0019090718429643832,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.10075105042914001,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 57.86273147910545,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 0.3854940471826801,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 1.3836565875785645e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 2692860.6278815437,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "9d2a0c80e2eb869c3ab3309a3f17250f40529336273cec82efba07fab6b416ae",
+          "electrical_raw_v1.mat": "7a8f2d8f8d653764c8529abe57d9e1fa02b88311fc73242932abeb4c1bc34dae"
+        },
+        "attempt_id": "2f3c3b99e798",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {},
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 1.5625e-08,
+          "logging_sample_time_s": 1.562500000218403e-08,
+          "sample_count": 15360001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 8.881784195759774e-10,
+          "requested_step_relative_error": 1.3977801223061508e-10,
+          "dt_min_s": 1.5624999988306243e-08,
+          "dt_max_s": 1.562500001606182e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "ddb829ae5a6c2566bad0b67fef4d85097550d5b6cdfbb975b4a3efea6df9f26a",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "77e7920b715902aa67310d915b145624187c1e1c7e3d5a94677afd47881c8071",
+          "matlab.log": "764eeafd7af03af3e77e3197bebbdee61e4beff144f06197bbb081d8d50e56c2",
+          "process.log": "0a678ef10d1167fa029febe762952011800e3d07581f6430c17af27e32127feb",
+          "request.json": "b8d30c60f2d09f7c9c8aa795d62507188d5b197c662d1ca7cd53e32657498c88",
+          "structural.png": "b3a111c054024ea82334f098e81b3299f5b3e713c18fb918594dce73e2f45320",
+          "thermal.png": "afcb44ca64da0ef0b28d692fee2fe58551f18fe4ba6cb67c68e117f720ec7427"
+        }
+      },
+      "candidate": {
+        "status": "completed",
+        "run": {
+          "id": "33f5f0e7a620",
+          "action": "simulate",
+          "revision": 2,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.0019090718429643832,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.2166407182392643,
+            "stop_time": 0.24,
+            "load_step": false,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "half_load",
+          "steps": 3200,
+          "created_at": "2026-10-26T10:03:04.100706+00:00",
+          "metrics": {
+            "output_rms": 220.02980139762371,
+            "current_rms": 1.1365175692020526,
+            "inductor_rms": 1.2556049371896918,
+            "inductor_peak": 2.6239715449926293,
+            "output_power": 250.06773503643763,
+            "winding_loss": 0.34154357213268605,
+            "thd_percent": 1.3453346027854858,
+            "voltage_error_percent": 0.013546089828953,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 1.562500000218403e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T10:08:30.622837+00:00",
+          "source_sha256": {
+            "result.json": "375bc01010d5576501ce5f3d9efb5d487d03adc0b952266c0348ef971246b9ae",
+            "electrical_raw_v1.mat": "b36de6122432a243bf204897fe7aecf06ca0bb2baab11a95d8952545f1bab8fc"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0021484539886742655,
+              "inductor_rms": 0.2120791371180546,
+              "inductor_peak": 0.5621999790134989,
+              "thd_percentage_points": 0.035445891079501024
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "4f987792299f",
+            "fine_run_id": "33f5f0e7a620",
+            "coarse_steps": 1600,
+            "fine_steps": 3200,
+            "coarse_metrics": {
+              "output_rms": 220.0345286366681,
+              "current_rms": 1.1365419867583963,
+              "inductor_rms": 1.2582678133060954,
+              "inductor_peak": 2.638723512467898,
+              "output_power": 250.07848033216604,
+              "winding_loss": 0.3429937936336729,
+              "thd_percent": 1.3807804938649868,
+              "voltage_error_percent": 0.0156948348491337,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 3.125000000436806e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "9acd6da68cde8e77051bda0643906ba1f2b59a052cba05cd3db34fcfc6474af6",
+              "electrical_raw_v1.mat": "398f2c4c69d947577d2268602efbc64e1959a1ebf7e4906a6d1304cc586ff389"
+            },
+            "fine_metrics": {
+              "output_rms": 220.02980139762371,
+              "current_rms": 1.1365175692020526,
+              "inductor_rms": 1.2556049371896918,
+              "inductor_peak": 2.6239715449926293,
+              "output_power": 250.06773503643763,
+              "winding_loss": 0.34154357213268605,
+              "thd_percent": 1.3453346027854858,
+              "voltage_error_percent": 0.013546089828953,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.562500000218403e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "375bc01010d5576501ce5f3d9efb5d487d03adc0b952266c0348ef971246b9ae",
+              "electrical_raw_v1.mat": "b36de6122432a243bf204897fe7aecf06ca0bb2baab11a95d8952545f1bab8fc"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 1.2556049371896918,
+          "inductor_peak_A": 2.6239715449926293,
+          "sample_time_s": 1.562500000218403e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 5120000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.0019090718429643832,
+          "circuit_R_ohm": 0.2166407182392643,
+          "candidate_L_H": 0.0019090718429643873,
+          "L_difference_percent": 2.220446049250313e-13,
+          "R_difference_percent": 0
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.205802988103221e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 6,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.0019090718429643873,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.10432247385362232,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 57.95722834690244,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 0.39249227820277593,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 1.3906929022298266e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 2707204.71706729,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "375bc01010d5576501ce5f3d9efb5d487d03adc0b952266c0348ef971246b9ae",
+          "electrical_raw_v1.mat": "b36de6122432a243bf204897fe7aecf06ca0bb2baab11a95d8952545f1bab8fc"
+        },
+        "attempt_id": "c804e7c6ea37",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {},
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 1.5625e-08,
+          "logging_sample_time_s": 1.562500000218403e-08,
+          "sample_count": 15360001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 8.881784195759774e-10,
+          "requested_step_relative_error": 1.3977801223061508e-10,
+          "dt_min_s": 1.5624999988306243e-08,
+          "dt_max_s": 1.562500001606182e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "0f3229c29cf1799b7786845afbf9c0b5fa73f930e24a1f9d90d45428b823808f",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "a0520b752ce261d61158afd718ca8d7edd8e57a01b2dc7f658c37775206ad6e1",
+          "matlab.log": "26bc47a32b0a96841d7a6b2a227b934f5537df760a7289a4b388178ba00a833b",
+          "process.log": "eed7894a2432ab0f70d55cfdaf9ebbda18db0dadc77682c74629122b5dc2860b",
+          "request.json": "b1ab455842a60091b7d0b52e4cc0c8fc259946f275c10abfbba54f4ed3e9a029",
+          "structural.png": "8eac376b7de7e9055c112278d1b04c84d0f5a9bde0cc8025b97759665d01778f",
+          "thermal.png": "4da6af0a2dbaf75d4eedb568be495775c0fffbf3e1cdcdcab196279823751785"
+        }
+      }
+    },
+    "rated_to_half": {
+      "session_id": "ff69ee3ef7e7",
+      "parameter_update": {
+        "source_run_id": "38442827d4ab",
+        "source_attempt_id": "54cace7f7754",
+        "source_revision": 1,
+        "target_revision": 2,
+        "component_version": "E70-N87-68turn-gap2p5mm-v1",
+        "field_result_sha256": "258340ec5092cd4a1440e8e0f68d85e94f30d279cb1e8433129da3758efd9014",
+        "source_sha256": {
+          "result.json": "bd98aec27945c5b1960a3bec71e330ae0d6dd3e4cd1a3f14b1dced9481db56d3",
+          "electrical_raw_v1.mat": "443a63c463062fa56674b3e0476fdd56798ac954576ae614a9afef92f1c84c95"
+        },
+        "old_parameters": {
+          "inductance": 0.002,
+          "winding_resistance": 0.25
+        },
+        "new_parameters": {
+          "inductance": 0.0019090718429643856,
+          "winding_resistance": 0.2166407182392643
+        },
+        "resistance_reference_temperature_c": 20,
+        "resistance_basis": "cold_R20",
+        "coupling": "explicit_single_parameter_update",
+        "created_at": "2026-10-26T10:21:15.835394+00:00"
+      },
+      "recomputed_L_difference_percent": 0,
+      "alignment_verified": true,
+      "baseline": {
+        "status": "completed",
+        "run": {
+          "id": "38442827d4ab",
+          "action": "simulate",
+          "revision": 1,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.002,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.25,
+            "stop_time": 0.24,
+            "load_step": true,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "rated_to_half",
+          "steps": 3200,
+          "created_at": "2026-10-26T10:13:49.392483+00:00",
+          "metrics": {
+            "output_rms": 220.0161336722372,
+            "current_rms": 1.1366669449960185,
+            "inductor_rms": 1.2450439365346233,
+            "inductor_peak": 2.541533658149649,
+            "output_power": 250.08506651105742,
+            "winding_loss": 0.3875336009754078,
+            "thd_percent": 1.6261317795597352,
+            "voltage_error_percent": 0.007333487380556392,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 1.562500000218403e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T10:19:32.677878+00:00",
+          "source_sha256": {
+            "result.json": "bd98aec27945c5b1960a3bec71e330ae0d6dd3e4cd1a3f14b1dced9481db56d3",
+            "electrical_raw_v1.mat": "443a63c463062fa56674b3e0476fdd56798ac954576ae614a9afef92f1c84c95"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0026479389662645617,
+              "inductor_rms": 0.20305181416164353,
+              "inductor_peak": 0.33826217655344926,
+              "thd_percentage_points": 0.028528792869087827
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "db77a30c5a00",
+            "fine_run_id": "38442827d4ab",
+            "coarse_steps": 1600,
+            "fine_steps": 3200,
+            "coarse_metrics": {
+              "output_rms": 220.01030777930163,
+              "current_rms": 1.136636846744692,
+              "inductor_rms": 1.2425158522343802,
+              "inductor_peak": 2.5329366110797533,
+              "output_power": 250.0718224855945,
+              "winding_loss": 0.385961410763432,
+              "thd_percent": 1.5976029866906474,
+              "voltage_error_percent": 0.004685354228017857,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 3.125000000436806e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "18ff8fa9e0975c488553166592155991dc338e4d8003f7ef79717958cd02e101",
+              "electrical_raw_v1.mat": "641cc7e27b3d95854c606b459d5f98d90ad6b3727453b73e2f2c6c8296b9a0fe"
+            },
+            "fine_metrics": {
+              "output_rms": 220.0161336722372,
+              "current_rms": 1.1366669449960185,
+              "inductor_rms": 1.2450439365346233,
+              "inductor_peak": 2.541533658149649,
+              "output_power": 250.08506651105742,
+              "winding_loss": 0.3875336009754078,
+              "thd_percent": 1.6261317795597352,
+              "voltage_error_percent": 0.007333487380556392,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.562500000218403e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "bd98aec27945c5b1960a3bec71e330ae0d6dd3e4cd1a3f14b1dced9481db56d3",
+              "electrical_raw_v1.mat": "443a63c463062fa56674b3e0476fdd56798ac954576ae614a9afef92f1c84c95"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 1.2450439365346233,
+          "inductor_peak_A": 2.541533658149649,
+          "sample_time_s": 1.562500000218403e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 5120000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.002,
+          "circuit_R_ohm": 0.25,
+          "candidate_L_H": 0.0019090718429643856,
+          "L_difference_percent": -4.546407851780721,
+          "R_difference_percent": -13.343712704294274
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.272886257489444e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 6,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.0019090718429643856,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.1010449519189289,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 57.86683814653381,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 0.38579817797617977,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 1.3839623733722978e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 2693483.996731915,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "bd98aec27945c5b1960a3bec71e330ae0d6dd3e4cd1a3f14b1dced9481db56d3",
+          "electrical_raw_v1.mat": "443a63c463062fa56674b3e0476fdd56798ac954576ae614a9afef92f1c84c95"
+        },
+        "attempt_id": "54cace7f7754",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {
+          "step_time_s": 0.12,
+          "transient_inductor_peak_A": 2.6216228607708167,
+          "transient_output_voltage_peak_V": 323.2265283227351,
+          "one_cycle_rms_max_after_step_V": 220.45649365566763,
+          "one_cycle_rms_min_after_step_V": 220.01297921381172,
+          "settling_time_2pct_s": 0.01999999999999999,
+          "settling_definition": "first one-cycle RMS point after which all remaining points stay within 2% of final-window RMS"
+        },
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 1.5625e-08,
+          "logging_sample_time_s": 1.562500000218403e-08,
+          "sample_count": 15360001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 8.881784195759774e-10,
+          "requested_step_relative_error": 1.3977801223061508e-10,
+          "dt_min_s": 1.5624999988306243e-08,
+          "dt_max_s": 1.562500001606182e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "0d4324c5a149e457d3787b19fb03cef28fda6e8c8e0af5d1f895ff43940172b9",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "0df77cd38701feb97ee2dc5208d8594932ef5d7e90ef4fa92efc3b5bb38279d8",
+          "matlab.log": "9a08074bef596158a7adc0080aa5ee60c24a8241d7539030205772c1b7d8288e",
+          "process.log": "89f465cec323ed2a87d57f4d12c362f7c8b0521f6b2306ee317033d6222de3e1",
+          "request.json": "6c711d2c61a026b3097e0f158b3f418fb68109beaccaf9ad3e15bb4c7f9e9060",
+          "structural.png": "3dddb72516fa56210d2f3e7b3d1dcf945404bb384d3743944e28d25e3887c0a5",
+          "thermal.png": "28ab8c090d515c0ad56ff2494f1b13f4ef159bbb8d3accd3f74c53abd22fef4a"
+        }
+      },
+      "candidate": {
+        "status": "completed",
+        "run": {
+          "id": "5835cad577b8",
+          "action": "simulate",
+          "revision": 2,
+          "spec": {
+            "model_fidelity": "sps_device_closed_loop",
+            "input_voltage": 380.0,
+            "output_voltage": 220.0,
+            "output_power": 500.0,
+            "output_frequency": 50.0,
+            "switching_frequency": 20000.0,
+            "inductance": 0.0019090718429643856,
+            "capacitance": 4.7e-06,
+            "winding_resistance": 0.2166407182392643,
+            "stop_time": 0.24,
+            "load_step": true,
+            "load_step_time": 0.12,
+            "load_final_ratio": 0.5
+          },
+          "status": "completed",
+          "scenario": "rated_to_half",
+          "steps": 3200,
+          "created_at": "2026-10-26T10:25:13.421747+00:00",
+          "metrics": {
+            "output_rms": 220.02682711927793,
+            "current_rms": 1.136722190432868,
+            "inductor_rms": 1.2554227970634344,
+            "inductor_peak": 2.616749640972642,
+            "output_power": 250.10937687701954,
+            "winding_loss": 0.34144448957024404,
+            "thd_percent": 1.3455339626274168,
+            "voltage_error_percent": 0.012194145126320777,
+            "analysis_cycles": 4,
+            "harmonic_max": 40,
+            "sample_time": 1.562500000218403e-08,
+            "analysis_start": 0.16,
+            "analysis_end": 0.24,
+            "analysis_end_exclusive": 0.24
+          },
+          "checks": {
+            "voltage": true,
+            "thd": true
+          },
+          "finished_at": "2026-10-26T10:31:35.014706+00:00",
+          "source_sha256": {
+            "result.json": "2251c06d53976a3761f2129c7bb0d5aeb4b7c51597c2d4fc36ab958396d19d9c",
+            "electrical_raw_v1.mat": "434ae28f55f72af1d296c28839d4706ba0158a94266a8f397512b2e4a13ebeb8"
+          }
+        },
+        "comparisons": [
+          {
+            "errors": {
+              "output_rms": 0.0037709438396995175,
+              "inductor_rms": 0.2902901080429683,
+              "inductor_peak": 0.9689778357035082,
+              "thd_percentage_points": 0.04681127526759976
+            },
+            "converged": true,
+            "criteria": {
+              "output_rms": 0.2,
+              "inductor_rms": 0.5,
+              "inductor_peak": 1.0,
+              "thd_percentage_points": 0.1
+            },
+            "coarse_run_id": "e25b120ac45f",
+            "fine_run_id": "5835cad577b8",
+            "coarse_steps": 1600,
+            "fine_steps": 3200,
+            "coarse_metrics": {
+              "output_rms": 220.03512420736087,
+              "current_rms": 1.1367650555888016,
+              "inductor_rms": 1.259067165257426,
+              "inductor_peak": 2.642105365009518,
+              "output_power": 250.12824020106942,
+              "winding_loss": 0.3434297260218715,
+              "thd_percent": 1.3923452378950165,
+              "voltage_error_percent": 0.015965548800389584,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 3.125000000436806e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "coarse_source_sha256": {
+              "result.json": "332fa22eb1029cd3f2ce4548aa40d616fb4240c262b49786a8554143fbc5fc08",
+              "electrical_raw_v1.mat": "23e35f14062e9a4d07c35e27efc4c9de18d3afdc5881a83ae9824a2e416373bf"
+            },
+            "fine_metrics": {
+              "output_rms": 220.02682711927793,
+              "current_rms": 1.136722190432868,
+              "inductor_rms": 1.2554227970634344,
+              "inductor_peak": 2.616749640972642,
+              "output_power": 250.10937687701954,
+              "winding_loss": 0.34144448957024404,
+              "thd_percent": 1.3455339626274168,
+              "voltage_error_percent": 0.012194145126320777,
+              "analysis_cycles": 4,
+              "harmonic_max": 40,
+              "sample_time": 1.562500000218403e-08,
+              "analysis_start": 0.16,
+              "analysis_end": 0.24,
+              "analysis_end_exclusive": 0.24
+            },
+            "fine_source_sha256": {
+              "result.json": "2251c06d53976a3761f2129c7bb0d5aeb4b7c51597c2d4fc36ab958396d19d9c",
+              "electrical_raw_v1.mat": "434ae28f55f72af1d296c28839d4706ba0158a94266a8f397512b2e4a13ebeb8"
+            }
+          }
+        ],
+        "field_input": {
+          "inductor_rms_A": 1.2554227970634344,
+          "inductor_peak_A": 2.616749640972642,
+          "sample_time_s": 1.562500000218403e-08,
+          "window_start_s": 0.15999999999999998,
+          "window_end_exclusive_s": 0.24,
+          "sample_count": 5120000.0,
+          "options": {
+            "ambient_c": 40,
+            "convection_w_m2k": 10,
+            "extra_winding_heat_w": 0.5,
+            "core_heat_w": 0.5
+          },
+          "candidate_R20_ohm": 0.2166407182392643,
+          "circuit_L_H": 0.0019090718429643856,
+          "circuit_R_ohm": 0.2166407182392643,
+          "candidate_L_H": 0.0019090718429643856,
+          "L_difference_percent": 0,
+          "R_difference_percent": 0
+        },
+        "field_verification": {
+          "plane_stress_backend": {
+            "status": "passed",
+            "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+            "poisson": [
+              0.25,
+              0.3,
+              0.35
+            ],
+            "cte_factors": [
+              0.6666666666666666,
+              0.5714285714285715,
+              0.46153846153846156
+            ],
+            "errors_free_u_m_free_stress_Pa_restrained_stress_Pa": [
+              [
+                5.715407770526743e-19,
+                4.76837158203125e-06,
+                2.9802322387695312e-08
+              ],
+              [
+                6.518346434579602e-19,
+                4.5299530029296875e-06,
+                0
+              ],
+              [
+                9.602746390514365e-19,
+                1.093745231628418e-05,
+                0
+              ]
+            ]
+          },
+          "magnetic_energy_error": 7.298713670691422e-14,
+          "heat_balance_error": 2.228503041656893e-06,
+          "thermal_feedback_iterations": 6,
+          "mesh_convergence": "not_checked_for_this_run",
+          "electrical_step_convergence": "not_checked"
+        },
+        "field_metrics": {
+          "magnetic": {
+            "candidate_inductance": {
+              "value": 0.0019090718429643856,
+              "unit": "H"
+            },
+            "bulk_peak_flux_density": {
+              "value": 0.10403534921054595,
+              "unit": "T"
+            }
+          },
+          "thermal": {
+            "peak_temperature": {
+              "value": 57.955662487904924,
+              "unit": "degC"
+            },
+            "candidate_dc_copper_heat": {
+              "value": 0.39237631411565865,
+              "unit": "W"
+            },
+            "specified_core_heat": {
+              "value": 0.5,
+              "unit": "W"
+            },
+            "specified_extra_winding_heat": {
+              "value": 0.5,
+              "unit": "W"
+            }
+          },
+          "structural": {
+            "max_displacement": {
+              "value": 1.3905763070599905e-05,
+              "unit": "m"
+            },
+            "core_probe_tensile_stress": {
+              "value": 2706967.0285423817,
+              "unit": "Pa"
+            }
+          }
+        },
+        "source_sha256": {
+          "result.json": "2251c06d53976a3761f2129c7bb0d5aeb4b7c51597c2d4fc36ab958396d19d9c",
+          "electrical_raw_v1.mat": "434ae28f55f72af1d296c28839d4706ba0158a94266a8f397512b2e4a13ebeb8"
+        },
+        "attempt_id": "63f2178e98c4",
+        "solver": {
+          "name": "MATLAB PDE Toolbox",
+          "version": "23.2.0.2515942 (R2023b) Update 7",
+          "coupling": "one_way_prescribed_current_conditional_candidate"
+        },
+        "limitations": [
+          "E70 candidate driven by parent current; L/R not fed back to electrical simulation.",
+          "Linear magnetic material; no saturation, hysteresis or calibrated core-loss prediction.",
+          "Extra winding heat and core heat are prescribed assumptions, not predicted losses.",
+          "Thermal steady state and linear plane stress; ideal bonded assembly, no contact or magnetic force.",
+          "Stress probes are screening values; corner maxima are mesh-sensitive, no strength safety factor.",
+          "This run has no mesh or electrical time-step convergence certification."
+        ],
+        "matlab_version": "23.2.0.2515942 (R2023b) Update 7",
+        "electrical_checks": {
+          "voltage": true,
+          "thd": true
+        },
+        "dynamic": {
+          "step_time_s": 0.12,
+          "transient_inductor_peak_A": 2.73662700036033,
+          "transient_output_voltage_peak_V": 325.79019472829884,
+          "one_cycle_rms_max_after_step_V": 220.4791202035592,
+          "one_cycle_rms_min_after_step_V": 220.0169621112139,
+          "settling_time_2pct_s": 0.01999999999999999,
+          "settling_definition": "first one-cycle RMS point after which all remaining points stay within 2% of final-window RMS"
+        },
+        "sampling": {
+          "solver": "FixedStepDiscrete",
+          "solver_type": "fixed_step_discrete",
+          "fixed_step_s": 1.5625e-08,
+          "logging_sample_time_s": 1.562500000218403e-08,
+          "sample_count": 15360001.0,
+          "decimation": 1,
+          "is_uniform": true,
+          "max_relative_step_deviation": 8.881784195759774e-10,
+          "requested_step_relative_error": 1.3977801223061508e-10,
+          "dt_min_s": 1.5624999988306243e-08,
+          "dt_max_s": 1.562500001606182e-08,
+          "t_start_s": 0,
+          "t_end_s": 0.24
+        },
+        "published_artifact_sha256": {
+          "displacement.png": "b368db06180fb5a57f04612b8e03e3af2b2e41358ae99dda143282ce49da1995",
+          "fields_matlab.log": "9f8adf13018b8c749fd74c9b02d83a7795eae853ee817a162c76cc7ca28ffe3b",
+          "magnetic.png": "368e369770c9c4c59480c92d48d42033169260e64ed8a17b92225e4ccad3c5c3",
+          "matlab.log": "a5ee0d49bbef17cd6ffa153c9b9a80e464843643adfeadd0d4172eed733cfff3",
+          "process.log": "5518c474a31234bdb7ce4cb2a6a6a68f5d1cef3d4e5d00195d1a04d308f840e3",
+          "request.json": "a5415eefa169147ad5936e806f8272fc4662c6f164cb55d689a8c80ab2257e01",
+          "structural.png": "383ca61352a535199b58e5094dd64ff3cb94176927547bb761600f2dce748dcc",
+          "thermal.png": "ed832f8314eff71d4eafd0a0601b752137bc8452862d69f0b0436a032190a4ad"
+        }
+      }
+    }
+  }
+}
