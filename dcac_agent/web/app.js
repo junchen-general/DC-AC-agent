@@ -43,7 +43,7 @@ function toast(message) {
 const number = (value, decimals = 2) => Number(value).toLocaleString("zh-CN", {maximumFractionDigits: decimals});
 const localTime = (value, seconds = false) => new Date(value).toLocaleTimeString("zh-CN", {hour: "2-digit", minute: "2-digit", ...(seconds ? {second: "2-digit"} : {})});
 function setBusy(busy) {
-  for (const id of ["sendButton", "buildButton", "simulateButton", "editSpec", "compareButton", "exportButton"]) $(id).disabled = busy;
+  for (const id of ["sendButton", "buildButton", "simulateButton", "editSpec", "compareButton", "exportButton", "fieldsButton"]) $(id).disabled = busy;
   $("taskBanner").classList.toggle("hidden", !busy);
   $("cancelTask").disabled = activeJob?.status === "cancelling";
 }
@@ -212,6 +212,7 @@ async function watchJob(jid) {
     else {
       if (job.result) { result = job.result; currentRun = {id: result.run_id, revision: result.revision}; }
       await refresh(sid);
+      if (job.status === "completed" && job.events.some(e => e.kind === "tool" && e.title === "run_multiphysics")) activateTab("results");
       if (job.status === "failed") { activateTab("trace"); toast("任务未完成，请查看执行过程和日志。"); }
     }
   } catch (error) { setBusy(false); toast(error.message); }
@@ -220,7 +221,7 @@ async function submit(message, action = "chat", updates = undefined) {
   if (!state) return;
   try {
     setBusy(true);
-    const job = await api("/api/chat", {session_id: selectedSession, message, action, ...(updates ? {updates} : {})});
+    const job = await api("/api/chat", {session_id: selectedSession, message, action, ...(action === "multiphysics" && currentRun ? {run_id: currentRun.id} : {}), ...(updates ? {updates} : {})});
     $("messageInput").value = "";
     // Refresh session messages, then resume polling through the server-owned job.
     await refresh(selectedSession);
@@ -240,6 +241,7 @@ document.querySelectorAll("[data-prompt]").forEach(button => button.addEventList
 $("newSession").addEventListener("click", async () => { try { const s = await api("/api/sessions", {}); clearTimeout(pollTimer); result = null; currentRun = null; resultGeneration++; await refresh(s.id); $("messageInput").focus(); } catch(e) { toast(e.message); } });
 $("buildButton").addEventListener("click", () => submit("生成当前设计的Simulink模型", "build"));
 $("exportButton").addEventListener("click", () => { activateTab("files"); submit("导出建模与仿真脚本，供已打开的MATLAB执行", "export"); });
+$("fieldsButton").addEventListener("click", () => { activateTab("trace"); submit("对当前电气运行执行E70候选磁热力分析", "multiphysics"); });
 $("simulateButton").addEventListener("click", () => { activateTab("trace"); submit("运行当前设计的真实Simulink仿真", "simulate"); });
 $("compareButton").addEventListener("click", () => submit("比较最近两次真实仿真结果", "compare"));
 $("cancelTask").addEventListener("click", async () => { if (activeJob) { try { activeJob = await api("/api/cancel", {job_id: activeJob.id}); setBusy(true); } catch(e) { toast(e.message); } } });
@@ -277,12 +279,27 @@ refresh().catch(error => toast("连接本机服务失败：" + error.message));
 function renderPhysics() {
   const panel = $("physicsPanel"); panel.replaceChildren(node("strong", "", "磁 · 热 · 力结果交接"));
   const items = (state.multiphysics || []).filter(item => (item.parent_run_id || item.run_id) === currentRun?.id);
-  if (!items.length) { panel.append(node("p", "", "此电气运行尚无关联的磁热力结果。C 的独立研究已收录，自动求解待接入。")); return; }
+  if (!items.length) { panel.append(node("p", "", "此电气运行尚无磁热力结果。点击“运行磁热力分析”执行E70候选求解。")); return; }
+  const domainNames = {magnetic: "磁场", thermal: "温度场", structural: "热应力与位移"};
+  const metricNames = {candidate_inductance:"候选电感", bulk_peak_flux_density:"中心柱峰值磁密", peak_temperature:"最高温度", candidate_dc_copper_heat:"候选直流铜热", specified_core_heat:"指定磁芯热", specified_extra_winding_heat:"指定额外绕组热", max_displacement:"最大位移", core_probe_tensile_stress:"磁芯探针拉应力"};
   for (const item of items) {
+    if (["running", "failed", "cancelled", "invalid"].includes(item.status)) {
+      panel.append(node("p", "", `${{running:"求解中",failed:"求解失败",cancelled:"已取消",invalid:"结果无效"}[item.status]}：${item.message || "请查看执行过程"}`));
+      continue;
+    }
+    if (item.input_summary) {
+      const x = item.input_summary, o = x.options;
+      panel.append(node("p", "", `E70候选 · 单向耦合 · L差异 ${number(x.L_difference_percent)}% · R20差异 ${number(x.R_difference_percent)}%`));
+      panel.append(node("p", "", `环境 ${o.ambient_c}°C；h=${o.convection_w_m2k} W/(m²·K)；指定额外绕组热 ${o.extra_winding_heat_w} W、磁芯热 ${o.core_heat_w} W。未回填电路L/R；本次未验证网格/电气步长收敛。`));
+    }
     panel.append(node("p", "", item.status === "invalid" ? `结果被拒绝：${item.message}` : `运行 ${item.parent_run_id} · 修订 ${item.revision} · ${item.evidence === "test" ? "测试数据，不作为课程结论" : item.evidence === "numerical" ? "数值求解（生产者声明）" : "解析计算"}${item.stale ? " · 已过期" : ""}`));
     for (const [domain, data] of Object.entries(item.domains || {})) {
-      panel.append(node("p", "", `${domain} · ${data.status}`));
-      for (const [key, metric] of Object.entries(data.metrics || {})) panel.append(node("div", "", `${key}: ${metric.value} ${metric.unit}`));
+      panel.append(node("p", "", `${domainNames[domain] || domain} · ${data.status === "completed" ? "已完成" : data.status}`));
+      for (const [key, metric] of Object.entries(data.metrics || {})) {
+        const scales = {H:[1000,"mH"],m:[1e6,"μm"],Pa:[1e-6,"MPa"],degC:[1,"°C"]};
+        const [scale, unit] = scales[metric.unit] || [1, metric.unit];
+        panel.append(node("div", "", `${metricNames[key] || key}: ${number(metric.value * scale, 4)} ${unit}`));
+      }
       for (const file of data.files || []) {
         const link = node("a", "file-row", file.name); link.href = file.url; link.target = "_blank"; link.rel = "noopener"; panel.append(link);
         if (file.image) { const img = node("img", "physics-image"); img.src = file.url; img.alt = `${domain} ${file.name}`; panel.append(img); }

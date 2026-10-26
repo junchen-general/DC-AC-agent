@@ -66,3 +66,9 @@ B历史20 kHz工件与用户25 kHz运行不可混用。C已有独立模块，仍
 
 ## 四阶段模型协议更新
 spec新增model_fidelity枚举；缺省baseline_ideal_switching_open_loop，以兼容旧会话。阶段切换通过set_parameters并增加revision；run.spec保留当次阶段。request.electrical的阶段、采样与补偿配置由stage_options生成。A摘要的fidelity现在为四阶段标识，不再固定为ideal_switching_function_open_loop；读取历史摘要时需接受旧字符串。手动结果electrical_v1.model_fidelity与run.spec不匹配时不导入。C接入时同样应核对电气阶段及原始波形，不只比较功率和电压。
+
+
+## 2026-10-26 C自动求解接入更新
+E70候选磁热力求解已接入run_multiphysics工具、规则对话和网页按钮；无当前电气结果时自动先仿真，旧修订或缺少原始MAT/身份的运行拒绝使用。9个受限领域工具共用任务队列。完整数据、运行归属、源文件哈希、边界条件、材料副本、每次独立尝试目录、失败/取消状态均保留。
+当前为单向耦合候选：不自动回填L/R、不预测饱和/实际磁芯损耗/强度裕度。默认额外绕组热与磁芯热各0.5 W为指定假设。解析基准适配器已在R2025a验证；真实求解得到1.909044 mH、0.147388 T、71.4052°C、23.9292 μm、探针拉应力4.739582 MPa，父电气运行ead0561a28ef。详细条件、证据和限制见docs/C_AGENT_INTEGRATION.md。
+41项Python回归测试、前端状态回归、JS语法检查通过；HTTP确认四张PNG和父运行归属。浏览器控制被当前应用设置禁用，未完成本轮浏览器视觉验收。网格/步长收敛、L/R回填复验及真实损耗依据仍待完成。

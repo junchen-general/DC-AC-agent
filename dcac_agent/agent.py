@@ -14,6 +14,7 @@ from .design import DesignSpec, extract_parameters, MODEL_STAGES, BASELINE, stag
 from .runtime import MatlabRuntime
 from .store import Store, now
 from .contracts import write_manifest, read_multiphysics
+from .multiphysics import execute_multiphysics, DEFAULT_OPTIONS, field_options
 
 
 SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使用中文。
@@ -21,7 +22,7 @@ SYSTEM = """你是DC/AC Agent，一个单相逆变器设计与仿真助手，使
 使用set_parameters的model_fidelity枚举切换阶段，其他参数保持不变。切换产生新修订。
 基础阶段每开关周期100步；器件阶段400步、1微秒死区；闭环为PR控制并开启死区补偿。
 器件阶段需要Simscape Electrical Specialized Power Systems。运行成功不代表步长收敛，不能宣称已验证总效率。
-C的磁热力脚本已收录，尚未接入自动求解工具。
+run_multiphysics读取当前修订的真实全采样电气数据并执行E70候选磁热力求解；没有电气结果时自动先仿真。可选run_id仅用于当前修订。结果为单向耦合候选，必须说明L/R差异和指定热源假设，不宣称饱和、强度或整机效率已验证。
 不得声称已实现尚未实现的功能。用户提出不支持的拓扑/控制/分析时解释边界。
 只有工具返回成功才可声称已生成模型或仿真成功。禁止编造波形、指标、文件。
 用户让你构建/仿真时应调用相应工具，不能仅提供指导。先读取当前设计；需求有变则设置参数。
@@ -42,6 +43,8 @@ def function_tool(name: str, description: str, properties: dict | None = None, r
 PARAMS = {k: {"type": "boolean" if k == "load_step" else "number"} for k in DesignSpec().to_dict()}
 PARAMS["model_fidelity"] = {"type": "string", "enum": list(MODEL_STAGES), "description": "选择模型阶段；其他参数不变"}
 TOOLS = [
+    function_tool("run_multiphysics", "读取完整电气电流，运行E70候选磁场、稳态热场和平面应力；无当前电气结果时先仿真。默认40°C、h=10、额外绕组与磁芯热各0.5W（指定假设）。不自动回填L/R。",
+                  {"run_id": {"type": "string"}, "options": {"type": "object", "properties": {k: {"type": "number"} for k in DEFAULT_OPTIONS}, "additionalProperties": False}}),
     function_tool("get_multiphysics_results", "读取当前会话指定电气运行的磁热力交接结果；缺失时返回未运行，不执行求解。", {"run_id": {"type": "string"}}, ["run_id"]),
     function_tool("get_design", "读取当前设计参数、派生计算、功能边界和已完成运行。"),
     function_tool("set_parameters", "校验并更新当前设计。只传需要更改的参数；数值采用SI单位。", {"updates": {"type": "object", "properties": PARAMS, "additionalProperties": False}}, ["updates"]),
@@ -60,9 +63,9 @@ class AgentService:
         self.jobs = {}
         self.lock = threading.RLock()
 
-    def submit(self, sid: str, message: str, action: str = "chat", updates: dict | None = None) -> dict:
+    def submit(self, sid: str, message: str, action: str = "chat", updates: dict | None = None, run_id: str | None = None) -> dict:
         self.store.get(sid)
-        if action not in {"chat", "build", "simulate", "parameters", "compare", "export"}:
+        if action not in {"chat", "build", "simulate", "parameters", "compare", "export", "multiphysics"}:
             raise ValueError("未知任务动作。")
         message = str(message).strip()
         if len(message) > 6000 or (not message and action == "chat"):
@@ -72,7 +75,7 @@ class AgentService:
                 raise ValueError("当前会话已有任务，请等待完成或先取消。")
             jid = uuid.uuid4().hex[:12]
             job = {"id": jid, "session_id": sid, "status": "queued", "created_at": now(),
-                   "events": [], "answer": "", "result": None, "error": "", "cancel": threading.Event()}
+                   "parent_run_id": run_id, "events": [], "answer": "", "result": None, "error": "", "cancel": threading.Event()}
             self.jobs[jid] = job
             self.store.message(sid, "user", message or {"build": "生成当前设计的Simulink模型", "simulate": "运行当前设计的Simulink仿真", "parameters": "更新设计参数", "compare": "比较最近两次结果"}.get(action, ""))
             # Freeze provider settings for this job; never expose the key in job snapshots.
@@ -113,8 +116,8 @@ class AgentService:
             if action != "chat":
                 if updates is not None:
                     self._tool(job, "set_parameters", {"updates": updates})
-                tool = {"build": "create_model", "simulate": "run_simulation", "parameters": "get_design", "compare": "compare_runs", "export": "export_model_script"}[action]
-                result = self._tool(job, tool, {})
+                tool = {"build": "create_model", "simulate": "run_simulation", "parameters": "get_design", "compare": "compare_runs", "export": "export_model_script", "multiphysics": "run_multiphysics"}[action]
+                result = self._tool(job, tool, {"run_id": job["parent_run_id"]} if action == "multiphysics" and job.get("parent_run_id") else {})
                 answer = self._describe(result, tool)
             elif llm.get("enabled"):
                 if not llm.get("api_key") or not llm.get("model"):
@@ -156,13 +159,38 @@ class AgentService:
             raise InterruptedError("任务已取消。")
         if not isinstance(args, dict):
             raise ValueError("工具参数必须为对象。")
-        allowed = {"get_multiphysics_results": {"run_id"}, "set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
+        allowed = {"run_multiphysics": {"run_id", "options"}, "get_multiphysics_results": {"run_id"}, "set_parameters": {"updates"}, "get_design": set(), "inspect_environment": set(),
                    "create_model": set(), "run_simulation": set(), "compare_runs": set(), "export_model_script": set()}
         if name not in allowed or set(args) - allowed[name]:
             raise ValueError(f"不支持的工具或参数：{name}")
         sid = job["session_id"]
         self._emit(job, "tool", name, args)
-        if name == "get_multiphysics_results":
+        if name == "run_multiphysics":
+            options = field_options(args.get("options"))
+            row = self.store.snapshot(sid)
+            if args.get("run_id"):
+                run = next((r for r in row["runs"] if r["id"] == args["run_id"]), None)
+                if run is None:
+                    raise ValueError("当前会话不存在该电气运行。")
+            else:
+                run = next((r for r in reversed(row["runs"]) if r["status"] == "completed" and r["action"] == "simulate" and r["revision"] == row["revision"]), None)
+                if run is None:
+                    self._tool(job, "run_simulation", {})
+                    row = self.store.snapshot(sid)
+                    run = row["runs"][-1]
+            if sum(e["kind"] == "run" for e in job["events"]) >= 3:
+                raise ValueError("每轮最多三次MATLAB任务。")
+            folder = OUTPUTS / sid / run["id"]
+            try:
+                result = execute_multiphysics(self.runtime, folder, row, run, job["cancel"],
+                    lambda kind, title, data=None: self._emit(job, kind, title, data), options)
+            finally:
+                with self.store.lock:
+                    target = next(r for r in self.store.get(sid)["runs"] if r["id"] == run["id"])
+                    target["files"] = self._artifacts(sid, run["id"], folder)
+                    (folder / "run.json").write_text(json.dumps(target, ensure_ascii=False, indent=2), encoding="utf-8")
+                    self.store.save()
+        elif name == "get_multiphysics_results":
             row = self.store.snapshot(sid)
             run = next((r for r in row["runs"] if r["id"] == args.get("run_id")), None)
             if not run:
@@ -174,7 +202,7 @@ class AgentService:
                       "engineering_review": DesignSpec(**row["spec"]).engineering_review(),
                       "revision": row["revision"], "runs": [{k: r[k] for k in ("id", "status", "action", "revision")} for r in row["runs"]],
                       "model_stages": MODEL_STAGES, "electrical": stage_options(row["spec"]),
-                      "limitations": "四阶段可建模与仿真；器件阶段需SPS。单次通过不代表数值收敛，不输出整机效率；C自动求解尚未接入。"}
+                      "limitations": "四阶段可建模与仿真；器件阶段需SPS。单次通过不代表数值收敛，不输出整机效率；支持当前电气数据驱动的E70候选磁热力求解（指定热源、单向耦合）。"}
         elif name == "set_parameters":
             result = self.store.update_spec(sid, args.get("updates", {}))
         elif name == "inspect_environment":
@@ -237,12 +265,16 @@ class AgentService:
 
     @staticmethod
     def _artifacts(sid, rid, directory):
-        return [{"name": p.name, "url": f"/artifacts/{sid}/{rid}/{p.name}", "bytes": p.stat().st_size}
-                for p in sorted(directory.iterdir()) if p.is_file() and p.name != "run.json"]
+        return [{"name": p.relative_to(directory).as_posix(), "url": f"/artifacts/{sid}/{rid}/{p.relative_to(directory).as_posix()}", "bytes": p.stat().st_size}
+                for p in sorted(directory.rglob("*")) if p.is_file() and p.name != "run.json"]
 
     def _rules(self, job, text):
+        if any(word in text for word in ("磁热力", "磁场", "温度场", "热应力", "多物理场")):
+            if any(word in text for word in ("不运行", "不要运行", "不要仿真", "只查看", "仅查看", "介绍", "解释", "导出")) or not any(word in text for word in ("运行", "求解", "分析", "计算", "仿真")):
+                return "磁热力采用E70候选与当前电气全采样数据，默认环境40°C、h=10，指定额外绕组/磁芯热各0.5 W；本次未执行求解。"
+            return self._describe(self._tool(job, "run_multiphysics", {}), "run_multiphysics")
         if any(word in text for word in ("三相", "并网", "PID", "pid", "热应力", "磁场", "温度场", "有限元", "热仿真", "力仿真", "效率")):
-            return "支持四阶段单相模型和PR电压闭环；三相、并网、PID与C自动求解尚未接入，不输出完整整机效率。"
+            return "支持四阶段单相模型和PR电压闭环；三相、并网、PID尚未接入，不输出完整整机效率。"
         updates = extract_parameters(text)
         result = None
         if updates:
@@ -276,6 +308,15 @@ class AgentService:
 
     @staticmethod
     def _describe(result, name):
+        if name == "run_multiphysics":
+            d = result["domains"]
+            info = result["input_summary"]
+            return (f"已完成运行{result['parent_run_id']}的E70候选磁热力求解。\n"
+                    f"中心柱截面平均峰值磁密{d['magnetic']['metrics']['bulk_peak_flux_density']['value']:.4f} T；"
+                    f"最高温度{d['thermal']['metrics']['peak_temperature']['value']:.2f} °C；"
+                    f"最大位移{1e6*d['structural']['metrics']['max_displacement']['value']:.2f} μm。\n"
+                    f"候选L与电气L差异{info['L_difference_percent']:+.2f}%；候选R20与电气R差异{info['R_difference_percent']:+.2f}%。\n"
+                    "云图、材料与边界依据已关联到该电气运行。采用指定热源和线性场模型，未将候选L/R回填电路；不代表饱和、强度或网格收敛验证完成。")
         if name == "get_design":
             s, d = result["spec"], result["derived"]
             return (f"模型阶段：{MODEL_STAGES[s.get('model_fidelity', BASELINE)]}。\n当前设计：{s['input_voltage']:g} V直流 → {s['output_voltage']:g} V交流有效值，"

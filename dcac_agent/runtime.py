@@ -27,10 +27,11 @@ class MatlabRuntime:
                 "connection": "not_tested", "busy": self.lock.locked(),
                 "note": "检测到安装路径不代表许可证或仿真已经验证；运行任务后查看真实日志。",
                 "capabilities": {"model_build": True, "electrical_simulation": True,
-                                 "magnetic_fea": False, "thermal_fea": False, "structural_fea": False},
+                                 "magnetic_fea": True, "thermal_fea": True, "structural_fea": True},
                 "capability_status_v1": {
                     "model_build": {"supported": True, "verified": False},
                     "electrical_simulation": {"supported": True, "verified": False},
+                    "multiphysics": {"supported": True, "verified": False, "requires": "Partial Differential Equation Toolbox", "scope": "conditional E70 candidate, linear 2D fields"},
                     "device_bridge": {"supported": True, "verified": False,
                                       "requires": "Simscape Electrical Specialized Power Systems"}}}
 
@@ -112,6 +113,17 @@ class MatlabRuntime:
         request = outdir / "request.json"
         escape = lambda p: str(p).replace("'", "''").replace("\\", "/")
         expression = f"addpath('{escape(ROOT / 'matlab')}'); dcac_execute('{escape(request)}');"
+        return self._batch(expression, outdir, cancel, emit, action)
+
+    def execute_fields(self, outdir: Path, cancel: threading.Event, emit) -> dict:
+        escape = lambda p: str(p).replace("'", "''").replace("\\", "/")
+        expression = f"addpath('{escape(outdir)}'); dcac_multiphysics('{escape(outdir / 'field_request.json')}');"
+        return self._batch(expression, outdir, cancel, emit, "multiphysics")
+
+    def _batch(self, expression, outdir, cancel, emit, action):
+        executable = self.status()["executable"]
+        if not executable or not Path(executable).is_file():
+            raise RuntimeError("未找到MATLAB。请在设置中填写 matlab.exe 完整路径。")
         logfile = outdir / "matlab.log"
         env = os.environ.copy()
         # An explicit override is useful in restricted workspaces. Ordinary launches
@@ -120,7 +132,7 @@ class MatlabRuntime:
             preference = Path(env["DCAC_MATLAB_PREFDIR"])
             preference.mkdir(parents=True, exist_ok=True)
             env["MATLAB_PREFDIR"] = str(preference)
-        emit("matlab", "启动MATLAB批处理进程", {"action": action, "request": request.name})
+        emit("matlab", "启动MATLAB批处理进程", {"action": action})
         WORK.mkdir(parents=True, exist_ok=True)
         with self.lock, (outdir / "process.log").open("wb") as stream:
             if cancel.is_set():

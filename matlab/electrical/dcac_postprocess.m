@@ -111,8 +111,18 @@ if e.export_legacy_mat
     save(fullfile(outdir,'simulation.mat'),'t','y','s','-v7');
 end
 y=yFull;
-save(fullfile(outdir,'electrical_raw_v1.mat'),'t','s','e','context','meta', ...
-    'signals','windows','metrics','electricalMetrics','dynamic','losses','-v7');
+% MAT v7 silently skips variables above 2 GB with only a warning. Fine-step
+% studies must retain all samples for C; switch to HDF5 before that limit.
+signalInfo=whos('signals');matVersion='-v7';
+if signalInfo.bytes>1.8e9,matVersion='-v7.3';end
+meta.storage_mat_version=matVersion;
+rawFile=fullfile(outdir,'electrical_raw_v1.mat');
+save(rawFile,'t','s','e','context','meta', ...
+    'signals','windows','metrics','electricalMetrics','dynamic','losses',matVersion);
+savedInfo=whos('-file',rawFile);
+if ~all(ismember({'t','signals','meta','context'},{savedInfo.name}))
+    error('DCAC:RawExport','Full-resolution raw MAT is incomplete; do not publish success.');
+end
 if e.export_legacy_csv
     writematrix([t y(:,1:4)],fullfile(outdir,'signals.csv'));
 end

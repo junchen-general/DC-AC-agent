@@ -1,8 +1,15 @@
-function summary = dcac_validate(requestPath,profile)
+function summary = dcac_validate(requestPath,profile,stepCountsOverride)
 %DCAC_VALIDATE Run the reproducible operating-condition/time-step matrix.
 % profile='baseline' runs 3 scenarios x 2 steps on Stage 0.
 % profile='full' runs all four fidelity stages. This can be expensive.
+% profile can also be an exact model_fidelity name for targeted refinement.
 if nargin<2, profile='full'; end
+if nargin<3, stepCountsOverride=[]; end
+if ~isempty(stepCountsOverride)
+    validateattributes(stepCountsOverride,{'numeric'},{'vector','numel',2,'integer','>=',20,'<=',3200});
+    assert(stepCountsOverride(1)<stepCountsOverride(2),'Steps must be increasing.');
+end
+sourceHash=solverFingerprint();
 base=jsondecode(fileread(requestPath));
 root=char(base.output_dir);
 validationRoot=fullfile(root,'validation');
@@ -12,8 +19,11 @@ if strcmp(profile,'baseline')
 elseif strcmp(profile,'full')
     stages={'baseline_ideal_switching_open_loop','sps_device_open_loop', ...
         'sps_device_lossy_open_loop','sps_device_closed_loop'};
+elseif any(strcmp(profile,{'baseline_ideal_switching_open_loop','sps_device_open_loop', ...
+        'sps_device_lossy_open_loop','sps_device_closed_loop'}))
+    stages={profile};
 else
-    error('DCAC:Validation','profile must be baseline or full.');
+    error('DCAC:Validation','profile must be baseline, full, or an exact model_fidelity name.');
 end
 scenarios={'rated','half_load','rated_to_half'};
 rows=struct('stage',{},'scenario',{},'steps_per_switching_period',{},'fixed_step_s',{}, ...
@@ -22,6 +32,7 @@ rows=struct('stage',{},'scenario',{},'steps_per_switching_period',{},'fixed_step
     'run_id',{},'comparison_group_id',{},'result_path',{},'error',{});
 for a=1:numel(stages)
     if strcmp(stages{a},'baseline_ideal_switching_open_loop'), stepCounts=[100 200]; else, stepCounts=[200 400]; end
+    if ~isempty(stepCountsOverride),stepCounts=stepCountsOverride;end
     for b=1:numel(scenarios)
         for c=1:numel(stepCounts)
             tag=sprintf('%s__%s__n%d',stages{a},scenarios{b},stepCounts(c));
@@ -43,7 +54,23 @@ for a=1:numel(stages)
             req.run_context.run_id=tag;
             req.run_context.comparison_group_id=groupId;
             req.run_context.comparison_peer_run_ids=peerIds;
-            caseRequest=fullfile(caseDir,'request.json'); dcac_write_json(caseRequest,req);
+            % Keep spec aligned with the chosen stage/scenario for downstream users.
+            req.spec.model_fidelity=stages{a};
+            req.spec.load_step=strcmp(scenarios{b},'rated_to_half');
+            % JSON round-trip normalizes cell-array orientation before exact
+            % comparison (jsondecode returns string arrays as column cells).
+            req=jsondecode(jsonencode(req));
+            caseRequest=fullfile(caseDir,'request.json');
+            cacheRequest=fullfile(caseDir,'validation_request_snapshot.json');
+            cacheSource=fullfile(caseDir,'validation_source_sha256.txt');
+            requestMatches=false;
+            try
+                previous=jsondecode(fileread(cacheRequest));
+                requestMatches=isequaln(previous,req) && strcmp(strtrim(fileread(cacheSource)),sourceHash);
+            catch
+                % Old studies without an exact request/source fingerprint are not reused.
+            end
+            dcac_write_json(caseRequest,req);
             row=emptyRow(stages{a},scenarios{b},stepCounts(c), ...
                 1/(req.spec.switching_frequency*stepCounts(c)),tag,groupId,caseDir);
             try
@@ -55,7 +82,8 @@ for a=1:numel(stages)
                     % a chance to replace it.
                     try
                         data=jsondecode(fileread(resultFile));
-                        reusable=isfield(data,'ok') && data.ok && isfield(data,'electrical_v1') && ...
+                        reusable=requestMatches && completeRawFile(fullfile(caseDir,'electrical_raw_v1.mat')) && ...
+                            isfield(data,'spec') && isequaln(data.spec,req.spec) && isfield(data,'ok') && data.ok && isfield(data,'electrical_v1') && ...
                             strcmp(data.electrical_v1.model_fidelity,stages{a}) && ...
                             strcmp(data.electrical_v1.scenario_id,scenarios{b}) && ...
                             isfield(data,'solver') && ...
@@ -76,6 +104,8 @@ for a=1:numel(stages)
                     data=jsondecode(fileread(resultFile));
                 end
                 if data.ok
+                    dcac_write_json(cacheRequest,req);
+                    fid=fopen(cacheSource,'w');fprintf(fid,'%s',sourceHash);fclose(fid);
                     row.status='success'; row.output_rms_V=data.metrics.output_rms;
                     row.thd_h2_h40_percent=data.metrics.thd_percent;
                     row.inductor_rms_A=data.metrics.inductor_rms;
@@ -92,16 +122,16 @@ for a=1:numel(stages)
         end
     end
 end
-comparison=comparePairs(rows);
+comparison=dcac_compare_step_runs(rows);
 summary=struct('schema_version','dcac.time-step-study/1.0','profile',profile, ...
-    'created_utc',char(datetime('now','TimeZone','UTC')),'runs',rows,'comparisons',comparison, ...
+    'solver_source_sha256',sourceHash,'created_utc',char(datetime('now','TimeZone','UTC')),'runs',rows,'comparisons',comparison, ...
     'criteria',struct('output_rms_relative_percent',0.2,'inductor_rms_relative_percent',0.5, ...
     'inductor_peak_relative_percent',1.0,'thd_absolute_percentage_points',0.1), ...
     'limitation','Success requires real MATLAB compilation/simulation; failed cases retain result.json and logs.');
 dcac_write_json(fullfile(validationRoot,'time_step_study_v1.json'),summary);
 writetable(struct2table(rows),fullfile(validationRoot,'time_step_runs_v1.csv'));
 writetable(struct2table(comparison),fullfile(validationRoot,'time_step_comparison_v1.csv'));
-% Root-level copies remain visible to the current non-recursive Agent artifact scanner.
+% Root-level copies provide convenient entry points for Agent downloads.
 dcac_write_json(fullfile(root,'time_step_study_v1.json'),summary);
 writetable(struct2table(rows),fullfile(root,'time_step_runs_v1.csv'));
 writetable(struct2table(comparison),fullfile(root,'time_step_comparison_v1.csv'));
@@ -116,33 +146,6 @@ row=struct('stage',stage,'scenario',scenario,'steps_per_switching_period',steps,
     'result_path',path,'error','');
 end
 
-function comparisons=comparePairs(rows)
-comparisons=struct('stage',{},'scenario',{},'coarse_steps',{},'fine_steps',{}, ...
-    'output_rms_relative_percent',{},'thd_absolute_percentage_points',{}, ...
-    'inductor_rms_relative_percent',{},'inductor_peak_relative_percent',{},'converged',{}, ...
-    'comparison_group_id',{},'coarse_run_id',{},'fine_run_id',{},'selected_run_id',{});
-stages=unique({rows.stage}); scenarios=unique({rows.scenario});
-for a=1:numel(stages)
-    for b=1:numel(scenarios)
-        pair=rows(strcmp({rows.stage},stages{a}) & strcmp({rows.scenario},scenarios{b}) & strcmp({rows.status},'success'));
-        if numel(pair)~=2, continue; end
-        [~,order]=sort([pair.steps_per_switching_period]); pair=pair(order);
-        out=relative(pair(1).output_rms_V,pair(2).output_rms_V);
-        thd=abs(pair(1).thd_h2_h40_percent-pair(2).thd_h2_h40_percent);
-        ir=relative(pair(1).inductor_rms_A,pair(2).inductor_rms_A);
-        ip=relative(pair(1).inductor_peak_A,pair(2).inductor_peak_A);
-        comparisons(end+1)=struct('stage',stages{a},'scenario',scenarios{b}, ...
-            'coarse_steps',pair(1).steps_per_switching_period,'fine_steps',pair(2).steps_per_switching_period, ...
-            'output_rms_relative_percent',out,'thd_absolute_percentage_points',thd, ...
-            'inductor_rms_relative_percent',ir,'inductor_peak_relative_percent',ip, ...
-            'converged',out<0.2 && thd<0.1 && ir<0.5 && ip<1.0, ...
-            'comparison_group_id',pair(1).comparison_group_id, ...
-            'coarse_run_id',pair(1).run_id,'fine_run_id',pair(2).run_id, ...
-            'selected_run_id',pair(2).run_id); %#ok<AGROW>
-    end
-end
-end
-
 function bindComparisonManifests(rows,comparisons)
 for k=1:numel(rows)
     if ~strcmp(rows(k).status,'success'), continue; end
@@ -152,10 +155,11 @@ for k=1:numel(rows)
     path=fullfile(rows(k).result_path,'run_manifest.json');
     if ~isfile(path), continue; end
     manifest=jsondecode(fileread(path));
-    manifest.step_size_comparison=struct('status','complete', ...
+    manifest.step_size_comparison=struct('status',comparison.status, ...
         'comparison_group_id',comparison.comparison_group_id, ...
         'peer_run_ids',{{comparison.coarse_run_id,comparison.fine_run_id}}, ...
         'study_path','../time_step_study_v1.json','converged',comparison.converged, ...
+        'failed_criteria',comparison.failed_criteria, ...
         'selected_run_id',comparison.selected_run_id, ...
         'this_run_selected',strcmp(rows(k).run_id,comparison.selected_run_id), ...
         'deltas',struct('output_rms_relative_percent',comparison.output_rms_relative_percent, ...
@@ -166,6 +170,29 @@ for k=1:numel(rows)
 end
 end
 
-function value=relative(a,b)
-value=100*abs(a-b)/max(abs(b),eps);
+function hash=solverFingerprint()
+root=fileparts(mfilename('fullpath'));
+files=dir(fullfile(root,'*.m'));
+[~,order]=sort({files.name});files=files(order);
+md=java.security.MessageDigest.getInstance('SHA-256');
+for k=1:numel(files)
+    md.update(unicode2native(files(k).name,'UTF-8'));
+    fid=fopen(fullfile(root,files(k).name),'rb');bytes=fread(fid,inf,'*uint8');fclose(fid);md.update(bytes);
+end
+entry=fullfile(root,'..','dcac_execute.m');
+if isfile(entry)
+    fid=fopen(entry,'rb');bytes=fread(fid,inf,'*uint8');fclose(fid);md.update(bytes);
+end
+hash=lower(reshape(dec2hex(typecast(md.digest(),'uint8'),2).',1,[]));
+end
+
+function valid=completeRawFile(path)
+valid=false;
+if ~isfile(path),return;end
+try
+    vars=whos('-file',path);
+    valid=all(ismember({'t','signals','meta','context'},{vars.name}));
+catch
+    % Truncated MAT files and v7 exports missing a >2 GB signals struct rerun.
+end
 end

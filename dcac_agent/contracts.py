@@ -51,8 +51,13 @@ def write_manifest(folder: Path, sid: str, run: dict, source: str | None = None)
     return manifest
 
 
-def read_multiphysics(folder: Path, session: dict, run: dict) -> dict:
+def read_multiphysics(folder: Path, session: dict, run: dict, *, ignore_status=False) -> dict:
     """Read only a fixed, run-local result; never execute paths supplied by a model."""
+    status_path = folder / "multiphysics_status.json"
+    if status_path.exists() and not ignore_status:
+        status = json.loads(status_path.read_text(encoding="utf-8-sig"))
+        if status.get("status") in {"running", "failed", "cancelled"}:
+            return {**status, "run_id": run["id"], "message": status.get("message", "磁热力求解正在运行。")}
     path = folder / "multiphysics_result.json"
     if not path.exists():
         return {"status": "not_run", "message": "C尚未交付此运行的多物理场结果。", "run_id": run["id"]}

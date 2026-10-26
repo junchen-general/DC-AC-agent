@@ -73,9 +73,9 @@ if ~any(strcmp(e.scenario_id,allowedScenario))
 end
 if ~isnumeric(e.steps_per_switching_period) || ~isscalar(e.steps_per_switching_period) || ...
         ~isfinite(e.steps_per_switching_period) || ...
-        e.steps_per_switching_period < 20 || e.steps_per_switching_period > 1000 || ...
+        e.steps_per_switching_period < 20 || e.steps_per_switching_period > 3200 || ...
         fix(e.steps_per_switching_period) ~= e.steps_per_switching_period
-    error('DCAC:Request','steps_per_switching_period must be an integer from 20 to 1000.');
+    error('DCAC:Request','steps_per_switching_period must be an integer from 20 to 3200.');
 end
 if ~isnumeric(e.dead_time_s) || ~isscalar(e.dead_time_s) || ~isfinite(e.dead_time_s) || e.dead_time_s < 0 || ...
         e.dead_time_s >= 0.25/s.switching_frequency
@@ -128,6 +128,13 @@ else
     e.solver_type='fixed_step_continuous';
 end
 e.dead_time_resolution_points = e.dead_time_s/e.fixed_step_s;
+e.dead_time_requested_s=e.dead_time_s;
+e.dead_time_discrete_steps=round(e.dead_time_resolution_points);
+e.dead_time_effective_s=e.dead_time_discrete_steps*e.fixed_step_s;
+e.dead_time_quantization_error_s=e.dead_time_effective_s-e.dead_time_requested_s;
+if startsWith(e.model_fidelity,'sps_')
+    e.dead_time_s=e.dead_time_effective_s;
+end
 e.base_modulation_index = sqrt(2)*s.output_voltage/s.input_voltage;
 e.dead_time_compensation_index = 0;
 if strcmp(e.model_fidelity,'sps_device_closed_loop') && ...
@@ -140,7 +147,7 @@ if e.feedforward_modulation_index > e.modulation_limit
     error('DCAC:Request', ...
         'Base plus dead-time feedforward modulation exceeds the configured limit.');
 end
-if startsWith(e.model_fidelity,'sps_') && e.dead_time_s>0 && e.dead_time_resolution_points<4
+if startsWith(e.model_fidelity,'sps_') && e.dead_time_requested_s>0 && e.dead_time_resolution_points<4
     error('DCAC:Request','SPS stages require at least four fixed steps across dead_time_s.');
 end
 e.load_ratio_initial = 1.0;

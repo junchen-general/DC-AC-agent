@@ -227,7 +227,7 @@ def make_handler(app: Application):
                     self._json(app.store.create(), 201)
                 elif self.path == "/api/chat":
                     self._json(app.agent.submit(str(body.get("session_id", "")), body.get("message", ""),
-                                               str(body.get("action", "chat")), body.get("updates")), 202)
+                                               str(body.get("action", "chat")), body.get("updates"), body.get("run_id")), 202)
                 elif self.path == "/api/cancel":
                     self._json(app.agent.cancel(str(body.get("job_id", ""))))
                 elif self.path == "/api/settings":
