@@ -1,0 +1,41 @@
+{
+  "schema_version": "dcac.request/1.1",
+  "action": "simulate",
+  "spec": {
+    "model_fidelity": "sps_device_closed_loop",
+    "input_voltage": 380.0,
+    "output_voltage": 220.0,
+    "output_power": 500.0,
+    "output_frequency": 50.0,
+    "switching_frequency": 20000.0,
+    "inductance": 0.0019090718429643832,
+    "capacitance": 4.7e-06,
+    "winding_resistance": 0.2166407182392643,
+    "stop_time": 0.24,
+    "load_step": false,
+    "load_step_time": 0.12,
+    "load_final_ratio": 0.5
+  },
+  "electrical": {
+    "schema_version": "dcac.electrical.request/1.0",
+    "model_fidelity": "sps_device_closed_loop",
+    "scenario_id": "half_load",
+    "steps_per_switching_period": 3200,
+    "dead_time_s": 1e-06,
+    "closed_loop_dead_time_compensation": true,
+    "soft_start_s": 0.04,
+    "export_full_csv": false,
+    "export_legacy_csv": false,
+    "export_legacy_mat": false
+  },
+  "run_context": {
+    "session_id": "8087f9aecab7",
+    "run_id": "33f5f0e7a620",
+    "design_revision": 2,
+    "component_revision_id": "",
+    "parent_component_revision_id": "",
+    "comparison_group_id": "half_load_rev2",
+    "comparison_peer_run_ids": []
+  },
+  "output_dir": "outputs/lr_alignment_20261026/runs/8087f9aecab7/33f5f0e7a620"
+}
